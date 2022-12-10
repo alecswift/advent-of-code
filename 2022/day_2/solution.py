@@ -16,27 +16,24 @@ def parse(input_file: str) -> list[tuple[str, str]]:
     parsed_data: list[tuple[str, str]] = re.findall(r"([A-C]) ([X-Z])", input_data)
     return parsed_data
 
+
 def total_score(input_file: str) -> int:
     """
     Return my total score from an input file containing
     the rock paper scissors tournament results
     """
     results: list[tuple[str, str]] = parse(input_file)
-    shape_scores: dict[str, int] = {
-        'X': 1,
-        'Y': 2,
-        'Z': 3
-    }
+    shape_scores: dict[str, int] = {"X": 1, "Y": 2, "Z": 3}
     outcome_scores: dict[tuple[str, str], int] = {
-        ('A', 'X'): 3,
-        ('A', 'Y'): 6,
-        ('A', 'Z'): 0,
-        ('B', 'X'): 0,
-        ('B', 'Y'): 3,
-        ('B', 'Z'): 6,
-        ('C', 'X'): 6,
-        ('C', 'Y'): 0,
-        ('C', 'Z'): 3
+        ("A", "X"): 3,
+        ("A", "Y"): 6,
+        ("A", "Z"): 0,
+        ("B", "X"): 0,
+        ("B", "Y"): 3,
+        ("B", "Z"): 6,
+        ("C", "X"): 6,
+        ("C", "Y"): 0,
+        ("C", "Z"): 3,
     }
     score: int = 0
     for game in results:
@@ -44,4 +41,29 @@ def total_score(input_file: str) -> int:
         score += outcome_scores[game]
     return score
 
-print(total_score('2022/day_2/input.txt'))
+
+def total_score_2(input_file: str) -> int:
+    """
+    Return my total score from an input file containing the rock paper scissors
+    tournament results (different encryption than first total_score)
+    """
+    results: list[tuple[str, str]] = parse(input_file)
+    # values are tuples of the possible outcome scores and shape scores
+    outcome_scores: dict[tuple[str, str], tuple[int, int]] = {
+        ("A", "X"): (0, 3),
+        ("A", "Y"): (3, 1),
+        ("A", "Z"): (6, 2),
+        ("B", "X"): (0, 1),
+        ("B", "Y"): (3, 2),
+        ("B", "Z"): (6, 3),
+        ("C", "X"): (0, 2),
+        ("C", "Y"): (3, 3),
+        ("C", "Z"): (6, 1),
+    }
+    score: int = 0
+    for game in results:
+        score += sum(outcome_scores[game])
+    return score
+
+
+print(total_score("2022/day_2/input.txt"))
