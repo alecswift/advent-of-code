@@ -18,6 +18,19 @@ def parse(input_file: str) -> list[list[str]]:
     return parsed_data
 
 
+def top(input_file: str) -> int:
+    """
+    Returns the top sum of calories from a given
+    input file that contains calories that elves are holding
+    """
+    parsed_data: list[list[str]] = parse(input_file)
+    elves: list[list[int]] = [list(map(int, cals)) for cals in parsed_data]
+    sum_cals: list[int] = [sum(cals) for cals in elves]
+
+    first: int = max(sum_cals)
+    return first
+
+
 def top_three(input_file: str) -> int:
     """
     Returns the top three sums of calories from a given
@@ -34,4 +47,5 @@ def top_three(input_file: str) -> int:
     third: int = max(sum_cals)
     return first + second + third
 
-print(top_three('input.txt'))
+print(top('2022/day_1/input.txt'))
+print(top_three('2022/day_1/input.txt'))
