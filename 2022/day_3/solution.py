@@ -5,6 +5,7 @@ in two compartments of a list of rucksacks
 from typing import TextIO
 from string import ascii_letters
 
+
 def parse(input_file: str) -> list[tuple[set[str], set[str]]]:
     """
     Return parsed data with the given input file. Parsed data is in the format
@@ -20,6 +21,7 @@ def parse(input_file: str) -> list[tuple[set[str], set[str]]]:
     ]
     return parsed_data
 
+
 def total_priority(input_file: str) -> int:
     """
     Returns the total priority of common items in compartments
@@ -29,5 +31,8 @@ def total_priority(input_file: str) -> int:
     total: int = 0
     for comp_1, comp_2 in rucksacks:
         common_item: str = comp_1.intersection(comp_2).pop()
-        total += (ascii_letters.index(common_item) + 1)
+        total += ascii_letters.index(common_item) + 1
     return total
+
+
+print(total_priority("2022/day_3/input.txt"))
