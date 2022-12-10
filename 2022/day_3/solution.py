@@ -1,6 +1,6 @@
 """
-Finds the total priorities of common items
-in two compartments of a list of rucksacks
+Finds the total priorities of common items in two compartments of a list of
+rucksacks and the total priorities of common items in groups of three rucksacks
 """
 from typing import TextIO
 from string import ascii_letters
