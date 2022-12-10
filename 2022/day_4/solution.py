@@ -78,3 +78,6 @@ def overlap_2(input_file: str) -> int:
         ):
             total += 1
     return total
+
+print(overlap("2022/day_4/input.txt"))
+print(overlap_2("2022/day_4/input.txt"))
