@@ -1,9 +1,17 @@
-from itertools import pairwise
+"""
+Finds the sections in pairs of elves that both overlap completely or partially
+"""
 import re
 from typing import TextIO
 
 
 def parse(input_file: str) -> list[tuple[str, str]]:
+    """
+    Returns parsed data from a given input file
+    Parsed data is in the format of a list containing
+    tuples that represent elves and contain strings
+    that represent section ranges
+    """
     in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
@@ -12,6 +20,10 @@ def parse(input_file: str) -> list[tuple[str, str]]:
 
 
 def overlap(input_file: str) -> int:
+    """
+    Return the sum of sections that overlap completely in
+    pairs of elves from a given input file
+    """
     sections: list[tuple[str, str]] = parse(input_file)
     cp_sections: list[tuple[str, str]] = sections
     total: int = 0
@@ -40,4 +52,4 @@ def overlap(input_file: str) -> int:
     return total
 
 
-print(parse("2022/day_4/input.txt"))
+print(overlap("2022/day_4/input.txt"))
