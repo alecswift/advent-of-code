@@ -54,3 +54,6 @@ def total_priority_2(input_file: str) -> int:
         total += ascii_letters.index(common_item) + 1
         cp_parsed_data = rest
     return total
+
+print(total_priority("2022/day_3/input.txt"))
+print(total_priority_2("2022/day_3/input.txt"))
