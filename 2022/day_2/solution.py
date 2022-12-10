@@ -43,3 +43,5 @@ def total_score(input_file: str) -> int:
         score += shape_scores[game[1]]
         score += outcome_scores[game]
     return score
+
+print(total_score('2022/day_2/input.txt'))
