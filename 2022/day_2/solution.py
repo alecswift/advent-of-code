@@ -67,3 +67,4 @@ def total_score_2(input_file: str) -> int:
 
 
 print(total_score("2022/day_2/input.txt"))
+print(total_score_2("2022/day_2/input.txt"))
