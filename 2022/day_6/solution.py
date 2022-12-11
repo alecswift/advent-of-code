@@ -40,3 +40,4 @@ def sub_routine_2(input_file: str) -> int:
     return marker_location
 
 print(sub_routine('2022/day_6/input.txt'))
+print(sub_routine_2('2022/day_6/input.txt'))
