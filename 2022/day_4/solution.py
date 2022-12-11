@@ -51,6 +51,7 @@ def overlap(input_file: str) -> int:
             total += 1
     return total
 
+
 def overlap_2(input_file: str) -> int:
     """
     Return the sum of sections that overlap partially in
@@ -78,6 +79,7 @@ def overlap_2(input_file: str) -> int:
         ):
             total += 1
     return total
+
 
 print(overlap("2022/day_4/input.txt"))
 print(overlap_2("2022/day_4/input.txt"))
