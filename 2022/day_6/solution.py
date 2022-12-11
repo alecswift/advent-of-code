@@ -15,4 +15,13 @@ def sub_routine(input_file: str) -> int:
             break
     return marker_location
 
+def sub_routine_2(input_file: str) -> int:
+    buffer: str = parse(input_file)
+    for num in range(len(buffer) - 13):
+        sequence: str = buffer[num: num + 14]
+        if len(set(sequence)) == 14:
+            marker_location: int = num + 14
+            break
+    return marker_location
+
 print(sub_routine('2022/day_6/input.txt'))
