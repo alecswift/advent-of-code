@@ -23,12 +23,10 @@ def parse(input_file: str) -> tuple[list[list[str]], list[tuple[str, str, str]]]
     )
     parsed_diagram: list[list[str]] = [[] for _ in range(9)]
     for row in diagram.split("\n"):
-        index: int = 1
         count: int = 0
-        while index < len(row):
+        for index in range(1, len(row), 4):
             if row[index].isalpha():
                 parsed_diagram[count].insert(0, row[index])
-            index += 4
             count += 1
     return parsed_diagram, parsed_proc
 
