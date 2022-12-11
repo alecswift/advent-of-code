@@ -14,3 +14,5 @@ def sub_routine(input_file: str) -> int:
             marker_location: int = num + 4
             break
     return marker_location
+
+print(sub_routine('2022/day_6/input.txt'))
