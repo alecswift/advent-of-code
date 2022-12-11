@@ -45,3 +45,5 @@ def rearrange(input_file: str) -> str:
         diagram[int(stack_from) - 1] = diagram[int(stack_from) - 1][0:-int(num_crates)]
         diagram[int(stack_to) - 1] += move
     return "".join([column[-1] for column in diagram])
+
+print(rearrange("/home/alec/Desktop/code/advent_of_code/2022/day_5/input.txt"))
