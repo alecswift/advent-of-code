@@ -74,3 +74,6 @@ def rearrange_2(input_file: str) -> str:
         ]
         diagram[int(stack_to) - 1] += move[::-1]
     return "".join([column[-1] for column in diagram])
+
+print(rearrange("2022/day_5/input.txt"))
+print(rearrange_2("2022/day_5/input.txt"))
