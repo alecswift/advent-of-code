@@ -58,13 +58,13 @@ class FileTree:
                 parent = parent.parent
         return [node.indirect_size for node in self.nodes]
 
-    def total_size_under_100000(self):
+    def sizes(self):
         """
         Return the total file size of the entire system
         of directories with file sizes less than 100,000
         """
         sizes = zip(self.direct_sizes(), self.indirect_sizes())
-        return sum([sum(size) for size in sizes if sum(size) <= 100000])
+        return [sum(size) for size in sizes]
 
 
 def parse(input_file: str) -> list[str]:
@@ -101,4 +101,4 @@ def build_tree(input_file: str) -> Type[FileTree]:
 
 
 file_tree_data = build_tree("2022/day_7/input.txt")
-print(file_tree_data.total_size_under_100000())
+print(sum(size for size in file_tree_data.sizes() if size <= 100000))
