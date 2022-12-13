@@ -78,7 +78,7 @@ def num_of_visible_trees(tree_matrix):
     visible_trees += (tree_matrix.num_rows * 2) + (tree_matrix.num_cols * 2) - 4
     return visible_trees
 
-def scenic_scores(tree_matrix):
+def max_scenic_score(tree_matrix):
     scores = []
     trees = tree_matrix.remove_edges()
     for tree_position, value in trees.items():
@@ -100,4 +100,4 @@ def scenic_scores(tree_matrix):
 
 tree_matrix_1 = build_matrix('2022/day_8/input.txt')
 print(num_of_visible_trees(tree_matrix_1))
-print(scenic_scores(tree_matrix_1))
+print(max_scenic_score(tree_matrix_1))
