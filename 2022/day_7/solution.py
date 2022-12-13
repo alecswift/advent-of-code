@@ -1,22 +1,13 @@
-import re
+"""
+Find the total size of all directories that have a size 
+of less than 100,000 from file system browsing data
+"""
+
 from typing import TextIO
 
-def parse(input_file: str):
-    in_file: TextIO = open(input_file, 'r', encoding ='utf-8')
-    with open(input_file, encoding = 'utf-8') as in_file:
-        input_data = in_file.read()
-    split_lines = input_data.split('\n')
-    split_lines.pop(-1)
-    parsed_data = [[]]
-    count = 0
-    for index, line in enumerate(split_lines):
-        if line[0].isdigit():
-            if not split_lines[index - 1][0].isdigit():
-                parsed_data.append([])
-                parsed_data[count].append(re.findall(r'\d+', line)[0])
-                count += 1
-            else:
-                parsed_data[count - 1].append(re.findall(r'\d+', line)[0])
-    return parsed_data
 
-print(parse('2022/day_7/input.txt'))
+def parse(input_file: str) -> list[str]:
+    in_file: TextIO = open(input_file, "r", encoding="utf-8")
+    with open(input_file, encoding="utf-8") as in_file:
+        input_data: str = in_file.read()
+    return input_data.split("\n")
