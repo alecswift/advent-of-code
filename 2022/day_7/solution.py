@@ -1,6 +1,8 @@
 """
-Find the total size of all directories that have a size
-of less than 100,000 from file system browsing data
+Find the total size of all directories that have a size of
+less than 100,000 from file system browsing data. Find the
+size of the smallest directory in the file system that can
+be deleted to free up enough space for the update
 """
 
 from typing import TextIO, Type
@@ -66,6 +68,25 @@ class FileTree:
         sizes = zip(self.direct_sizes(), self.indirect_sizes())
         return [sum(size) for size in sizes]
 
+    def used_space(self):
+        """
+        Return the total amount of used space in the file system
+        """
+        return sum(node.direct_size() for node in self.nodes)
+
+    def size_dir_to_del(self):
+        """
+        Return the size of the smallest directory in the file system
+        that can be deleted to free up enough space for the update
+        """
+        space_for_update = 30000000 - (70000000 - self.used_space())
+        smallest = self.sizes()[0]
+        for size in self.sizes():
+            if size < space_for_update:
+                continue
+            if size < smallest:
+                smallest = size
+        return smallest
 
 def parse(input_file: str) -> list[str]:
     """Return a list of lines from file system browsing data"""
