@@ -35,7 +35,7 @@ class FileTree:
         name: str
         parent: Type[Node]
         name, parent = data
-        node: Node = Node(name, parent)
+        node: Type[Node] = Node(name, parent)
         node.parent = parent
         self.nodes.append(node)
         return node
@@ -67,3 +67,26 @@ def parse(input_file: str) -> list[str]:
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     return input_data.split("\n")
+
+def build_tree(input_file: str) -> None:
+    """
+    Create a FileTree object with the given terminal browsing data
+    """
+    data: list[str] = parse(input_file)
+    file_tree_1 = FileTree()
+    current_node = None
+    parent_node = None
+    for line in data:
+        if '$ cd ..' in line:
+            current_node = current_node.parent
+        elif '$ cd' in line:
+            current_dir: str = line[5:]
+            parent_node = current_node
+            node_data: tuple[str, type[Node] | None] = current_dir, parent_node
+            current_node = file_tree_1.add_node(node_data)
+        elif '$ ls' in line:
+            continue
+        elif line.startswith('dir '):
+            (current_node.inner_dirs).append(line[4:])
+        else:
+            (current_node.files).append(findall(r'(\d+) (\D+)', line)[0])
