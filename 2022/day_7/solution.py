@@ -6,6 +6,7 @@ of less than 100,000 from file system browsing data
 from typing import TextIO, Type
 from re import findall
 
+
 class Node:
     """
     Class that represents a node (directory) in a file tree
@@ -20,9 +21,10 @@ class Node:
         self.files: list[tuple[str, str]] = []
         self.indirect_size: int = 0
 
-    def direct_file_size(self) -> int:
+    def direct_size(self) -> int:
         """Return the direct file size of the node object"""
         return sum([int(size) for size, _ in self.files])
+
 
 class FileTree:
     """Represents a file tree with the attribute nodes"""
@@ -40,25 +42,29 @@ class FileTree:
         self.nodes.append(node)
         return node
 
-    def direct_sizes(self) -> list[tuple[Type[Node], int]]:
+    def direct_sizes(self) -> list[int]:
         """
-        Return a list of nodes with direct sizes that
-        are under 100,000 from the list of nodes
+        Return a list of direct sizes of nodes
         """
-        dir_sizes: list[tuple[Type[Node], int]] = []
-        for node in self.nodes:
-            if 0 < node.direct_file_size() <= 100000:
-                dir_sizes.append((node, node.direct_file_size()))
-        return dir_sizes
+        return [node.direct_size() for node in self.nodes]
 
-    def indirect_sizes(self) -> None:
+    def indirect_sizes(self) -> list[int]:
         """Initialize the indirect size attribute of all nodes"""
         for node in self.nodes:
             parent: Type[Node] = node.parent
             while parent:
-                size: int = node.direct_file_size()
+                size: int = node.direct_size()
                 parent.indirect_size += size
                 parent = parent.parent
+        return [node.indirect_size for node in self.nodes]
+
+    def total_size_under_100000(self):
+        """
+        Return the total file size of the entire system
+        of directories with file sizes less than 100,000
+        """
+        sizes = zip(self.direct_sizes(), self.indirect_sizes())
+        return sum([sum(size) for size in sizes if sum(size) <= 100000])
 
 
 def parse(input_file: str) -> list[str]:
@@ -68,7 +74,8 @@ def parse(input_file: str) -> list[str]:
         input_data: str = in_file.read()
     return input_data.split("\n")
 
-def build_tree(input_file: str) -> None:
+
+def build_tree(input_file: str) -> Type[FileTree]:
     """
     Create a FileTree object with the given terminal browsing data
     """
@@ -77,16 +84,21 @@ def build_tree(input_file: str) -> None:
     current_node = None
     parent_node = None
     for line in data:
-        if '$ cd ..' in line:
+        if "$ cd .." in line:
             current_node = current_node.parent
-        elif '$ cd' in line:
+        elif "$ cd" in line:
             current_dir: str = line[5:]
             parent_node = current_node
             node_data: tuple[str, type[Node] | None] = current_dir, parent_node
             current_node = file_tree_1.add_node(node_data)
-        elif '$ ls' in line:
+        elif "$ ls" in line:
             continue
-        elif line.startswith('dir '):
+        elif line.startswith("dir "):
             (current_node.inner_dirs).append(line[4:])
         else:
-            (current_node.files).append(findall(r'(\d+) (\D+)', line)[0])
+            (current_node.files).append(findall(r"(\d+) (\D+)", line)[0])
+    return file_tree_1
+
+
+file_tree_data = build_tree("2022/day_7/input.txt")
+print(file_tree_data.total_size_under_100000())
