@@ -6,6 +6,41 @@ occupies given motions of the rope head
 from typing import TextIO
 from re import findall
 
+class Point:
+    """Represents a point with an x and y coordinate"""
+
+    def __init__(self, x_coord, y_coord):
+        self.x_coord = x_coord
+        self.y_coord = y_coord
+
+    def move_straight(self, direction):
+        """Move point 1 step up, down, left, or right"""
+        match direction:
+            case "U":
+                self.y_coord += 1
+            case "D":
+                self.y_coord -= 1
+            case "L":
+                self.x_coord -= 1
+            case "R":
+                self.x_coord += 1
+
+    def move_diagonal(self, direction):
+        """Move point 1 step diagonally with a given direction"""
+        match direction:
+            case "up_right":
+                self.x_coord += 1
+                self.y_coord += 1
+            case "up_left":
+                self.x_coord -= 1
+                self.y_coord += 1
+            case "down_right":
+                self.x_coord += 1
+                self.y_coord -= 1
+            case "down_left":
+                self.x_coord -= 1
+                self.y_coord -= 1
+
 
 def parse(input_file: str) -> list[tuple[str, str]]:
     """
@@ -19,5 +54,3 @@ def parse(input_file: str) -> list[tuple[str, str]]:
         findall(r"([LRDU]) (\d+)", line)[0] for line in split_lines
     ]
     return parsed_data
-
-print(parse("2022/day_9/input.txt"))
