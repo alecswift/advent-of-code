@@ -97,11 +97,11 @@ def num_of_tail_positions(input_file: str) -> int:
             if rope.distance() == 2:
                 if rope.head.x_coord > rope.tail.x_coord:
                     rope.tail.move_straight("R")
-                if rope.head.x_coord < rope.tail.x_coord:
+                elif rope.head.x_coord < rope.tail.x_coord:
                     rope.tail.move_straight("L")
-                if rope.head.y_coord > rope.tail.y_coord:
+                elif rope.head.y_coord > rope.tail.y_coord:
                     rope.tail.move_straight("U")
-                if rope.head.y_coord < rope.tail.y_coord:
+                else:
                     rope.tail.move_straight("D")
                 tail_positions.add((rope.tail.x_coord, rope.tail.y_coord))
             elif rope.distance() == 5**0.5:
@@ -109,17 +109,15 @@ def num_of_tail_positions(input_file: str) -> int:
                     rope.head.y_coord > rope.tail.y_coord
                 ):
                     rope.tail.move_diagonal("up_right")
-                if (rope.head.x_coord > rope.tail.x_coord) and (
+                elif (rope.head.x_coord > rope.tail.x_coord) and (
                     rope.head.y_coord < rope.tail.y_coord
                 ):
                     rope.tail.move_diagonal("down_right")
-                if (rope.head.x_coord < rope.tail.x_coord) and (
+                elif (rope.head.x_coord < rope.tail.x_coord) and (
                     rope.head.y_coord < rope.tail.y_coord
                 ):
                     rope.tail.move_diagonal("down_left")
-                if (rope.head.x_coord < rope.tail.x_coord) and (
-                    rope.head.y_coord > rope.tail.y_coord
-                ):
+                else:
                     rope.tail.move_diagonal("up_left")
                 tail_positions.add((rope.tail.x_coord, rope.tail.y_coord))
     return len(tail_positions)
