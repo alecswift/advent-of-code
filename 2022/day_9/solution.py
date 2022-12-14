@@ -64,26 +64,6 @@ class Rope:
         distance = self.distance()
         return distance in (1, 2**0.5)
 
-class LongRope:
-    """
-    Represents a rope object with a head or a tail
-    that occupy a point in space
-    """
-
-    def __init__(self, head, tail):
-        self.head = head
-        self.tails = {}
-
-    def distance(self, key):
-        """Return the distance between the head and tail"""
-        x_head, y_head = self.head.x_coord, self.head.y_coord
-        x_tail, y_tail = self.tails[key].x_coord, self.tails[key].y_coord
-        return (((x_tail - x_head) ** 2) + ((y_tail - y_head) ** 2)) ** 0.5
-
-    def is_adjacent(self, key):
-        """Returns whether or not the head and tail are adjacent"""
-        distance = self.distance(key)
-        return distance in (1, 2**0.5)
 
 def parse(input_file: str) -> list[tuple[str, str]]:
     """
