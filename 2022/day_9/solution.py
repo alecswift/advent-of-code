@@ -6,6 +6,7 @@ occupies given motions of the rope head
 from typing import TextIO
 from re import findall
 
+
 class Point:
     """Represents a point with an x and y coordinate"""
 
@@ -56,7 +57,7 @@ class Rope:
         """Return the distance between the head and tail"""
         x_head, y_head = self.head.x_coord, self.head.y_coord
         x_tail, y_tail = self.tail.x_coord, self.tail.y_coord
-        return (((x_tail - x_head)**2) + ((y_tail - y_head)**2))**0.5
+        return (((x_tail - x_head) ** 2) + ((y_tail - y_head) ** 2)) ** 0.5
 
     def is_adjacent(self):
         """Returns whether or not the head and tail are adjacent"""
@@ -76,3 +77,49 @@ def parse(input_file: str) -> list[tuple[str, str]]:
         findall(r"([LRDU]) (\d+)", line)[0] for line in split_lines
     ]
     return parsed_data
+
+
+def num_of_tail_positions(input_file: str) -> int:
+    """
+    Find the number of positions the tail of a rope
+    occupies with given motions for the head of a rope
+    """
+    motions: list[tuple[str, str]] = parse(input_file)
+    location_head = Point(0, 0)
+    location_tail = Point(0, 0)
+    rope = Rope(location_head, location_tail)
+    tail_positions: set[tuple[int, int]] = set([(0, 0)])
+    for direction, steps in motions:
+        for _ in range(int(steps)):
+            rope.head.move_straight(direction)
+            if rope.is_adjacent():
+                continue
+            if rope.distance() == 2:
+                if rope.head.x_coord > rope.tail.x_coord:
+                    rope.tail.move_straight("R")
+                if rope.head.x_coord < rope.tail.x_coord:
+                    rope.tail.move_straight("L")
+                if rope.head.y_coord > rope.tail.y_coord:
+                    rope.tail.move_straight("U")
+                if rope.head.y_coord < rope.tail.y_coord:
+                    rope.tail.move_straight("D")
+                tail_positions.add((rope.tail.x_coord, rope.tail.y_coord))
+            elif rope.distance() == 5**0.5:
+                if (rope.head.x_coord > rope.tail.x_coord) and (
+                    rope.head.y_coord > rope.tail.y_coord
+                ):
+                    rope.tail.move_diagonal("up_right")
+                if (rope.head.x_coord > rope.tail.x_coord) and (
+                    rope.head.y_coord < rope.tail.y_coord
+                ):
+                    rope.tail.move_diagonal("down_right")
+                if (rope.head.x_coord < rope.tail.x_coord) and (
+                    rope.head.y_coord < rope.tail.y_coord
+                ):
+                    rope.tail.move_diagonal("down_left")
+                if (rope.head.x_coord < rope.tail.x_coord) and (
+                    rope.head.y_coord > rope.tail.y_coord
+                ):
+                    rope.tail.move_diagonal("up_left")
+                tail_positions.add((rope.tail.x_coord, rope.tail.y_coord))
+    return len(tail_positions)
