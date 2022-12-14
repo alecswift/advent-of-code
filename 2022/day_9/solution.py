@@ -123,3 +123,5 @@ def num_of_tail_positions(input_file: str) -> int:
                     rope.tail.move_diagonal("up_left")
                 tail_positions.add((rope.tail.x_coord, rope.tail.y_coord))
     return len(tail_positions)
+
+print(num_of_tail_positions("2022/day_9/input.txt"))
