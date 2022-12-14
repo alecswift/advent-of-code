@@ -176,3 +176,4 @@ def num_of_positions_2(input_file):
 
 
 print(num_of_tail_positions("2022/day_9/input.txt"))
+print(num_of_positions_2("2022/day_9/input.txt"))
