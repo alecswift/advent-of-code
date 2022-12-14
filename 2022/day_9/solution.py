@@ -64,6 +64,26 @@ class Rope:
         distance = self.distance()
         return distance in (1, 2**0.5)
 
+class LongRope:
+    """
+    Represents a rope object with a head or a tail
+    that occupy a point in space
+    """
+
+    def __init__(self, head, tail):
+        self.head = head
+        self.tails = {}
+
+    def distance(self, key):
+        """Return the distance between the head and tail"""
+        x_head, y_head = self.head.x_coord, self.head.y_coord
+        x_tail, y_tail = self.tails[key].x_coord, self.tails[key].y_coord
+        return (((x_tail - x_head) ** 2) + ((y_tail - y_head) ** 2)) ** 0.5
+
+    def is_adjacent(self, key):
+        """Returns whether or not the head and tail are adjacent"""
+        distance = self.distance(key)
+        return distance in (1, 2**0.5)
 
 def parse(input_file: str) -> list[tuple[str, str]]:
     """
@@ -121,5 +141,58 @@ def num_of_tail_positions(input_file: str) -> int:
                     rope.tail.move_diagonal("up_left")
                 tail_positions.add((rope.tail.x_coord, rope.tail.y_coord))
     return len(tail_positions)
+
+def num_of_positions_2(input_file):
+    """
+    Find the number of positions the 9th tail, of a rope that
+    has 10 knots (1 head and 9 tails), occupies with given
+    motions for the head of a rope
+    """
+    motions: list[tuple[str, str]] = parse(input_file)
+    rope_segments = {}
+    head_location = Point(0,0)
+    for num in range(1, 10):
+        tail_location = Point(0,0)
+        rope_segments[num] = Rope(head_location, tail_location)
+        head_location = tail_location
+    tail_positions: set[tuple[int, int]] = set([(0, 0)])
+    for direction, steps in motions:
+        for _ in range(int(steps)):
+            rope_segments[1].head.move_straight(direction)
+            for key, rope_segment in rope_segments.items():
+                head = rope_segment.head
+                tail = rope_segment.tail
+                if rope_segment.is_adjacent():
+                    continue
+                if rope_segment.distance() == 2:
+                    if head.x_coord > tail.x_coord:
+                        tail.move_straight("R")
+                    elif head.x_coord < tail.x_coord:
+                        tail.move_straight("L")
+                    elif head.y_coord > tail.y_coord:
+                        tail.move_straight("U")
+                    else:
+                        tail.move_straight("D")
+                    if key == 9:
+                        tail_positions.add((tail.x_coord, tail.y_coord))
+                elif rope_segment.distance() >= 5**0.5:
+                    if (head.x_coord > tail.x_coord) and (
+                        head.y_coord > tail.y_coord
+                    ):
+                        tail.move_diagonal("up_right")
+                    elif (head.x_coord > tail.x_coord) and (
+                        head.y_coord < tail.y_coord
+                    ):
+                        tail.move_diagonal("down_right")
+                    elif (head.x_coord < tail.x_coord) and (
+                        head.y_coord < tail.y_coord
+                    ):
+                        tail.move_diagonal("down_left")
+                    else:
+                        tail.move_diagonal("up_left")
+                    if key == 9:
+                        tail_positions.add((tail.x_coord, tail.y_coord))
+    return len(tail_positions)
+
 
 print(num_of_tail_positions("2022/day_9/input.txt"))
