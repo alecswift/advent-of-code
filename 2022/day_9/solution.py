@@ -42,6 +42,28 @@ class Point:
                 self.y_coord -= 1
 
 
+class Rope:
+    """
+    Represents a rope object with a head or a tail
+    that occupy a point in space
+    """
+
+    def __init__(self, head, tail):
+        self.head = head
+        self.tail = tail
+
+    def distance(self):
+        """Return the distance between the head and tail"""
+        x_head, y_head = self.head.x_coord, self.head.y_coord
+        x_tail, y_tail = self.tail.x_coord, self.tail.y_coord
+        return (((x_tail - x_head)**2) + ((y_tail - y_head)**2))**0.5
+
+    def is_adjacent(self):
+        """Returns whether or not the head and tail are adjacent"""
+        distance = self.distance()
+        return distance in (1, 2**0.5)
+
+
 def parse(input_file: str) -> list[tuple[str, str]]:
     """
     Return a list of motions of a rope head from the given input file
