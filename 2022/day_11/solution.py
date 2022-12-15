@@ -1,6 +1,16 @@
 from typing import TextIO
 
 
+def what_operation(num_1, operator, num_2):
+    if num_2.isdigit():
+        match operator:
+            case "*":
+                return num_1 * num_2
+            case "+":
+                return num_1 + num_2
+    return num_1 * num_1
+
+
 class Monkey:
     """Represents a monkey with a list items"""
 
