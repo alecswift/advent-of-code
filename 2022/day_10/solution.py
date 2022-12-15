@@ -17,6 +17,7 @@ class CPU:
         self.instructions = instructions
         self.register = 1
         self.cycle = 0
+        # state of register during each cycle
         self.states = {}
 
     def execute_instructions(self):
@@ -47,6 +48,43 @@ class CPU:
             total += self.states[num] * num
         return total
 
+class CRT:
+    """
+    Represents a CRT screen that draws pixels based on instructions
+    """
+
+    def __init__(self):
+        self.screen = [['.' for _ in range(40)] for _ in range(6)]
+
+    def draw_pixels(self, cpu):
+        """
+        Returns a modified screen based on a cpu's execution cycles
+        """
+        states = cpu.states
+        for cycle, register in states.items():
+            row = cycle // 40
+            row_num = (cycle -1) % 40
+            if register == -1:
+                sprite_position = (0, 1)
+            elif register == -1:
+                sprite_position = (0, 2)
+            else:
+                sprite_position = (register - 1, register + 2)
+            start, end = sprite_position
+            # sprite = self.screen[row][start: end]
+            if row_num in range(start, end):
+                self.screen[row][row_num] = '#'
+        return self.screen
+
+    def print_screen(self):
+        """Prints the screen in human readable form"""
+        str_screen = ''
+        for row in self.screen:
+            str_row = ''.join(row)
+            str_screen = f'{str_screen}{str_row}\n'
+        print(str_screen)
+
+
 
 def parse(input_file: str) -> list[tuple[str, int | None]]:
     """
@@ -64,6 +102,6 @@ def parse(input_file: str) -> list[tuple[str, int | None]]:
     return parsed_data
 
 
-cpu = CPU(parse("2022/day_10/input.txt"))
-cpu.execute_instructions()
-print(cpu.sum_signal_strength())
+cpu_1 = CPU(parse("2022/day_10/input.txt"))
+cpu_1.execute_instructions()
+print(cpu_1.sum_signal_strength())
