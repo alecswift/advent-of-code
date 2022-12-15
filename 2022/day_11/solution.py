@@ -1,14 +1,30 @@
-from typing import TextIO
+"""
+Find the total monkey business from a given input file
+"""
 
+from typing import TextIO
+from re import split, findall
+from math import floor
+
+def build_monkeys(input_file):
+    """
+    Create a dictionary of monkey objects with the given data
+    """
+    data = parse(input_file)
+    monkeys = {}
+    for monkey in data:
+        monkeys[monkey[0]] = Monkey(monkey)
+    return monkeys
 
 def what_operation(num_1, operator, num_2):
+    """Match strings to corresponding operators and numbers"""
     if num_2.isdigit():
         match operator:
             case "*":
-                return num_1 * num_2
+                return int(num_1) * int(num_2)
             case "+":
-                return num_1 + num_2
-    return num_1 * num_1
+                return int(num_1) + int(num_2)
+    return int(num_1) * int(num_1)
 
 
 class Monkey:
@@ -22,26 +38,61 @@ class Monkey:
         self.operator = operator
         self.constant = constant
         factor, monkey_1, monkey_2 = test
-        self.factor = factor
-        self.monkey_1 = monkey_1
-        self.monkey_2 = monkey_2
+        self.factor = int(factor)
+        self.monkey_1 = int(monkey_1)
+        self.monkey_2 = int(monkey_2)
+        self.inspection_times = 0
 
-    def inspection(self, item):
+    def inspect(self, item):
+        """
+        Return the new worry level of an item based on an operation
+        """
+        self.inspection_times += 1
         worry_level = what_operation(item, self.operator, self.constant)
         return worry_level
 
-    def throw(self, item, monkey_dict):
-        if item % self.factor == 0:
-            pass
-            # access dictionary of monkeys and throw to self.monkey_1
-            # remove item from list, add item to other monkey's list at the end
-        else:
-            pass
-            # access dictionary of monkeys and throw to self.monkey_1
-            # remove item from list, add item to other monkey's list at the end
-
-
 def parse(input_file: str):
+    """Return parsed data from a given input file"""
     in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
+    initial_split = input_data.split('Monkey ')[1:]
+    second_split = [split(r'\n\s+', monkey) for monkey in initial_split]
+    split_monkeys = [monkey[:-1] for monkey in second_split]
+    parsed_data = [[num] for num in range(len(split_monkeys))]
+    for index, monkey in enumerate(split_monkeys):
+        for inner_index, line in enumerate(monkey):
+            if inner_index == 1:
+                parsed_data[index].append(findall(r'\d+', line))
+            elif inner_index == 2:
+                parsed_data[index].append([line[21], line[23:]])
+            elif inner_index >= 3:
+                if inner_index == 3:
+                    parsed_data[index].append([])
+                parsed_data[index][3].append(findall(r'\d+', line)[0])
+    parsed_data[-1][3].append('2')
+    return parsed_data
+
+def throwing(monkeys):
+    """
+    Modify the items of each monkey based on how they throw the items
+    """
+    for _ in range(20):
+        for monkey in monkeys.values():
+            for item in list(monkey.items):
+                new = floor(monkey.inspect(int(item)) / 3)
+                if new % monkey.factor == 0:
+                    monkey.items.pop(0)
+                    monkeys[monkey.monkey_1].items.append(new)
+                else:
+                    monkey.items.pop(0)
+                    monkeys[monkey.monkey_2].items.append(new)
+
+
+monkey_dict = build_monkeys("/home/alec/Desktop/code/advent_of_code/2022/day_11/input.txt")
+throwing(monkey_dict)
+inspections = [monkey.inspection_times for monkey in monkey_dict.values()]
+first = max(inspections)
+inspections.remove(max(inspections))
+second = max(inspections)
+print(first * second)
