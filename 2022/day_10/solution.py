@@ -105,3 +105,6 @@ def parse(input_file: str) -> list[tuple[str, int | None]]:
 cpu_1 = CPU(parse("2022/day_10/input.txt"))
 cpu_1.execute_instructions()
 print(cpu_1.sum_signal_strength())
+crt = CRT()
+crt.draw_pixels(cpu_1)
+crt.print_screen()
