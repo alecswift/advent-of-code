@@ -6,6 +6,16 @@ from typing import TextIO
 from re import split, findall
 from math import floor
 
+def common_multiple(monkeys):
+    """
+    Return the least common multiple for the
+    divisor test number of each monkey
+    """
+    result = 1
+    for monkey in monkeys.values():
+        result *= monkey.factor
+    return result
+        
 def build_monkeys(input_file):
     """
     Create a dictionary of monkey objects with the given data
@@ -21,10 +31,10 @@ def what_operation(num_1, operator, num_2):
     if num_2.isdigit():
         match operator:
             case "*":
-                return int(num_1) * int(num_2)
+                return (int(num_1) * int(num_2)) % 9699690
             case "+":
-                return int(num_1) + int(num_2)
-    return int(num_1) * int(num_1)
+                return (int(num_1) + int(num_2)) % 9699690
+    return (int(num_1) * int(num_1)) % 9699690
 
 
 class Monkey:
@@ -77,10 +87,10 @@ def throwing(monkeys):
     """
     Modify the items of each monkey based on how they throw the items
     """
-    for _ in range(20):
+    for _ in range(10000):
         for monkey in monkeys.values():
             for item in list(monkey.items):
-                new = floor(monkey.inspect(int(item)) / 3)
+                new = monkey.inspect(int(item))
                 if new % monkey.factor == 0:
                     monkey.items.pop(0)
                     monkeys[monkey.monkey_1].items.append(new)
@@ -89,7 +99,9 @@ def throwing(monkeys):
                     monkeys[monkey.monkey_2].items.append(new)
 
 
+
 monkey_dict = build_monkeys("/home/alec/Desktop/code/advent_of_code/2022/day_11/input.txt")
+print(common_multiple(monkey_dict))
 throwing(monkey_dict)
 inspections = [monkey.inspection_times for monkey in monkey_dict.values()]
 first = max(inspections)
