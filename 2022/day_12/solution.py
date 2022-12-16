@@ -1,9 +1,16 @@
+"""
+Find the shortest path from given a grid of heights
+with start points and end points
+"""
 from typing import TextIO
 from string import ascii_letters
 from itertools import product
 from collections import deque
 
 class Node:
+    """
+    Represents a node on a graph with a location, height, and neighbors
+    """
 
     def __init__(self, data):
         location, height = data
@@ -79,7 +86,6 @@ def shortest_path(end):
         node = node.parent
         count += 1
     return count
-            
 
 
 test_nodes = build_nodes('2022/day_12/input.txt')
@@ -87,4 +93,15 @@ start_1, end_1 = start_end(test_nodes)
 add_neighbors(test_nodes)
 search((start_1, end_1))
 print(shortest_path(end_1))
-
+for node in test_nodes.values():
+    node.parent = None
+    node.visited = False
+paths = []
+for num in range(40):
+    start_1 = test_nodes[(num, 0)]
+    search((start_1, end_1))
+    paths.append(shortest_path(end_1))
+    for node in test_nodes.values():
+        node.parent = None
+        node.visited = False
+print(min(paths))
