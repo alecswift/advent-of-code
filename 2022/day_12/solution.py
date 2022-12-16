@@ -1,107 +1,90 @@
 from typing import TextIO
 from string import ascii_letters
 from itertools import product
+from collections import deque
 
-class Matrix:
+class Node:
 
-    def __init__(self, rows):
-        self.rows = rows
-        self.columns = [[]]
-        self.num_rows = len(rows)
-        self.num_cols = len(rows[0])
+    def __init__(self, data):
+        location, height = data
+        self.location = location
+        self.height = height
+        self.neighbors = []
+        self.parent = None
+        self.visited = False
 
-    def set_columns(self, count = 0):
-        for row in self.rows:
-            self.columns[count].append(row[count])
-        if count < len(self.rows) - 1:
-            self.columns.append([])
-            count += 1
-            return self.set_columns(count)
-        return self.columns
+    def add_neightbors(self):
+        pass
 
-    def multiply_matrix(self, matrix_object):
-        matrix_prod = [[] for _ in range(len(self.rows))]
-        columns = matrix_object.set_columns()
-        cart_product = list(product(self.rows, columns))
-        for index, pair in enumerate(cart_product):
-            row, column = pair
-            new_num = 0
-            row_index = index // self.num_rows
-            for num_1, num_2 in zip(row, column):
-                new_num += num_1 * num_2
-            matrix_prod[row_index].append(new_num)
-        return matrix_prod
 
 def parse(input_file: str):
     in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
-    split_lines = input_data.split('\n')
+    split_lines = input_data.split("\n")
     split_chars = [list(line) for line in split_lines]
     return split_chars
 
-def build_locations(input_file):
+
+def build_nodes(input_file):
     input_data = parse(input_file)
-    locations = {}
-    vertex = 0
+    nodes = {}
     for row_num, row in enumerate(input_data):
-        for column_num, location in enumerate(row):
-            locations[(row_num, column_num, vertex)] = ascii_letters.index(location)
-            vertex += 1
-    return locations
-
-def start_end(locations):
-    for location, value in locations.items():
-        if value == 44:
-            locations[location] = 0
-            start = location
-        if value == 30:
-            # changed for test from 25 to 5
-            locations[location] = 25
-            end = location
-    return start, end
-
-def adjacent(pair_locations):
-    location_1, location_2 = pair_locations
-    row_1, column_1, _ = location_1
-    row_2, column_2, _ = location_2
-    if (row_1 + 1, column_1) == (row_2, column_2):
-        return True
-    if (row_1 - 1, column_1) == (row_2, column_2):
-        return True
-    if (row_1, column_1 + 1) == (row_2, column_2):
-        return True
-    if (row_1, column_1 - 1) == (row_2, column_2):
-        return True
-    return False
+        for column_num, height in enumerate(row):
+            node = Node(((row_num, column_num), ascii_letters.index(height)))
+            nodes[(row_num, column_num)] = node
+    return nodes
 
 
-def adjacency_matrix(locations):
-    matrix = [[0 for _ in range(len(locations))] for _ in range(len(locations))]
-    cart_product = list(product(locations, locations))
-    for pair in cart_product:
-            location_1, location_2 = pair
-            if adjacent(pair):
-                if locations[location_1] >= (locations[location_2] - 1):
-                    matrix[location_1[2]][location_2[2]] = 1
-    return matrix
-    # could be problems here
-                
-#print(build_locations('2022/day_12/input_test.txt'))
-locations_1 = build_locations('2022/day_12/input_test.txt')
-# print(start_end(locations_1))
-print(start_end(locations_1))
-adj_matrix = Matrix(adjacency_matrix(locations_1))
-adj_matrix.rows
-adj_matrix_1 = Matrix(adjacency_matrix(locations_1))
-square = Matrix(adj_matrix.multiply_matrix(adj_matrix_1))
-count = 2
-while not square.rows[0][21]:
-    square = Matrix(adj_matrix.multiply_matrix(square))
-    count += 1
-print(count)
-# while not square.rows[0][8]:
-    # square = Matrix(adj_matrix.multiply_matrix(square))
-    # count += 1
-# print(square.rows)
+def start_end(nodes):
+    for node in nodes.values():
+        if node.height == 44:
+            node.height = 0
+            start = node
+        if node.height == 30:
+            node.height = 25
+            end = node
+    return (start, end)
+
+
+def add_neighbors(nodes):
+    cart_product = list(product(nodes, nodes))
+    for location_1, location_2  in cart_product:
+        row_1, column_1 = location_1
+        row_2, column_2 = location_2
+        if (
+                not ((row_2 - row_1) ** 2 + (column_2 - column_1) ** 2) ** 0.5 - 1
+            ):
+            if nodes[location_1].height >= (nodes[location_2].height - 1):
+                nodes[location_1].neighbors.append(nodes[location_2])
+
+def search(start_and_end):
+    start, end = start_and_end
+    neighbor_queue = deque([start])
+    current_node = start
+    while current_node.location != end.location:
+        current_node.visited = True
+        for neighbor in current_node.neighbors:
+            # test out de morgans
+            if (neighbor not in neighbor_queue) and (not neighbor.visited):
+                neighbor.parent = current_node
+                neighbor_queue.append(neighbor)
+        neighbor_queue.popleft()
+        current_node = neighbor_queue[0]
+
+def shortest_path(end):
+    node = end
+    count = 0
+    while node.parent:
+        node = node.parent
+        count += 1
+    return count
+            
+
+
+test_nodes = build_nodes('2022/day_12/input.txt')
+start_1, end_1 = start_end(test_nodes)
+add_neighbors(test_nodes)
+search((start_1, end_1))
+print(shortest_path(end_1))
 
