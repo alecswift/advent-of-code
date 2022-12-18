@@ -36,11 +36,12 @@ def list_parser(lst_data):
         for index, item in enumerate(node_queue[0].data):
             if digit_is_10:
                 digit_is_10 = False
-            elif item.isdigit():
+                continue
+            if item.isdigit():
                 if inner_node:
                     continue
-                if (index != len(remove_brackets) - 1) and (
-                    not remove_brackets[index + 1]
+                if (index != len(node_queue[0].data) - 1) and (
+                    node_queue[0].data[index + 1] == '0'
                 ):
                     digit_is_10 = True
                     node_queue[0].children.append(10)
@@ -118,6 +119,4 @@ def compare_packets(input_file):
             indices.append(index + 1)
     return sum(indices)
 
-
-print(compare_packets('2022/day_13/input_test.txt'))
-# first test list parser create lists then compare string to string
+print(compare_packets('2022/day_13/input.txt'))
