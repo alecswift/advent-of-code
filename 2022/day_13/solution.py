@@ -1,20 +1,24 @@
+"""
+Find the decoder key and the sum of the indices of pairs of packets
+that are in the correct order from the given list data
+"""
+
 from typing import TextIO
 from collections import deque
 from itertools import zip_longest
+from numpy import prod
 
 
 class Node:
+    """Represents a node with initial data and children"""
+
     def __init__(self, data):
         self.data = data
-        self.parent = None
-        self.children = []  # contains leaves and nodes
+        self.children = []
 
 
 def split(input_file: str) -> list[list[str, str]]:
-    """
-    Returns ________________
-    from a given input file
-    """
+    """Split pairs of packets from a given input file"""
     in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
@@ -24,11 +28,13 @@ def split(input_file: str) -> list[list[str, str]]:
 
 
 def list_parser(lst_data):
-    nodes = {}
+    """
+    Returns a tree representation of a list
+    from a given string representation of a list
+    """
     remove_brackets = lst_data[1:-1]
     root_node = Node(remove_brackets)
     node_number = 0
-    nodes[node_number] = root_node
     node_queue = deque([root_node])
     digit_is_10 = False
     inner_node = 0
@@ -41,7 +47,7 @@ def list_parser(lst_data):
                 if inner_node:
                     continue
                 if (index != len(node_queue[0].data) - 1) and (
-                    node_queue[0].data[index + 1] == '0'
+                    node_queue[0].data[index + 1] == "0"
                 ):
                     digit_is_10 = True
                     node_queue[0].children.append(10)
@@ -59,28 +65,27 @@ def list_parser(lst_data):
                     node = Node(node_lst_data)
                     node_queue[0].children.append(node)
                     node_number += 1
-                    nodes[node_number] = node
                     node_queue.append(node)
         node_queue.popleft()
     return root_node
 
-"""def tree_to_list(nodes, root_node):
-    current_node = root_node
-    for index, item in enumerate(current_node.children):
-        if not isinstance(item, int):
-            root_node.children[index] = item.children
-            return tree_to_list(nodes, item)
-    return nodes[0].children"""
-
 
 def compare_int(left, right):
+    """
+    Returns a value depending on the comparison of two integers
+    """
     if left > right:
         return 0
     if left < right:
         return 1
     return 2
 
+
 def compare_packet(root_1, root_2):
+    """
+    Compares to lists to see which one is the smallest. Returns
+    True if the first given list is smaller and False otherwise
+    """
     packet_queue = deque(zip_longest(root_1.children, root_2.children))
     while packet_queue:
         left, right = packet_queue[0]
@@ -106,9 +111,16 @@ def compare_packet(root_1, root_2):
                 packet_queue.extendleft(list(zip_longest(left.children, [right]))[::-1])
         else:
             packet_queue.popleft()
-            packet_queue.extendleft(list(zip_longest(left.children, right.children))[::-1])
+            packet_queue.extendleft(
+                list(zip_longest(left.children, right.children))[::-1]
+            )
 
-def compare_packets(input_file):
+
+def compare_pairs(input_file):
+    """
+    From a given file with list data return the
+    sum of indices of packets that are ordered correctly
+    """
     indices = []
     split_packets = split(input_file)
     for index, pair in enumerate(split_packets):
@@ -119,4 +131,23 @@ def compare_packets(input_file):
             indices.append(index + 1)
     return sum(indices)
 
-print(compare_packets('2022/day_13/input.txt'))
+
+def decoder_key(input_file):
+    """Returns the product of the location of dividers from the given list data"""
+    dividers = [list_parser("[[2]]"), list_parser("[[6]]")]
+    packets = [
+        list_parser(lst_data) for packets in split(input_file) for lst_data in packets
+    ]
+    weights = []
+    for divider in dividers:
+        weight = 1
+        for packet in packets:
+            if compare_packet(packet, divider):
+                weight += 1
+        weights.append(weight)
+    weights[1] += 1
+    return prod(weights)
+
+
+print(compare_pairs("2022/day_13/input.txt"))
+print(decoder_key("2022/day_13/input.txt"))
