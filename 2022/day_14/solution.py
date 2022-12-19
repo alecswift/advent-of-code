@@ -117,5 +117,28 @@ def falling_sand(input_file):
             point = (500, 0)
     return count
 
+def infinite_floor(input_file):
+    points = add_rocks(input_file)
+    point = (500, 0)
+    count = 0
+    max_y = max([key[1] for key in points])
+    while points[(500,0)] != 'o':
+        if point[1] == max_y + 1:
+            count += 1
+            points[point] = 'o'
+            point = (500, 0)
+            continue
+        if not points.setdefault(move('down', point)):
+            point = move('down', point)
+        elif not points.setdefault(move('downleft', point)):
+            point = move('downleft', point)
+        elif not points.setdefault(move('downright', point)):
+            point = move('downright', point)
+        else:
+            count += 1
+            points[point] = 'o'
+            point = (500, 0)
+    return count
 
 print(falling_sand('2022/day_14/input.txt'))
+print(infinite_floor('2022/day_14/input.txt'))
