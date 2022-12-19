@@ -1,3 +1,9 @@
+"""
+Find the number of points on a row that can not have a beacon
+given an input file the specifies the point of a sensor and
+the closest beacon
+"""
+
 from re import split, findall
 
 
@@ -16,3 +22,9 @@ def parse(input_file):
         for sensor, beacon in split_sensors
     }
     return sensors
+
+def distance(point_1, point_2):
+    """Return the manhattan distance of two points"""
+    x_coord_1, y_coord_1 = point_1
+    x_coord_2, y_coord_2 = point_2
+    return abs(x_coord_1 - x_coord_2) + abs(y_coord_1 - y_coord_2)
