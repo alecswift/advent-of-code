@@ -30,7 +30,7 @@ def init_point_dict(input_file):
     min_y = 0
     points_lst = list(product(range(min_x, max_x +1), range(min_y, max_y +1)))
     sorted_points = sorted(points_lst, key = lambda point: point[1])
-    return {point: 0 for point in sorted_points}
+    return {point: 0 for point in sorted_points}, max_y
 
 def add_rocks(input_file):
     """
@@ -38,7 +38,7 @@ def add_rocks(input_file):
     the dictionary from the given input file
     """
     input_data = parse(input_file)
-    points = init_point_dict(input_file)
+    points = init_point_dict(input_file)[0]
     for line in input_data:
         for num in range(len(line) - 1):
             point_1, point_2 = line[num: num + 2]
@@ -94,6 +94,25 @@ def move(direction, point):
             x_coord += 1
     return x_coord, y_coord
 
+def move_grain(points, point, count):
+    """
+    Return the points dictionary with the new grain of sand,
+    the new point, and count of grains of sand after moving
+    a single grain of sand down the grid until it stops
+    based on movement patterns and rocks on the grid
+    """
+    if not points.setdefault(move('down', point)):
+        point = move('down', point)
+    elif not points.setdefault(move('downleft', point)):
+        point = move('downleft', point)
+    elif not points.setdefault(move('downright', point)):
+        point = move('downright', point)
+    else:
+        count += 1
+        points[point] = 'o'
+        point = (500, 0)
+    return points, point, count
+
 def falling_sand(input_file):
     """
     Return a count of the number of grains of falling sand,
@@ -105,19 +124,16 @@ def falling_sand(input_file):
     point = (500, 0)
     count = 0
     while points[point] is not None:
-        if not points.setdefault(move('down', point)):
-            point = move('down', point)
-        elif not points.setdefault(move('downleft', point)):
-            point = move('downleft', point)
-        elif not points.setdefault(move('downright', point)):
-            point = move('downright', point)
-        else:
-            count += 1
-            points[point] = 'o'
-            point = (500, 0)
+        points, point, count = move_grain(points, point, count)
     return count
 
 def infinite_floor(input_file):
+    """
+    Return a count of the number of grains of falling sand,
+    that move down, downleft, or downright based on the rocks
+    in the grid, that can fill the cave before a grain of sand
+    blocks the source of sand (500, 0)
+    """
     points = add_rocks(input_file)
     point = (500, 0)
     count = 0
@@ -128,16 +144,7 @@ def infinite_floor(input_file):
             points[point] = 'o'
             point = (500, 0)
             continue
-        if not points.setdefault(move('down', point)):
-            point = move('down', point)
-        elif not points.setdefault(move('downleft', point)):
-            point = move('downleft', point)
-        elif not points.setdefault(move('downright', point)):
-            point = move('downright', point)
-        else:
-            count += 1
-            points[point] = 'o'
-            point = (500, 0)
+        points, point, count = move_grain(points, point, count)
     return count
 
 print(falling_sand('2022/day_14/input.txt'))
