@@ -23,8 +23,22 @@ def parse(input_file):
     }
     return sensors
 
+
 def distance(point_1, point_2):
     """Return the manhattan distance of two points"""
     x_coord_1, y_coord_1 = point_1
     x_coord_2, y_coord_2 = point_2
     return abs(x_coord_1 - x_coord_2) + abs(y_coord_1 - y_coord_2)
+
+
+def distance_dict(input_file):
+    """
+    Return a dictionary that maps sensors to the distance between
+    a sensor and a beacon from the given input file
+    """
+    sensors = parse(input_file)
+    return {sensor: distance(sensor, beacon) for sensor, beacon in sensors.items()}
+    # could move this code into parse function
+
+
+print(distance_dict("2022/day_15/input_test.txt"))
