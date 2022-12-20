@@ -75,4 +75,30 @@ def spaces_without_beacons(input_file):
                 points.add(temp_point)
     return len(points.difference(beacons))
 
+def tuning_frequency(input_file):
+    """
+    Return the tuning frequency (x * 4000000 + y) of the distress
+    signal location from the input file by locating boundary points
+    of sensors and checking every boundary point for the distress beacon
+    """
+    sensors = distance_dict(input_file)
+    points = set()
+    for point, distance in sensors.items():
+        x_coord, y_coord = point
+        for boundary_point in zip(
+            list(range(x_coord, y_coord + distance + 2)) * 2,
+            range(y_coord - distance - 1, y_coord + distance + 2)
+        ):
+            x_coord_1, y_coord_1 = boundary_point
+            if (0 <= x_coord_1 <= 4000000) and (0 <= y_coord_1 <= 4000000):
+                points.add(boundary_point)
+    for boundary_point in points:
+        for point, distance in sensors.items():
+            if distance >= manhattan_distance(point, boundary_point):
+                break
+        else:
+            x_coord, y_coord = boundary_point
+            return (x_coord * 4000000) + y_coord
+
 print(spaces_without_beacons('2022/day_15/input.txt'))
+print(tuning_frequency('2022/day_15/input.txt'))
