@@ -24,7 +24,7 @@ def parse(input_file):
     return sensors
 
 
-def distance(point_1, point_2):
+def manhattan_distance(point_1, point_2):
     """Return the manhattan distance of two points"""
     x_coord_1, y_coord_1 = point_1
     x_coord_2, y_coord_2 = point_2
@@ -37,8 +37,42 @@ def distance_dict(input_file):
     a sensor and a beacon from the given input file
     """
     sensors = parse(input_file)
-    return {sensor: distance(sensor, beacon) for sensor, beacon in sensors.items()}
+    return {sensor: manhattan_distance(sensor, beacon) for sensor, beacon in sensors.items()}
     # could move this code into parse function
 
+def move(point, direction):
+    """Return the new point after moving a coordinate left or right"""
+    x_coord, y_coord = point
+    match direction:
+        case 'left':
+            point = x_coord - 1, y_coord
+        case 'right':
+            point = x_coord + 1, y_coord
+    return point
 
-print(distance_dict("2022/day_15/input_test.txt"))
+def spaces_without_beacons(input_file):
+    """
+    Return the number of spaces without beacons on
+    the row y = 2,000,000 from the given input file
+    """
+    distances = distance_dict(input_file)
+    beacons = set(parse(input_file).values())
+    points = set()
+    y_row = 2000000
+    for sensor, distance in distances.items():
+        x_coord, _ = sensor
+        distance_to_y_row = manhattan_distance(sensor, (x_coord, y_row))
+        if distance_to_y_row <= distance:
+            point_on_y_row = (x_coord, y_row)
+            points.add(point_on_y_row)
+            temp_point = point_on_y_row
+            for _ in range(distance - distance_to_y_row):
+                temp_point = move(temp_point, 'left')
+                points.add(temp_point)
+            temp_point = point_on_y_row
+            for _ in range(distance - distance_to_y_row):
+                temp_point = move(temp_point, 'right')
+                points.add(temp_point)
+    return len(points.difference(beacons))
+
+print(spaces_without_beacons('2022/day_15/input.txt'))
