@@ -78,7 +78,7 @@ def search(start_and_end):
         current_node.visited = True
         for neighbor in current_node.neighbors:
             # test out de morgans
-            if (neighbor not in neighbor_queue) and (not neighbor.visited):
+            if not (neighbor in neighbor_queue or neighbor.visited):
                 neighbor.parent = current_node
                 neighbor_queue.append(neighbor)
         neighbor_queue.popleft()
