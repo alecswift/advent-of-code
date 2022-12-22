@@ -10,6 +10,7 @@ from re import split, findall
 
 cache = {}
 
+
 class Valve:
     """
     Represents a valve with a name, flow_rate, and neighbors
@@ -87,7 +88,7 @@ class CaveGraph:
             if name != "AA":
                 del self.lengths[name]["AA"]
 
-    def depth_first_search(self, time, current_valve, valves_open):
+    def search(self, time, current_valve, valves_open):
         """
         Perform a depth first search on the relevant nodes to find
         the max pressure released given a start time, start valve,
@@ -105,12 +106,26 @@ class CaveGraph:
                 continue
             max_pressure = max(
                 max_pressure,
-                self.depth_first_search(time_rem, neighbor, valves_open | bit)
+                self.search(time_rem, neighbor, valves_open | bit)
                 + (self.valves_not_zero[neighbor].flow_rate * time_rem),
             )
         cache[(time, current_valve, valves_open)] = max_pressure
         return max_pressure
 
+    def two_players(self):
+        """
+        Returns the max pressure released in 26 minutes if two players are opening valves
+        """
+        open_valves = (1 << len(self.valves_not_zero)) - 1
+        max_pressure = 0
+        for num in range(open_valves + 1):
+            max_pressure = max(
+                max_pressure,
+                self.search(26, "AA", num) + self.search(26, "AA", (open_valves ^ num)),
+            )
+        return max_pressure
+
 
 cavegraph_1 = CaveGraph("2022/day_16/input.txt")
-print(cavegraph_1.depth_first_search(30, 'AA', 0))
+print(cavegraph_1.search(30, "AA", 0))
+print(cavegraph_1.two_players())
