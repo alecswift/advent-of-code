@@ -1,11 +1,13 @@
-# be thoughtful of coordinates y = row number in array,
-# x = column number, also moving down is moving up
-# could use a dictionary of rock types rather or match case statements
+"""
+Find the highest point of a rock tower after simulating
+the falling of 2022 rocks with different shapes and gusts
+of wind that move the rock left or right
+"""
 
 from collections import deque
 from itertools import cycle
 
-cave_grid = [[0] * 7 for _ in range(10000)]
+cave_grid = [[0] * 7 for _ in range(1000000)]
 cave_grid[0] = [1, 1, 1, 1, 1, 1, 1]
 
 def parse(input_file):
@@ -68,12 +70,15 @@ class HorLineRock:
         return False
 
     def top(self):
+        """Highest y coordinate of rock"""
         return self.position[3][1]
 
     def lowest_x(self):
+        """Lowest x coordinate of rock"""
         return self.position[0][0]
 
     def highest_x(self):
+        """Highest x coordinate of rock"""
         return  self.position[1][0]
 
 class PlusRock:
@@ -119,12 +124,15 @@ class PlusRock:
         return False
 
     def top(self):
+        """Highest y coordinate of rock"""
         return self.position[3][1]
 
     def lowest_x(self):
+        """Lowest x coordinate of rock"""
         return self.position[1][0]
 
     def highest_x(self):
+        """Highest x coordinate of rock"""
         return self.position[4][0]
 
 
@@ -174,12 +182,15 @@ class LRock:
         return False
 
     def top(self):
+        """Highest y coordinate of rock"""
         return self.position[4][1]
 
     def lowest_x(self):
+        """Lowest x coordinate of rock"""
         return self.position[0][0]
 
     def highest_x(self):
+        """Highest x coordinate of rock"""
         return self.position[4][0]
 
 class VertLineRock:
@@ -222,12 +233,15 @@ class VertLineRock:
         return False
 
     def top(self):
+        """Highest y coordinate of rock"""
         return self.position[3][1]
 
     def lowest_x(self):
+        """Lowest x coordinate of rock"""
         return self.position[0][0]
 
     def highest_x(self):
+        """Highest x coordinate of rock"""
         return self.position[0][0]
 
 
@@ -272,15 +286,21 @@ class SquareRock:
         return False
 
     def top(self):
+        """Highest y coordinate of rock"""
         return self.position[2][1]
 
     def lowest_x(self):
+        """Lowest x coordinate of rock"""
         return self.position[0][0]
 
     def highest_x(self):
+        """Highest x coordinate of rock"""
         return self.position[1][0]
 
 def gust(direction, rock_object):
+    """
+    Move the rock in the given direction if the space is not blocked
+    """
     if direction == '<':
         if rock_object.lowest_x() != 0:
             if not rock_object.scan_left():
@@ -290,10 +310,13 @@ def gust(direction, rock_object):
             if not rock_object.scan_right():
                 move(rock_object, '>')
 
-def falling_rocks(input_file):
+def falling_rocks(input_file, num_of_rocks):
+    """
+    Return the height of the rock tower after simulating 2022 rocks falling
+    """
     direction_queue = parse(input_file)
     rocks = [HorLineRock, PlusRock, LRock, VertLineRock, SquareRock]
-    for num_rock, rock in zip(range(2022), cycle(rocks)):
+    for num_rock, rock in zip(range(num_of_rocks), cycle(rocks)):
         if not num_rock:
             row = 0
         rock = rock(row)
@@ -307,26 +330,10 @@ def falling_rocks(input_file):
             move(rock, 'D')
             gust(direction_queue[0], rock)
             direction_queue.popleft()
-        # make different function
         for x_coord, y_coord in rock.position:
             cave_grid[y_coord][x_coord] = 1
-        row = rock.top()
-    return row + 1
+        if row < rock.top():
+            row = rock.top()
+    return row
 
-
-print(falling_rocks('/home/alec/Desktop/code/advent_of_code/2022/day_17/input_test.txt'))
-# display test
-rock_1 = HorLineRock(0)
-# print(rock.highest_x())
-'''array = [["."] * 7 for _ in range(8)]
-for num in range(7):
-    array[0][num] = "#"
-rocks = [HorLineRock(0), SquareRock(0), PlusRock(0), LRock(0), VertLineRock(0)]
-for rock in rocks:
-    move(rock, 'R')
-    for x, y in rock.position:
-        array[y][x] = "#"
-    print('\n'.join([''.join(line) for line in array[::-1]]))
-    array = [["."] * 7 for _ in range(8)]
-    for num in range(7):
-        array[0][num] = "#"'''
+print(falling_rocks('/home/alec/Desktop/code/advent_of_code/2022/day_17/input.txt', 2022))
