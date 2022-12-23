@@ -7,10 +7,8 @@ of wind that move the rock left or right
 from array import array
 from itertools import cycle
 
-cache = {}
-cave_grid = [array('I', [0,0,0,0,0,0,0]) for _ in range(10000000)]
+cave_grid = [array('I', [0,0,0,0,0,0,0]) for _ in range(100000)]
 cave_grid[0] = array('I', [1, 1, 1, 1, 1, 1, 1])
-
 
 def parse(input_file):
     """Return the data of the given input file"""
@@ -322,6 +320,7 @@ def falling_rocks(input_file, num_of_rocks):
     """
     Return the height of the rock tower after simulating 2022 rocks falling
     """
+    cache = {}
     directions, len_input_data = parse(input_file)
     rocks = [HorLineRock, PlusRock, LRock, VertLineRock, SquareRock]
     for num_rock, rock in zip(range(num_of_rocks), cycle(rocks)):
@@ -329,11 +328,13 @@ def falling_rocks(input_file, num_of_rocks):
             top_row = 0
             saved_index = 0
                 # return cache[state], "y"
+        if num_rock == 2022:
+            print(top_row)
         rock = rock(top_row)
         gust(directions[saved_index], rock)
         if saved_index == len_input_data - 1:
             saved_index = 0
-        else: 
+        else:
             saved_index += 1
         while not rock.scan_below():
             move(rock, 'D')
@@ -355,12 +356,23 @@ def falling_rocks(input_file, num_of_rocks):
             if state not in cache:
                 cache[state] = top_row, num_rock
             else:
-                return cache[state], top_row, num_rock
+                top_row_1, num_rock_1 = cache[state]
+                return top_row_1, num_rock_1, top_row, num_rock
     return top_row
+
+def calculate_1_trillion_rocks(input_file, num_rocks):
+    top_row_1, num_rock_1, top_row, num_rock = falling_rocks(input_file, num_rocks)
+    num_of_cycles, remaining_rocks = divmod((1000000000000 - num_rock_1), (num_rock - num_rock_1))
+    height_for_cycles = num_of_cycles * (top_row - top_row_1)
+    global cave_grid
+    cave_grid = [array('I', [0,0,0,0,0,0,0]) for _ in range(100000)]
+    cave_grid[0] = array('I', [1, 1, 1, 1, 1, 1, 1])
+    remaining_height = falling_rocks(input_file, num_rock_1 + remaining_rocks) - top_row_1
+    return top_row_1 + height_for_cycles + remaining_height
 
 
 print(
-    falling_rocks(
-        "/home/alec/Desktop/code/advent_of_code/2022/day_17/input.txt", 6000
+    (
+    calculate_1_trillion_rocks("2022/day_17/input.txt", 6000)
     )
 )
