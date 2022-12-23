@@ -49,7 +49,7 @@ class HorLineRock:
         left_point, *_ = self.position
         x_coord, y_coord = left_point
         if 1 in cave_grid[y_coord - 1][x_coord : x_coord + 4]:
-                return True
+            return True
         return False
 
     def scan_left(self):
@@ -106,7 +106,7 @@ class PlusRock:
         """
         points = [self.position[0], self.position[1], self.position[4]]
         if 1 in [cave_grid[y_coord - 1][x_coord] for x_coord, y_coord in points]:
-                return True
+            return True
         return False
 
     def scan_left(self):
@@ -115,7 +115,7 @@ class PlusRock:
         """
         points = [self.position[0], self.position[1], self.position[3]]
         if 1 in [cave_grid[y_coord][x_coord - 1] for x_coord, y_coord in points]:
-                return True
+            return True
         return False
 
     def scan_right(self):
@@ -124,7 +124,7 @@ class PlusRock:
         """
         points = [self.position[0], self.position[3], self.position[4]]
         if 1 in [cave_grid[y_coord][x_coord + 1] for x_coord, y_coord in points]:
-                return True
+            return True
         return False
 
     def top(self):
@@ -163,7 +163,7 @@ class LRock:
         x_coord, y_coord = left_point
         # could test line of code see if joining and truth value is faster
         if 1 in cave_grid[y_coord - 1][x_coord : x_coord + 3]:
-                return True
+            return True
         return False
 
     def scan_left(self):
@@ -172,7 +172,7 @@ class LRock:
         """
         points = [self.position[0], self.position[3], self.position[4]]
         if 1 in [cave_grid[y_coord][x_coord - 1] for x_coord, y_coord in points]:
-                return True
+            return True
         return False
 
     def scan_right(self):
@@ -182,7 +182,7 @@ class LRock:
         right_point = self.position[2]
         x_coord, y_coord = right_point
         if 1 in [cave_grid[y_coord + num][x_coord + 1] for num in range(3)]:
-                return True
+            return True
         return False
 
     def top(self):
@@ -224,7 +224,7 @@ class VertLineRock:
         left_point, *_ = self.position
         x_coord, y_coord = left_point
         if 1 in [cave_grid[y_coord + num][x_coord - 1] for num in range(4)]:
-                return True
+            return True
         return False
 
     def scan_right(self):
@@ -234,7 +234,7 @@ class VertLineRock:
         right_point, *_ = self.position
         x_coord, y_coord = right_point
         if 1 in [cave_grid[y_coord + num][x_coord + 1] for num in range(4)]:
-                return True
+            return True
         return False
 
     def top(self):
@@ -266,7 +266,7 @@ class SquareRock:
         left_point, *_ = self.position
         x_coord, y_coord = left_point
         if 1 in cave_grid[y_coord - 1][x_coord : x_coord + 2]:
-                return True
+            return True
         return False
 
     def scan_left(self):
@@ -276,7 +276,7 @@ class SquareRock:
         left_point, *_ = self.position
         x_coord, y_coord = left_point
         if 1 in [cave_grid[y_coord + num][x_coord - 1] for num in range(2)]:
-                return True
+            return True
         return False
 
     def scan_right(self):
@@ -286,7 +286,7 @@ class SquareRock:
         right_point = self.position[1]
         x_coord, y_coord = right_point
         if 1 in [cave_grid[y_coord + num][x_coord + 1] for num in range(2)]:
-                return True
+            return True
         return False
 
     def top(self):
@@ -361,6 +361,10 @@ def falling_rocks(input_file, num_of_rocks):
     return top_row
 
 def calculate_1_trillion_rocks(input_file, num_rocks):
+    """
+    Calculate the height of the tower after 1 trillion rocks utilizing
+    the cycles where the number of rocks and height of the tower correlate
+    """
     top_row_1, num_rock_1, top_row, num_rock = falling_rocks(input_file, num_rocks)
     num_of_cycles, remaining_rocks = divmod((1000000000000 - num_rock_1), (num_rock - num_rock_1))
     height_for_cycles = num_of_cycles * (top_row - top_row_1)
