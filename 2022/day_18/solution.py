@@ -1,4 +1,6 @@
-# split into combinations, go through each combination and check if it's the same but off by one, if it is count = 1
+# Create 3d array initialized at max z, max y, max x
+# look for zeroes surrounded by 1s
+# [[[1,1,1][1,1,1]]]
 from itertools import combinations
 from re import findall
 
@@ -8,11 +10,12 @@ def parse(input_file):
         input_data = in_file.read()
     split_lines = input_data.split('\n')
     coords = [findall(r'(\d+),(\d+),(\d+)', line)[0] for line in split_lines]
-    return [tuple(map(int, coord)) for coord in coords]
+    return sorted((tuple(map(int, coord)) for coord in coords), key = lambda point: sum(point))
 
-def find_connections(input_file):
-    cubes = parse(input_file)
-    pairs = combinations(cubes, 2)
+cubes = parse('2022/day_18/input_test.txt')
+
+def find_connections(cube_data):
+    pairs = combinations(cube_data, 2)
     connections = 0
     for cube_1, cube_2 in pairs:
         x_coord, y_coord, z_coord = cube_1
@@ -23,7 +26,28 @@ def find_connections(input_file):
             connections += 1
         elif (abs(x_coord - x_coord_1) == 1) and (y_coord == y_coord_1) and (z_coord == z_coord_1):
             connections += 1
-    return (len(cubes) * 6) - (connections * 2)
+    print(connections)
+    return (len(cube_data) * 6) - (connections * 2)
+
+def trapped_air():
+    air_cubes = []
+    for cube in cubes:
+        x_coord, y_coord, z_coord = cube
+        if (x_coord + 1, y_coord + 1, z_coord) not in cubes:
+            continue
+        if (x_coord - 1, y_coord + 1, z_coord) not in cubes:
+            continue
+        if (x_coord, y_coord + 2, z_coord) not in cubes:
+            continue
+        if (x_coord, y_coord + 1, z_coord + 1) not in cubes:
+            continue
+        if (x_coord, y_coord + 1, z_coord - 1) not in cubes:
+            continue
+        if (x_coord, y_coord + 1, z_coord) in cubes:
+            continue
+        air_cubes.append((x_coord, y_coord + 1, z_coord))
+    return air_cubes
 
 
-print(find_connections('/home/alec/Desktop/code/advent_of_code/2022/day_18/input.txt'))
+print(find_connections(cubes))
+print(find_connections(cubes) - find_connections(trapped_air()))
