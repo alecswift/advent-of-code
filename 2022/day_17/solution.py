@@ -4,29 +4,34 @@ the falling of 2022 rocks with different shapes and gusts
 of wind that move the rock left or right
 """
 
-from collections import deque
+from array import array
 from itertools import cycle
 
-cave_grid = [[0] * 7 for _ in range(1000000)]
-cave_grid[0] = [1, 1, 1, 1, 1, 1, 1]
+cache = {}
+cave_grid = [array('I', [0,0,0,0,0,0,0]) for _ in range(10000000)]
+cave_grid[0] = array('I', [1, 1, 1, 1, 1, 1, 1])
+
 
 def parse(input_file):
     """Return the data of the given input file"""
-    in_file = open(input_file, 'r', encoding = 'utf-8')
-    with open(input_file, encoding = 'utf-8') as in_file:
+    in_file = open(input_file, "r", encoding="utf-8")
+    with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
-    lst_data = list(input_data) * 2000
-    return deque(lst_data)
+
+    lst_data = array('I', [0 if direction == "<" else 1 for direction in input_data])
+    return lst_data, len(input_data)
+
 
 def move(rock_object, direction):
     """Move the rock object down, left, or right"""
     match direction:
-        case 'D':
+        case "D":
             rock_object.position = [[x, y - 1] for x, y in rock_object.position]
-        case '<':
+        case 0:
             rock_object.position = [[x - 1, y] for x, y in rock_object.position]
-        case '>':
+        case 1:
             rock_object.position = [[x + 1, y] for x, y in rock_object.position]
+
 
 class HorLineRock:
     """
@@ -45,8 +50,8 @@ class HorLineRock:
         """
         left_point, *_ = self.position
         x_coord, y_coord = left_point
-        if 1 in cave_grid[y_coord - 1][x_coord: x_coord + 4]:
-            return True
+        if 1 in cave_grid[y_coord - 1][x_coord : x_coord + 4]:
+                return True
         return False
 
     def scan_left(self):
@@ -79,7 +84,8 @@ class HorLineRock:
 
     def highest_x(self):
         """Highest x coordinate of rock"""
-        return  self.position[1][0]
+        return self.position[1][0]
+
 
 class PlusRock:
     """
@@ -102,7 +108,7 @@ class PlusRock:
         """
         points = [self.position[0], self.position[1], self.position[4]]
         if 1 in [cave_grid[y_coord - 1][x_coord] for x_coord, y_coord in points]:
-            return True
+                return True
         return False
 
     def scan_left(self):
@@ -111,7 +117,7 @@ class PlusRock:
         """
         points = [self.position[0], self.position[1], self.position[3]]
         if 1 in [cave_grid[y_coord][x_coord - 1] for x_coord, y_coord in points]:
-            return True
+                return True
         return False
 
     def scan_right(self):
@@ -120,7 +126,7 @@ class PlusRock:
         """
         points = [self.position[0], self.position[3], self.position[4]]
         if 1 in [cave_grid[y_coord][x_coord + 1] for x_coord, y_coord in points]:
-            return True
+                return True
         return False
 
     def top(self):
@@ -158,8 +164,8 @@ class LRock:
         left_point, *_ = self.position
         x_coord, y_coord = left_point
         # could test line of code see if joining and truth value is faster
-        if 1 in cave_grid[y_coord - 1][x_coord: x_coord + 3]:
-            return True
+        if 1 in cave_grid[y_coord - 1][x_coord : x_coord + 3]:
+                return True
         return False
 
     def scan_left(self):
@@ -168,7 +174,7 @@ class LRock:
         """
         points = [self.position[0], self.position[3], self.position[4]]
         if 1 in [cave_grid[y_coord][x_coord - 1] for x_coord, y_coord in points]:
-            return True
+                return True
         return False
 
     def scan_right(self):
@@ -178,7 +184,7 @@ class LRock:
         right_point = self.position[2]
         x_coord, y_coord = right_point
         if 1 in [cave_grid[y_coord + num][x_coord + 1] for num in range(3)]:
-            return True
+                return True
         return False
 
     def top(self):
@@ -192,6 +198,7 @@ class LRock:
     def highest_x(self):
         """Highest x coordinate of rock"""
         return self.position[4][0]
+
 
 class VertLineRock:
     """
@@ -219,7 +226,7 @@ class VertLineRock:
         left_point, *_ = self.position
         x_coord, y_coord = left_point
         if 1 in [cave_grid[y_coord + num][x_coord - 1] for num in range(4)]:
-            return True
+                return True
         return False
 
     def scan_right(self):
@@ -229,7 +236,7 @@ class VertLineRock:
         right_point, *_ = self.position
         x_coord, y_coord = right_point
         if 1 in [cave_grid[y_coord + num][x_coord + 1] for num in range(4)]:
-            return True
+                return True
         return False
 
     def top(self):
@@ -260,9 +267,8 @@ class SquareRock:
         """
         left_point, *_ = self.position
         x_coord, y_coord = left_point
-        # could test line of code see if joining and truth value is faster
-        if 1 in cave_grid[y_coord - 1][x_coord: x_coord + 2]:
-            return True
+        if 1 in cave_grid[y_coord - 1][x_coord : x_coord + 2]:
+                return True
         return False
 
     def scan_left(self):
@@ -272,7 +278,7 @@ class SquareRock:
         left_point, *_ = self.position
         x_coord, y_coord = left_point
         if 1 in [cave_grid[y_coord + num][x_coord - 1] for num in range(2)]:
-            return True
+                return True
         return False
 
     def scan_right(self):
@@ -282,7 +288,7 @@ class SquareRock:
         right_point = self.position[1]
         x_coord, y_coord = right_point
         if 1 in [cave_grid[y_coord + num][x_coord + 1] for num in range(2)]:
-            return True
+                return True
         return False
 
     def top(self):
@@ -297,43 +303,64 @@ class SquareRock:
         """Highest x coordinate of rock"""
         return self.position[1][0]
 
+
 def gust(direction, rock_object):
     """
     Move the rock in the given direction if the space is not blocked
     """
-    if direction == '<':
+    if direction == 0:
         if rock_object.lowest_x() != 0:
             if not rock_object.scan_left():
-                move(rock_object, '<')
+                move(rock_object, 0)
     else:
         if rock_object.highest_x() != 6:
             if not rock_object.scan_right():
-                move(rock_object, '>')
+                move(rock_object, 1)
+
 
 def falling_rocks(input_file, num_of_rocks):
     """
     Return the height of the rock tower after simulating 2022 rocks falling
     """
-    direction_queue = parse(input_file)
+    directions, len_input_data = parse(input_file)
     rocks = [HorLineRock, PlusRock, LRock, VertLineRock, SquareRock]
     for num_rock, rock in zip(range(num_of_rocks), cycle(rocks)):
         if not num_rock:
-            row = 0
-        rock = rock(row)
-        for _ in range(3): # no need to scan first 3 movements
-            gust(direction_queue[0], rock)
-            direction_queue.popleft()
-            move(rock, 'D')
-        gust(direction_queue[0], rock)
-        direction_queue.popleft()
+            top_row = 0
+            saved_index = 0
+                # return cache[state], "y"
+        rock = rock(top_row)
+        gust(directions[saved_index], rock)
+        if saved_index == len_input_data - 1:
+            saved_index = 0
+        else: 
+            saved_index += 1
         while not rock.scan_below():
             move(rock, 'D')
-            gust(direction_queue[0], rock)
-            direction_queue.popleft()
+            gust(directions[saved_index], rock)
+            if saved_index == len_input_data - 1:
+                saved_index = 0
+            else:
+                saved_index += 1
         for x_coord, y_coord in rock.position:
             cave_grid[y_coord][x_coord] = 1
-        if row < rock.top():
-            row = rock.top()
-    return row
+        if top_row < rock.top():
+            top_row = rock.top()
+        if top_row >= 20:
+            state = (
+                saved_index % len_input_data,
+                num_rock % 5,
+                tuple(tuple(el) for el in cave_grid[top_row - 20: top_row + 1])
+            )
+            if state not in cache:
+                cache[state] = top_row, num_rock
+            else:
+                return cache[state], top_row, num_rock
+    return top_row
 
-print(falling_rocks('/home/alec/Desktop/code/advent_of_code/2022/day_17/input.txt', 2022))
+
+print(
+    falling_rocks(
+        "/home/alec/Desktop/code/advent_of_code/2022/day_17/input.txt", 6000
+    )
+)
