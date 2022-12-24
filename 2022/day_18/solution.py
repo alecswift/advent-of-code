@@ -1,11 +1,17 @@
-# Create 3d array initialized at max z, max y, max x
-# look for zeroes surrounded by 1s
-# [[[1,1,1][1,1,1]]]
+"""
+Find the surface area of a formation of cubes, then utilize
+a flood fill algorithm to find the exterior surface area
+"""
 from collections import deque
 from itertools import combinations
 from re import findall
 
+
 class Node:
+    """
+    represents a point on a 3d grid with neighbors in six directions
+    """
+
     def __init__(self, coord):
         self.coord = coord
         x_coord, y_coord, z_coord = self.coord
@@ -21,6 +27,10 @@ class Node:
 
 
 def parse(input_file):
+    """
+    Return a dictionary of 3d coordinates and their node object
+    from the given import file
+    """
     in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
@@ -29,7 +39,11 @@ def parse(input_file):
     return {tuple(map(int, coord)): Node(tuple(map(int, coord))) for coord in coords}
 
 
-def find_connections(cube_data):
+def find_surface_area(cube_data):
+    """
+    Return the total surface area of a formation of cubes
+    from the given cube coordinates
+    """
     pairs = combinations(cube_data, 2)
     connections = 0
     for cube_1, cube_2 in pairs:
@@ -57,28 +71,22 @@ def find_connections(cube_data):
 
 
 def grid_3d(cube_data):
+    """
+    Return a 3 dimensional grid from the given input file.
+    1's represent cube coordinates, 0's represent empty spaces
+    """
     grid = [[[0] * 22 for _ in range(22)] for _ in range(22)]
     for coord in cube_data:
         x_coord, y_coord, z_coord = coord
         grid[z_coord][y_coord][x_coord] = 1
     return grid
 
-def boundary_space(coord, boundaries):
-    max_x, max_y, max_z, min_x, min_y, min_z = boundaries
-    x_coord, y_coord, z_coord = coord
-    if (min_x > x_coord) or (max_x < x_coord):
-        return True
-    if (min_y > y_coord) or (max_y < y_coord):
-        return True
-    if (min_z > z_coord) or (max_z < z_coord):
-        return True
-    return False
 
-
-cubes = parse("2022/day_18/input.txt")
-grid_1 = grid_3d(cubes)
-# at this point need to track functions to right vars
-def search(grid):
+def flood_fill(grid):
+    """
+    Mutate the given grid utilizing a flood fill algorithm
+    through a breadth first search
+    """
     boundaries = {}
     root = (0, 0, 0)
     boundaries[root] = Node(root)
@@ -88,25 +96,37 @@ def search(grid):
     while empty_spaces_queue:
         current_node = empty_spaces_queue.popleft()
         for neighbor in boundaries[current_node].neighbors:
-            x, y, z = neighbor
-            if (0 <= x <= 21) and (0 <= y <= 21) and (0 <= z <= 21) and (neighbor not in cubes):
+            x_coord, y_coord, z_coord = neighbor
+            if (
+                (0 <= x_coord <= 21)
+                and (0 <= y_coord <= 21)
+                and (0 <= z_coord <= 21)
+                and (neighbor not in cubes)
+            ):
                 if neighbor not in boundaries:
                     boundaries[neighbor] = Node(neighbor)
                 if not boundaries[neighbor].visited:
                     empty_spaces_queue.append(neighbor)
-                    grid_1[z][y][x] = 2
+                    grid_1[z_coord][y_coord][x_coord] = 2
                     boundaries[neighbor].visited = True
 
+
 def count_spaces(grid):
+    """
+    Count the number of interior spaces from the given flood filled grid
+    """
     air_droplets = []
-    for z_coord, z_row in enumerate(grid_1):
+    for z_coord, z_row in enumerate(grid):
         for y_coord, y_row in enumerate(z_row):
             for x_coord, element in enumerate(y_row):
                 if not element:
                     air_droplets.append((x_coord, y_coord, z_coord))
     return air_droplets
 
-surface_area = find_connections(cubes)
+
+cubes = parse("2022/day_18/input.txt")
+grid_1 = grid_3d(cubes)
+surface_area = find_surface_area(cubes)
 print(surface_area)
-search(grid_1)
-print(surface_area - find_connections(count_spaces(grid_1)))
+flood_fill(grid_1)
+print(surface_area - find_surface_area(count_spaces(grid_1)))
