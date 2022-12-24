@@ -76,35 +76,37 @@ def boundary_space(coord, boundaries):
 
 
 cubes = parse("2022/day_18/input.txt")
-print(find_connections(cubes))
 grid_1 = grid_3d(cubes)
 # at this point need to track functions to right vars
-air_droplets = []
-bs = False
-boundaries = {}
+def search(grid):
+    boundaries = {}
+    root = (0, 0, 0)
+    boundaries[root] = Node(root)
+    boundaries[root].visited = True
+    empty_spaces_queue = deque([root])
+    grid[0][0][0] = 2
+    while empty_spaces_queue:
+        current_node = empty_spaces_queue.popleft()
+        for neighbor in boundaries[current_node].neighbors:
+            x, y, z = neighbor
+            if (0 <= x <= 21) and (0 <= y <= 21) and (0 <= z <= 21) and (neighbor not in cubes):
+                if neighbor not in boundaries:
+                    boundaries[neighbor] = Node(neighbor)
+                if not boundaries[neighbor].visited:
+                    empty_spaces_queue.append(neighbor)
+                    grid_1[z][y][x] = 2
+                    boundaries[neighbor].visited = True
 
-root = (0, 0, 0)
-boundaries[root] = Node(root)
-boundaries[root].visited = True
-empty_spaces_queue = deque([root])
-grid_1[0][0][0] = 2
-while empty_spaces_queue:
-    current_node = empty_spaces_queue.popleft()
-    for neighbor in boundaries[current_node].neighbors:
-        x, y, z = neighbor
-        if (0 <= x <= 21) and (0 <= y <= 21) and (0 <= z <= 21) and (neighbor not in cubes):
-            if neighbor not in boundaries:
-                boundaries[neighbor] = Node(neighbor)
-            if not boundaries[neighbor].visited:
-                empty_spaces_queue.append(neighbor)
-                grid_1[z][y][x] = 2
-                boundaries[neighbor].visited = True
+def count_spaces(grid):
+    air_droplets = []
+    for z_coord, z_row in enumerate(grid_1):
+        for y_coord, y_row in enumerate(z_row):
+            for x_coord, element in enumerate(y_row):
+                if not element:
+                    air_droplets.append((x_coord, y_coord, z_coord))
+    return air_droplets
 
-air_droplets = []
-for z_coord, z_row in enumerate(grid_1):
-    for y_coord, y_row in enumerate(z_row):
-        for x_coord, element in enumerate(y_row):
-            if not element:
-                air_droplets.append((x_coord, y_coord, z_coord))
-
-print(find_connections(cubes) - find_connections(air_droplets))
+surface_area = find_connections(cubes)
+print(surface_area)
+search(grid_1)
+print(surface_area - find_connections(count_spaces(grid_1)))
