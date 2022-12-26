@@ -43,11 +43,9 @@ def snafu_from(decimal):
     while decimal != 0:
         decimal, remainder = divmod(decimal, 5)
         penta_array.insert(0, remainder)
-    penta_array.insert(0, 0)
-    penta_array.insert(0, 0)
     snafu_array = []
     carry = 0
-    for num in range(-1, -len(penta_array) - 1, -1):
+    for num in range(-1, -len(penta_array) - 3, -1):
         if num < -len(penta_array):
             penta_num = 0 + carry
         else:
