@@ -5,7 +5,7 @@
 # go full left down parent
 # start from root and recursively perform operator function on children
 # depth first traversal to get postfix expression
-
+from collections import deque
 from re import findall
 
 
@@ -45,11 +45,29 @@ class Tree:
             self.post_fix_expr(node)
         self.post_fix.append(root.value)
 
+def operation(operator, num_1, num_2):
+    match operator:
+        case '-':
+            return num_1 - num_2
+        case '+':
+            return num_1 + num_2
+        case '/':
+            return num_1 / num_2
+        case '*':
+            return num_1 * num_2
+
 def eval(post_fix_expr):
-    pass
+    queue = deque()
+    for element in post_fix_expr:
+        if isinstance(element, int):
+            queue.append(element)
+        else:
+            num_2 = queue.pop()
+            num_1 = queue.pop()
+            queue.append(operation(element, num_1, num_2))
+    return int(queue[0])
 
 
 
-
-tree = Tree('2022/day_21/input_test.txt')
-print(tree.post_fix)
+tree = Tree('2022/day_21/input.txt')
+print(eval(tree.post_fix))
