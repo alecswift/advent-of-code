@@ -7,17 +7,6 @@ of rounds it takes for the elves to stop moving
 
 from collections import OrderedDict
 from copy import deepcopy
-from enum import Enum
-
-
-class Directions(Enum):
-    """Represents four orthogonal directions"""
-
-    NORTH = 1
-    EAST = 2
-    SOUTH = 3
-    WEST = 4
-
 
 def parse(input_file):
     """
@@ -39,6 +28,7 @@ class Positions:
     """
     Represents the positions of elves and their adjacent coordinates
     """
+
     def __init__(self, positions):
         self.positions = positions
         self.adj_coords = None
@@ -69,8 +59,9 @@ class Positions:
         # N, S, W, E
         self.set_adj_coords()
         potential_dirs = []
+        set_positions = set(self.positions)
         for adj_coord in self.adj_coords:
-            if set(adj_coord).intersection(set(self.positions)):
+            if set(adj_coord).intersection(set_positions):
                 # need to change order every round somehow
                 directions_dict = OrderedDict()
                 for direction in directions:
@@ -83,7 +74,7 @@ class Positions:
                     if direction == 4:
                         directions_dict[4] = adj_coord[5:]
                 for direction, coords in directions_dict.items():
-                    if not set(coords).intersection(set(self.positions)):
+                    if not set(coords).intersection(set_positions):
                         potential_dirs.append(direction)
                         break
                 else:
@@ -151,5 +142,5 @@ def rounds(positions_object):
     return count
 
 
-grove = Positions(parse("2022/day_23/input_test.txt"))
+grove = Positions(parse("2022/day_23/input.txt"))
 print(rounds(grove))
