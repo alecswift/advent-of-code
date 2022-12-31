@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from copy import deepcopy
 from enum import Enum
 
@@ -46,19 +47,23 @@ class Positions:
             for x_coord, y_coord in self.positions
         ]
 
-    def build_potential_dirs(self):
+    def build_potential_dirs(self, directions = [1,3,4,2]):
         # N, S, W, E
         potential_dirs = []
         for adj_coord in self.adj_coords:
             if set(adj_coord).intersection(set(self.positions)):
                 # need to change order every round somehow
-                directions = {
-                    1: adj_coord[:2] + [adj_coord[-1]],
-                    3: adj_coord[3:6],
-                    4: adj_coord[5:],
-                    2: adj_coord[1:4]
-                }
-                for direction, coords in directions.items():
+                directions_dict = OrderedDict()
+                for direction in directions:
+                    if direction == 1:
+                        directions_dict[1] = adj_coord[:2] + [adj_coord[-1]]
+                    if direction == 2:
+                        directions_dict[2] = adj_coord[1:4]
+                    if direction == 3:
+                        directions_dict[3] = adj_coord[3:6]
+                    if direction == 4:
+                        directions_dict[4] = adj_coord[5:]
+                for direction, coords in directions_dict.items():
                     if not set(coords).intersection(set(self.positions)):
                         potential_dirs.append(direction)
                         break
@@ -66,6 +71,8 @@ class Positions:
                     potential_dirs.append(0)
             else:
                 potential_dirs.append(0)
+        first = directions.pop(0)
+        directions.append(first)
         return potential_dirs
     
     def move_positions(self):
@@ -95,9 +102,16 @@ class Positions:
         self.positions = new_positions
         return new_positions
 
+def find_empty_spaces(positions):
+    max_x = max([x_coord for x_coord, _ in positions])
+    max_y = max([y_coord for _, y_coord in positions])
+    min_x = min([x_coord for x_coord, _ in positions])
+    min_y = min([y_coord for _, y_coord in positions])
+    num_of_spaces = (max_x - min_x + 1) * (max_y - min_y + 1)
+    return num_of_spaces - len(positions)
 
-
-grove = Positions(parse("2022/day_23/input_test.txt"))
-print(sorted(grove.move_positions()))
-print(sorted(parse('2022/day_23/input_test_2.txt')))
-# 3 values different: (5, 3) should be (4,2) ane two others
+grove = Positions(parse("2022/day_23/input.txt"))
+for num in range(10):
+    grove.move_positions()
+    grove.set_adj_coords()
+print(find_empty_spaces(grove.positions))
