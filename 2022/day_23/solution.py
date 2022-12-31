@@ -99,6 +99,8 @@ class Positions:
             del cp_lst[index]
             if pot_position in cp_lst:
                 new_positions[index] = self.positions[index]
+        if self.positions == new_positions:
+            return 0
         self.positions = new_positions
         return new_positions
 
@@ -110,8 +112,16 @@ def find_empty_spaces(positions):
     num_of_spaces = (max_x - min_x + 1) * (max_y - min_y + 1)
     return num_of_spaces - len(positions)
 
-grove = Positions(parse("2022/day_23/input.txt"))
-for num in range(10):
-    grove.move_positions()
-    grove.set_adj_coords()
-print(find_empty_spaces(grove.positions))
+def rounds(positions_object):
+    count = 0
+    x = 1
+    while x:
+        if count == 10:
+            print(find_empty_spaces(positions_object.positions))
+        x = positions_object.move_positions()
+        positions_object.set_adj_coords()
+        count += 1
+    return count
+
+grove = Positions(parse("2022/day_23/input_test.txt"))
+print(rounds(grove))
