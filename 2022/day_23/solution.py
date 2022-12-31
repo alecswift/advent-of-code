@@ -32,7 +32,6 @@ class Positions:
     def __init__(self, positions):
         self.positions = positions
         self.adj_coords = None
-        # maybe change to sets?
 
     def set_adj_coords(self):
         """Sets list of adjacent coordinates"""
@@ -56,7 +55,7 @@ class Positions:
         Returns the potential direction of movement for each position
         based on the adjacency coordinates and a list of directions
         """
-        # N, S, W, E
+        # directions start as N, S, W, E
         self.set_adj_coords()
         potential_dirs = []
         set_positions = set(self.positions)
