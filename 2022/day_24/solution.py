@@ -1,13 +1,20 @@
+"""
+Find the shortest path from the start point to end point on a grid with moving obstacles
+"""
 from collections import deque
-from line_profiler import LineProfiler
+
 
 def parse(input_file):
+    """
+    Return the start point, end point, set of blizzards,
+    dictionary of grid points with neighbors, and the max x
+    and y coordinates of the grid from the given input file
+    """
     in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     split_lines = input_data.split("\n")
     blizzards = set()
-    walls = set()
     nodes = {}
     max_y = len(split_lines) - 1
     max_x = len(split_lines[0]) - 1
@@ -36,6 +43,7 @@ def parse(input_file):
 
 
 def build_neighbors(x_coord, y_coord, max_y, row):
+    """Return the neighbors of a point on a grid"""
     neighbors = [
         (x_coord + 1, y_coord),
         (x_coord - 1, y_coord),
@@ -57,7 +65,12 @@ def build_neighbors(x_coord, y_coord, max_y, row):
     return neighbors
 
 
-def search(nodes, blizzards, start, end, max_x, max_y, start_time = 0):
+def search(nodes, blizzards, start, end, max_x, max_y, start_time=0):
+    """
+    Utilizes a breadth first search to find the shortest path from
+    the start point and end point with a given adjacency list, start
+    time, and set of blizzard points (the movable obstacles)
+    """
     if not start_time:
         blizzard_dict = {0: blizzards}
         bliz_wout_directions = {0: {coord for _, coord in blizzards}}
@@ -71,20 +84,25 @@ def search(nodes, blizzards, start, end, max_x, max_y, start_time = 0):
             return time, (blizzard_dict, bliz_wout_directions)
         future = time + 1
         if future not in blizzard_dict:
-            blizzard_dict[future] = insert_blizzard(blizzard_dict[time], max_x, max_y)
+            blizzard_dict[future] = move_blizzards(blizzard_dict[time], max_x, max_y)
         if future not in bliz_wout_directions:
-            bliz_wout_directions[future] = {
-                coord for _, coord in blizzard_dict[future]
-            }
+            bliz_wout_directions[future] = {coord for _, coord in blizzard_dict[future]}
         for neighbor in nodes[coord]:
-            if neighbor not in bliz_wout_directions[future] and (future, neighbor) not in seen:
+            if (
+                neighbor not in bliz_wout_directions[future]
+                and (future, neighbor) not in seen
+            ):
                 seen.add((future, neighbor))
                 queue.append((future, neighbor))
         # add the same point to the queue for the case of staying in place
         queue.popleft()
     return time
 
-def insert_blizzard(blizzards, max_x, max_y):
+
+def move_blizzards(blizzards, max_x, max_y):
+    """
+    Return an updated set of blizzard points with the given set
+    """
     new_blizzards = set()
     for blizzard in blizzards:
         direction, coord = blizzard
@@ -112,13 +130,17 @@ def insert_blizzard(blizzards, max_x, max_y):
                     new_blizzards.add((direction, (x_coord + 1, y_coord)))
     return new_blizzards
 
+
 def find_times(input_file):
-    start, end, blizzards, nodes, max_x, max_y = parse(
-        input_file
-        )
+    """
+    Find the time it takes to move from the start point to the end point.
+    And the time it takes to go back to the start point then back to the end point
+    """
+    start, end, blizzards, nodes, max_x, max_y = parse(input_file)
     time, blizzards_2 = search(nodes, blizzards, start, end, max_x, max_y)
     time_2, blizzards_3 = search(nodes, blizzards_2, end, start, max_x, max_y, time)
     time_3, _ = search(nodes, blizzards_3, start, end, max_x, max_y, time_2)
     return time, time_3
 
-print(find_times('2022/day_24/input.txt'))
+
+print(find_times("2022/day_24/input.txt"))
