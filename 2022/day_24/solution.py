@@ -1,4 +1,5 @@
 from collections import deque
+from line_profiler import LineProfiler
 
 def parse(input_file):
     in_file = open(input_file, "r", encoding="utf-8")
@@ -15,8 +16,8 @@ def parse(input_file):
     for y_coord, row in zip(range(max_y, -1, -1), split_lines):
         for x_coord, item in enumerate(row):
             if item == "#":
-                walls.add((x_coord, y_coord))
-            elif item in (">", "<", "v", "^"):
+                continue
+            if item in (">", "<", "v", "^"):
                 blizzards.add((item, (x_coord, y_coord)))
                 nodes[(x_coord, y_coord)] = build_neighbors(
                     x_coord, y_coord, max_y, row
@@ -29,7 +30,8 @@ def parse(input_file):
     nodes[start] = [(x_coord, y_coord - 1)]
     x_coord, y_coord = end
     nodes[end] = [(x_coord, y_coord + 1)]
-    return start, end, blizzards, walls, nodes, max_x, max_y
+    nodes = {coord: neighbors + [coord] for coord, neighbors in nodes.items()}
+    return start, end, blizzards, nodes, max_x, max_y
     # Remove walls if unneeded
 
 
@@ -54,26 +56,33 @@ def build_neighbors(x_coord, y_coord, max_y, row):
         neighbors.pop(2)
     return neighbors
 
-def search(nodes, blizzards, start, end, max_x, max_y):
-    blizzard_dict = {0: blizzards}
-    bliz_wout_directions = {0: {coord for _, coord in blizzards}}
-    queue = deque([(0, start)])
+
+def search(nodes, blizzards, start, end, max_x, max_y, start_time = 0):
+    if not start_time:
+        blizzard_dict = {0: blizzards}
+        bliz_wout_directions = {0: {coord for _, coord in blizzards}}
+    else:
+        blizzard_dict, bliz_wout_directions = blizzards
+    seen = set([(start_time, start)])
+    queue = deque([(start_time, start)])
     while queue:
         time, coord = queue[0]
-        if (time + 1) not in blizzard_dict:
-                blizzard_dict[time + 1] = insert_blizzard(blizzard_dict[time], max_x, max_y)
-                del blizzard_dict[time]
-        if (time + 1) not in bliz_wout_directions:
-            bliz_wout_directions[time + 1] = {coord for _, coord in blizzard_dict[time + 1]}
-            del bliz_wout_directions[time]
+        if coord == end:
+            return time, (blizzard_dict, bliz_wout_directions)
+        future = time + 1
+        if future not in blizzard_dict:
+            blizzard_dict[future] = insert_blizzard(blizzard_dict[time], max_x, max_y)
+        if future not in bliz_wout_directions:
+            bliz_wout_directions[future] = {
+                coord for _, coord in blizzard_dict[future]
+            }
         for neighbor in nodes[coord]:
-            if neighbor == end:
-                return time + 1
-            if neighbor not in bliz_wout_directions[time + 1]:
-                queue.append((time + 1, neighbor))
+            if neighbor not in bliz_wout_directions[future] and (future, neighbor) not in seen:
+                seen.add((future, neighbor))
+                queue.append((future, neighbor))
         # add the same point to the queue for the case of staying in place
-        queue.append((time + 1, coord))
         queue.popleft()
+    return time
 
 def insert_blizzard(blizzards, max_x, max_y):
     new_blizzards = set()
@@ -81,28 +90,35 @@ def insert_blizzard(blizzards, max_x, max_y):
         direction, coord = blizzard
         x_coord, y_coord = coord
         match direction:
-            case '^':
+            case "^":
                 if y_coord == max_y - 1:
                     new_blizzards.add((direction, (x_coord, 1)))
                 else:
                     new_blizzards.add((direction, (x_coord, y_coord + 1)))
-            case 'v':
+            case "v":
                 if y_coord == 1:
                     new_blizzards.add((direction, (x_coord, max_y - 1)))
                 else:
                     new_blizzards.add((direction, (x_coord, y_coord - 1)))
-            case '<':
+            case "<":
                 if x_coord == 1:
                     new_blizzards.add((direction, (max_x - 1, y_coord)))
                 else:
                     new_blizzards.add((direction, (x_coord - 1, y_coord)))
-            case '>':
+            case ">":
                 if x_coord == max_x - 1:
                     new_blizzards.add((direction, (1, y_coord)))
                 else:
                     new_blizzards.add((direction, (x_coord + 1, y_coord)))
     return new_blizzards
 
+def find_times(input_file):
+    start, end, blizzards, nodes, max_x, max_y = parse(
+        input_file
+        )
+    time, blizzards_2 = search(nodes, blizzards, start, end, max_x, max_y)
+    time_2, blizzards_3 = search(nodes, blizzards_2, end, start, max_x, max_y, time)
+    time_3, _ = search(nodes, blizzards_3, start, end, max_x, max_y, time_2)
+    return time, time_3
 
-start_1, end_1, blizzards_1, walls_1, nodes_1, max_x_1, max_y_1 = parse("2022/day_24/input_test.txt")
-print(search(nodes_1, blizzards_1, start_1, end_1, max_x_1, max_y_1))
+print(find_times('2022/day_24/input.txt'))
