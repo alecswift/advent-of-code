@@ -113,6 +113,9 @@ def execute_proc(start_point, walls, wrappers, procedure):
                 else:
                     prev_point = current_point
                     current_point += directions[0]
+                    if current_point in walls:
+                        current_point = prev_point
+                        break
         else:
             if item == "L":
                 directions.rotate()
@@ -123,11 +126,12 @@ def execute_proc(start_point, walls, wrappers, procedure):
     # write algo for movement
 
 
-grid_1, procedure_1 = initial_parse("2022/day_22/input_test.txt")
+grid_1, procedure_1 = initial_parse("2022/day_22/input.txt")
 rows_1, columns_1 = parse(grid_1)
+print(len(rows_1))
 west_wrappers_1, east_wrappers_1, walls_1, start_point_1 = wrapper(rows_1)
 north_wrappers_1, south_wrappers_1 = wrapper_col(columns_1)
 wrappers_1 = north_wrappers_1, south_wrappers_1, west_wrappers_1, east_wrappers_1
 final_coord, facing = execute_proc(start_point_1, walls_1, wrappers_1, procedure_1)
 print(facing)
-print(((final_coord.real + 1)*4) + ((len(rows_1) - final_coord.imag) * 1000) + 0)
+print(((final_coord.real + 1)*4) + ((len(rows_1) - final_coord.imag) * 1000) + 2)
