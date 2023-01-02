@@ -30,6 +30,8 @@ def wrapper(rows):
     walls = set()
     start = False
     row_wrappers = {}
+    # While iterating through characters in grid: add wall coordinates to a set
+    # and connect the start of nonempty spaces to the end in a wrapper dict
     for y_coord, row in zip(range(len(rows) -1, -1, -1), rows):
         for x_coord, char in enumerate(row):
             if char != ' ':
@@ -39,7 +41,7 @@ def wrapper(rows):
                 if char == '#':
                     walls.add(complex(x_coord, y_coord))
             elif start:
-                end_coord = complex(x_coord, y_coord)
+                end_coord = complex(x_coord - 1, y_coord)
                 row_wrappers[start_coord] = end_coord
                 start = False
                 break
@@ -47,15 +49,41 @@ def wrapper(rows):
             end_coord = complex(len(row) - 1, y_coord)
             row_wrappers[start_coord] = end_coord
             start = False
-    # add column checker to flip x and y
-    # add reverse of keys/values to wrapper dict
-    # initialize wrapper dict of rows and columns 
+
+    for key, value in list(row_wrappers.items()):
+        row_wrappers[value] = key
+    for key in row_wrappers:
+        start_point = key
+        break
+    return len(row_wrappers), len(walls), start_point
+
+def wrapper_col(columns):
+    start = False
+    col_wrappers = {}
+    # Same as previous function except for columns
+    for x_coord, column in enumerate(columns):
+        for y_coord, char in zip(range(len(column) -1, -1, -1), column):
+            if char != ' ':
+                if not start:
+                    start = True
+                    start_coord = complex(x_coord, y_coord)
+            elif start:
+                end_coord = complex(x_coord, y_coord + 1)
+                col_wrappers[start_coord] = end_coord
+                start = False
+                break
+        else:
+            end_coord = complex(x_coord, 0)
+            col_wrappers[start_coord] = end_coord
+            start = False
+
+    for key, value in list(col_wrappers.items()):
+        col_wrappers[value] = key
+    return len(col_wrappers)
+
+ 
     # write algo for movement
-    return row_wrappers, walls
-
-
-
-
 grid_1, procedure_1 = initial_parse("2022/day_22/input_test.txt")
 rows_1, columns_1 = parse(grid_1)
 print(wrapper(rows_1))
+print(wrapper_col(columns_1))
