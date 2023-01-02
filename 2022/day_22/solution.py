@@ -1,9 +1,16 @@
+"""
+Find the final position after following the given directions
+from the start point
+"""
 from collections import deque
 from re import findall
 from numpy import array
 
 
 def initial_parse(input_file):
+    """
+    Return the parsed grid and procedure from the given input file
+    """
     in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
@@ -17,6 +24,7 @@ def initial_parse(input_file):
 
 
 def parse(grid):
+    "Return the rows and columns of a given grid"
     rows = [list(row) for row in grid]
     max_x = max([len(row) for row in rows])
     # Add white spaces to the end of rows to equalize lengths
@@ -29,6 +37,11 @@ def parse(grid):
 
 
 def wrapper(rows):
+    """
+    Return a hash map of the points that wrap around to eachother on the
+    rows of the grid. Additionally, return the wall coordinates and the
+    start point at the top left nonempty corner of the grid.
+    """
     walls = set()
     start = False
     west_wrappers = {}
@@ -62,6 +75,10 @@ def wrapper(rows):
 
 
 def wrapper_col(columns):
+    """
+    Return a hash map of the points that wrap around to eachother on the
+    columns of the grid
+    """
     start = False
     north_wrappers = {}
     # Same as previous function except for columns
@@ -88,6 +105,9 @@ def wrapper_col(columns):
 
 
 def execute_proc(start_point, walls, wrappers, procedure):
+    """
+    Execute the procedure from the start point to find the final point and facing
+    """
     north_wrappers, south_wrappers, west_wrappers, east_wrappers = wrappers
     directions = deque([1, -1j, -1, 1j])
     prev_point = None
@@ -123,15 +143,29 @@ def execute_proc(start_point, walls, wrappers, procedure):
                 directions.rotate(-1)
     return current_point, directions[0]
 
-    # write algo for movement
+
+def find_password(input_file):
+    """
+    Return the password from formula involving the final point and facing
+    """
+    grid, procedure = initial_parse(input_file)
+    rows, columns = parse(grid)
+    west_wrappers, east_wrappers, walls, start_point = wrapper(rows)
+    north_wrappers, south_wrappers = wrapper_col(columns)
+    wrappers = north_wrappers, south_wrappers, west_wrappers, east_wrappers
+    final_coord, facing = execute_proc(start_point, walls, wrappers, procedure)
+    match facing:
+        case 1:
+            facing_points = 0
+        case -1j:
+            facing_points = 1
+        case -1:
+            facing_points = 2
+        case 1j:
+            facing_points = 3
+    column_num = final_coord.real + 1
+    row_num = len(rows) - final_coord.imag
+    return int(1000 * row_num + 4 * column_num + facing_points)
 
 
-grid_1, procedure_1 = initial_parse("2022/day_22/input.txt")
-rows_1, columns_1 = parse(grid_1)
-print(len(rows_1))
-west_wrappers_1, east_wrappers_1, walls_1, start_point_1 = wrapper(rows_1)
-north_wrappers_1, south_wrappers_1 = wrapper_col(columns_1)
-wrappers_1 = north_wrappers_1, south_wrappers_1, west_wrappers_1, east_wrappers_1
-final_coord, facing = execute_proc(start_point_1, walls_1, wrappers_1, procedure_1)
-print(facing)
-print(((final_coord.real + 1)*4) + ((len(rows_1) - final_coord.imag) * 1000) + 2)
+print(find_password("2022/day_22/input.txt"))
