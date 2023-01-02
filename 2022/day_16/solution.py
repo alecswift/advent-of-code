@@ -72,7 +72,6 @@ class CaveGraph:
             valve_queue = deque([(0, valve)])
             valve.visited = True
             self.lengths[name] = {name: 0, "AA": 0}
-            # reset for next valve
             while valve_queue:
                 length, start_valve = valve_queue.popleft()
                 for neighbor in start_valve.neighbors:
@@ -80,7 +79,6 @@ class CaveGraph:
                         continue
                     self.valves[neighbor].visited = True
                     if self.valves[neighbor].flow_rate:
-                        # maybe an issue with multiple paths but i don't think so
                         self.lengths[name][neighbor] = length + 1
                     valve_queue.append((length + 1, self.valves[neighbor]))
             self.reset_visited()
