@@ -43,27 +43,17 @@ def wrapper(rows):
     start point at the top left nonempty corner of the grid.
     """
     walls = set()
-    start = False
     west_wrappers = {}
     # While iterating through characters in grid: add wall coordinates to a set
-    # and connect the start of nonempty spaces to the end in a wrapper dict
+    # and hash the start of nonempty spaces to the end in a wrapper dict
     for y_coord, row in zip(range(len(rows) - 1, -1, -1), rows):
+        coords = []
         for x_coord, char in enumerate(row):
             if char != " ":
-                if not start:
-                    start = True
-                    start_coord = complex(x_coord, y_coord)
-                if char == "#":
-                    walls.add(complex(x_coord, y_coord))
-            elif start:
-                end_coord = complex(x_coord - 1, y_coord)
-                west_wrappers[start_coord] = end_coord
-                start = False
-                break
-        else:
-            end_coord = complex(len(row) - 1, y_coord)
-            west_wrappers[start_coord] = end_coord
-            start = False
+                coords.append(complex(x_coord, y_coord))
+            if char == '#':
+                walls.add(complex(x_coord, y_coord))
+        west_wrappers[coords[0]] = coords[-1]
 
     east_wrappers = {}
     for key, value in list(west_wrappers.items()):
@@ -79,24 +69,14 @@ def wrapper_col(columns):
     Return a hash map of the points that wrap around to eachother on the
     columns of the grid
     """
-    start = False
     north_wrappers = {}
     # Same as previous function except for columns
     for x_coord, column in enumerate(columns):
+        coords = []
         for y_coord, char in zip(range(len(column) - 1, -1, -1), column):
             if char != " ":
-                if not start:
-                    start = True
-                    start_coord = complex(x_coord, y_coord)
-            elif start:
-                end_coord = complex(x_coord, y_coord + 1)
-                north_wrappers[start_coord] = end_coord
-                start = False
-                break
-        else:
-            end_coord = complex(x_coord, 0)
-            north_wrappers[start_coord] = end_coord
-            start = False
+                coords.append(complex(x_coord, y_coord))
+        north_wrappers[coords[0]] = coords[-1]
 
     south_wrappers = {}
     for key, value in list(north_wrappers.items()):
@@ -154,18 +134,16 @@ def find_password(input_file):
     north_wrappers, south_wrappers = wrapper_col(columns)
     wrappers = north_wrappers, south_wrappers, west_wrappers, east_wrappers
     final_coord, facing = execute_proc(start_point, walls, wrappers, procedure)
-    match facing:
-        case 1:
-            facing_points = 0
-        case -1j:
-            facing_points = 1
-        case -1:
-            facing_points = 2
-        case 1j:
-            facing_points = 3
+    facing_scores = {1: 0, -1j: 1, -1: 2, 1j: 3}
+    facing_score = facing_scores[facing]
     column_num = final_coord.real + 1
     row_num = len(rows) - final_coord.imag
-    return int(1000 * row_num + 4 * column_num + facing_points)
+    return int(1000 * row_num + 4 * column_num + facing_score)
 
 
 print(find_password("2022/day_22/input.txt"))
+
+#part 2
+# make cube class with columns/rows for each cube face and links between cube faces
+# links between cube faces are a list of neighbor cube faces
+# method(s) for accessing rows or columns and left/right or up/down
