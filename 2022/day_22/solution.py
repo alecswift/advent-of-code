@@ -44,6 +44,7 @@ def wrapper(rows):
     """
     walls = set()
     west_wrappers = {}
+    east_wrappers = {}
     # While iterating through characters in grid: add wall coordinates to a set
     # and hash the start of nonempty spaces to the end in a wrapper dict
     for y_coord, row in zip(range(len(rows) - 1, -1, -1), rows):
@@ -54,10 +55,8 @@ def wrapper(rows):
             if char == '#':
                 walls.add(complex(x_coord, y_coord))
         west_wrappers[coords[0]] = coords[-1]
+        east_wrappers[coords[-1]] = coords[0]
 
-    east_wrappers = {}
-    for key, value in list(west_wrappers.items()):
-        east_wrappers[value] = key
     for key in west_wrappers:
         start_point = key
         break
@@ -70,6 +69,7 @@ def wrapper_col(columns):
     columns of the grid
     """
     north_wrappers = {}
+    south_wrappers = {}
     # Same as previous function except for columns
     for x_coord, column in enumerate(columns):
         coords = []
@@ -77,10 +77,7 @@ def wrapper_col(columns):
             if char != " ":
                 coords.append(complex(x_coord, y_coord))
         north_wrappers[coords[0]] = coords[-1]
-
-    south_wrappers = {}
-    for key, value in list(north_wrappers.items()):
-        south_wrappers[value] = key
+        south_wrappers[coords[-1]] = coords[0]
     return north_wrappers, south_wrappers
 
 
