@@ -52,7 +52,7 @@ def wrapper(rows):
         for x_coord, char in enumerate(row):
             if char != " ":
                 coords.append(complex(x_coord, y_coord))
-            if char == '#':
+            if char == "#":
                 walls.add(complex(x_coord, y_coord))
         west_wrappers[coords[0]] = coords[-1]
         east_wrappers[coords[-1]] = coords[0]
@@ -140,7 +140,40 @@ def find_password(input_file):
 
 print(find_password("2022/day_22/input.txt"))
 
-#part 2
+# part 2
 # make cube class with columns/rows for each cube face and links between cube faces
 # links between cube faces are a list of neighbor cube faces
 # method(s) for accessing rows or columns and left/right or up/down
+
+
+def parse_cube(input_file):
+    """
+    Return a list of matrices of the cube faces and the procedure (0's represent
+    empty spaces, 1's represent walls) from the given input file
+    """
+    grid, procedure = initial_parse(input_file)
+    remove_empty = [
+        [0 if char == "." else 1 for char in row if char != " "] for row in grid
+    ]
+    edge_length = min([len(row) for row in remove_empty])
+    cube_faces = [[] for _ in range(6)]
+    current_face = 0
+    prev_length = len(remove_empty[0])
+    for row in remove_empty:
+        length = len(row)
+        if length != prev_length:
+            current_face += partition
+        if length == edge_length:
+            partition = 1
+            cube_faces[current_face].append(row)
+        else:
+            partition = length // edge_length
+            for num in range(partition):
+                cube_faces[current_face + num].append(
+                    row[num * edge_length : (num + 1) * edge_length]
+                )
+        prev_length = length
+    return cube_faces, procedure
+
+
+print(parse_cube("2022/day_22/input_test.txt"))
