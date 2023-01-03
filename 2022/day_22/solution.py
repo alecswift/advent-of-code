@@ -140,11 +140,6 @@ def find_password(input_file):
 
 print(find_password("2022/day_22/input.txt"))
 
-# part 2
-# make cube class with columns/rows for each cube face and links between cube faces
-# links between cube faces are a list of neighbor cube faces
-# method(s) for accessing rows or columns and left/right or up/down
-
 
 def parse_cube(input_file):
     """
@@ -159,6 +154,7 @@ def parse_cube(input_file):
     cube_faces = [[] for _ in range(6)]
     current_face = 0
     prev_length = len(remove_empty[0])
+
     for row in remove_empty:
         length = len(row)
         if length != prev_length:
@@ -173,7 +169,14 @@ def parse_cube(input_file):
                     row[num * edge_length : (num + 1) * edge_length]
                 )
         prev_length = length
+
     return cube_faces, procedure
 
 
 print(parse_cube("2022/day_22/input_test.txt"))
+
+# part 2
+# make cube class with columns/rows for each cube face and links between cube faces
+# links between cube faces are a list of neighbor cube faces
+# method(s) for accessing rows or columns and left/right or up/down
+# note that you need to have the coordinates for the password if you're not using them
