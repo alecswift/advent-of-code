@@ -35,21 +35,7 @@ def total_score(input_file: str) -> int:
         ("C", "Y"): 0,
         ("C", "Z"): 3,
     }
-    score: int = 0
-    for game in results:
-        score += shape_scores[game[1]]
-        score += outcome_scores[game]
-    return score
-
-
-def total_score_2(input_file: str) -> int:
-    """
-    Return my total score from an input file containing the rock paper scissors
-    tournament results (different encryption than first total_score)
-    """
-    results: list[tuple[str, str]] = parse(input_file)
-    # values are tuples of the possible outcome scores and shape scores
-    outcome_scores: dict[tuple[str, str], tuple[int, int]] = {
+    outcome_scores_2: dict[tuple[str, str], tuple[int, int]] = {
         ("A", "X"): (0, 3),
         ("A", "Y"): (3, 1),
         ("A", "Z"): (6, 2),
@@ -61,10 +47,11 @@ def total_score_2(input_file: str) -> int:
         ("C", "Z"): (6, 1),
     }
     score: int = 0
+    score_2: int = 0
     for game in results:
-        score += sum(outcome_scores[game])
-    return score
-
+        score += shape_scores[game[1]]
+        score += outcome_scores[game]
+        score_2 += sum(outcome_scores_2[game])
+    return score, score_2
 
 print(total_score("2022/day_2/input.txt"))
-print(total_score_2("2022/day_2/input.txt"))
