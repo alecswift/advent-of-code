@@ -3,6 +3,7 @@ Find the final position after following the given directions
 from the start point
 """
 from collections import deque
+from itertools import zip_longest
 from re import findall
 from numpy import array
 
@@ -148,7 +149,7 @@ def parse_cube(input_file):
     """
     grid, procedure = initial_parse(input_file)
     remove_empty = [
-        [0 if char == "." else 1 for char in row if char != " "] for row in grid
+        [complex(x_coord, y_coord) for x_coord, char in enumerate(row) if char != " "] for y_coord, row in enumerate(grid)
     ]
     edge_length = min([len(row) for row in remove_empty])
     cube_faces = [[] for _ in range(6)]
@@ -172,8 +173,29 @@ def parse_cube(input_file):
 
     return cube_faces, procedure
 
+def cube_wrappers(cube_faces):
+    north_wrappers, south_wrappers, east_wrappers, west_wrappers = {}, {}, {}, {}
+    cube_face_cols = [array(cube_face).transpose().tolist() for cube_face in cube_faces]
+    # dictionary update indices change based on input
+    north_wrappers.update(zip(cube_faces[0][0], zip_longest(cube_face_cols[5][0], [1], fillvalue = 1)))
+    north_wrappers.update(zip(cube_faces[1][0], zip_longest(cube_faces[5][-1], [1j], fillvalue = 1j)))
+    north_wrappers.update(zip(cube_faces[3][0], zip_longest(cube_face_cols[2][0], [1], fillvalue = 1)))
+    south_wrappers.update(zip(cube_faces[1][-1], zip_longest(cube_face_cols[2][-1], [-1], fillvalue = -1)))
+    south_wrappers.update(zip(cube_faces[4][-1], zip_longest(cube_face_cols[5][-1], [-1], fillvalue = -1)))
+    south_wrappers.update(zip(cube_faces[5][-1], zip_longest(cube_faces[1][0], [-1j], fillvalue = -1j)))
+    east_wrappers.update(zip(cube_face_cols[1][-1][::-1], zip_longest(cube_face_cols[4][-1], [-1], fillvalue = -1)))
+    east_wrappers.update(zip(cube_face_cols[2][-1], zip_longest(cube_faces[1][-1], [1j], fillvalue = 1j)))
+    east_wrappers.update(zip(cube_face_cols[4][-1][::-1], zip_longest(cube_face_cols[1][-1], [-1], fillvalue = -1)))
+    east_wrappers.update(zip(cube_face_cols[5][-1], zip_longest(cube_faces[4][-1], [1j], fillvalue = 1j)))
+    west_wrappers.update(zip(cube_face_cols[5][0], zip_longest(cube_faces[0][0], [-1j], fillvalue = -1j)))
+    west_wrappers.update(zip(cube_face_cols[3][0][::-1], zip_longest(cube_face_cols[0][0], [1], fillvalue = 1)))
+    west_wrappers.update(zip(cube_face_cols[2][0], zip_longest(cube_faces[3][0], [-1j], fillvalue = -1j)))
+    west_wrappers.update(zip(cube_face_cols[0][0][::-1], zip_longest(cube_face_cols[3][0], [1], fillvalue = 1)))
+    return north_wrappers, south_wrappers, east_wrappers, west_wrappers
 
-print(parse_cube("2022/day_22/input_test.txt"))
+cube_faces_1, proc_1 = parse_cube("2022/day_22/input.txt")
+print(len(cube_wrappers(cube_faces_1)))
+
 
 # part 2
 # make cube class with columns/rows for each cube face and links between cube faces
