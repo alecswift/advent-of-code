@@ -85,6 +85,7 @@ def wrapper_col(columns):
 def execute_proc(start_point, walls, wrappers, procedure):
     """
     Execute the procedure from the start point to find the final point and facing
+    for the grid map
     """
     north_wrappers, south_wrappers, west_wrappers, east_wrappers = wrappers
     directions = deque([1, -1j, -1, 1j])
@@ -113,7 +114,6 @@ def execute_proc(start_point, walls, wrappers, procedure):
                     current_point += directions[0]
                     if current_point in walls:
                         current_point = prev_point
-                        break
         else:
             if item == "L":
                 directions.rotate()
@@ -125,6 +125,7 @@ def execute_proc(start_point, walls, wrappers, procedure):
 def find_password(input_file):
     """
     Return the password from formula involving the final point and facing
+    for the grid map
     """
     grid, procedure = initial_parse(input_file)
     rows, columns = parse(grid)
@@ -144,12 +145,19 @@ print(find_password("2022/day_22/input.txt"))
 
 def parse_cube(input_file):
     """
-    Return a list of matrices of the cube faces and the procedure (0's represent
-    empty spaces, 1's represent walls) from the given input file
+    Return a list of matrices of the cube faces, the procedure, the
+    start point, and a set of wall coordinates from the input file
     """
     grid, procedure = initial_parse(input_file)
+    walls = set(
+        complex(x_coord, y_coord)
+        for y_coord, row in enumerate(grid)
+        for x_coord, char in enumerate(row)
+        if char == "#"
+    )
     remove_empty = [
-        [complex(x_coord, y_coord) for x_coord, char in enumerate(row) if char != " "] for y_coord, row in enumerate(grid)
+        [complex(x_coord, y_coord) for x_coord, char in enumerate(row) if char != " "]
+        for y_coord, row in enumerate(grid)
     ]
     edge_length = min([len(row) for row in remove_empty])
     cube_faces = [[] for _ in range(6)]
@@ -171,34 +179,141 @@ def parse_cube(input_file):
                 )
         prev_length = length
 
-    return cube_faces, procedure
+    start_point = cube_faces[0][0][0]
+    return cube_faces, procedure, start_point, walls
+
 
 def cube_wrappers(cube_faces):
+    """
+    Return a hash map of the points that wrap around to eachother on the
+    on the cube.
+    """
     north_wrappers, south_wrappers, east_wrappers, west_wrappers = {}, {}, {}, {}
     cube_face_cols = [array(cube_face).transpose().tolist() for cube_face in cube_faces]
     # dictionary update indices change based on input
-    north_wrappers.update(zip(cube_faces[0][0], zip_longest(cube_face_cols[5][0], [1], fillvalue = 1)))
-    north_wrappers.update(zip(cube_faces[1][0], zip_longest(cube_faces[5][-1], [1j], fillvalue = 1j)))
-    north_wrappers.update(zip(cube_faces[3][0], zip_longest(cube_face_cols[2][0], [1], fillvalue = 1)))
-    south_wrappers.update(zip(cube_faces[1][-1], zip_longest(cube_face_cols[2][-1], [-1], fillvalue = -1)))
-    south_wrappers.update(zip(cube_faces[4][-1], zip_longest(cube_face_cols[5][-1], [-1], fillvalue = -1)))
-    south_wrappers.update(zip(cube_faces[5][-1], zip_longest(cube_faces[1][0], [-1j], fillvalue = -1j)))
-    east_wrappers.update(zip(cube_face_cols[1][-1][::-1], zip_longest(cube_face_cols[4][-1], [-1], fillvalue = -1)))
-    east_wrappers.update(zip(cube_face_cols[2][-1], zip_longest(cube_faces[1][-1], [1j], fillvalue = 1j)))
-    east_wrappers.update(zip(cube_face_cols[4][-1][::-1], zip_longest(cube_face_cols[1][-1], [-1], fillvalue = -1)))
-    east_wrappers.update(zip(cube_face_cols[5][-1], zip_longest(cube_faces[4][-1], [1j], fillvalue = 1j)))
-    west_wrappers.update(zip(cube_face_cols[5][0], zip_longest(cube_faces[0][0], [-1j], fillvalue = -1j)))
-    west_wrappers.update(zip(cube_face_cols[3][0][::-1], zip_longest(cube_face_cols[0][0], [1], fillvalue = 1)))
-    west_wrappers.update(zip(cube_face_cols[2][0], zip_longest(cube_faces[3][0], [-1j], fillvalue = -1j)))
-    west_wrappers.update(zip(cube_face_cols[0][0][::-1], zip_longest(cube_face_cols[3][0], [1], fillvalue = 1)))
+    north_wrappers.update(
+        zip(cube_faces[0][0], zip_longest(cube_face_cols[5][0], [1], fillvalue=1))
+    )
+    north_wrappers.update(
+        zip(cube_faces[1][0], zip_longest(cube_faces[5][-1], [-1j], fillvalue=-1j))
+    )
+    north_wrappers.update(
+        zip(cube_faces[3][0], zip_longest(cube_face_cols[2][0], [1], fillvalue=1))
+    )
+    south_wrappers.update(
+        zip(cube_faces[1][-1], zip_longest(cube_face_cols[2][-1], [-1], fillvalue=-1))
+    )
+    south_wrappers.update(
+        zip(cube_faces[4][-1], zip_longest(cube_face_cols[5][-1], [-1], fillvalue=-1))
+    )
+    south_wrappers.update(
+        zip(cube_faces[5][-1], zip_longest(cube_faces[1][0], [1j], fillvalue=1j))
+    )
+    east_wrappers.update(
+        zip(
+            cube_face_cols[1][-1][::-1],
+            zip_longest(cube_face_cols[4][-1], [-1], fillvalue=-1),
+        )
+    )
+    east_wrappers.update(
+        zip(cube_face_cols[2][-1], zip_longest(cube_faces[1][-1], [-1j], fillvalue=-1j))
+    )
+    east_wrappers.update(
+        zip(
+            cube_face_cols[4][-1][::-1],
+            zip_longest(cube_face_cols[1][-1], [-1], fillvalue=-1),
+        )
+    )
+    east_wrappers.update(
+        zip(cube_face_cols[5][-1], zip_longest(cube_faces[4][-1], [-1j], fillvalue=-1j))
+    )
+    west_wrappers.update(
+        zip(cube_face_cols[5][0], zip_longest(cube_faces[0][0], [1j], fillvalue=1j))
+    )
+    west_wrappers.update(
+        zip(
+            cube_face_cols[3][0][::-1],
+            zip_longest(cube_face_cols[0][0], [1], fillvalue=1),
+        )
+    )
+    west_wrappers.update(
+        zip(cube_face_cols[2][0], zip_longest(cube_faces[3][0], [1j], fillvalue=1j))
+    )
+    west_wrappers.update(
+        zip(
+            cube_face_cols[0][0][::-1],
+            zip_longest(cube_face_cols[3][0], [1], fillvalue=1),
+        )
+    )
     return north_wrappers, south_wrappers, east_wrappers, west_wrappers
 
-cube_faces_1, proc_1 = parse_cube("2022/day_22/input.txt")
-print(len(cube_wrappers(cube_faces_1)))
+
+def execute_proc_cube(start_point, walls, wrappers, procedure):
+    """
+    Execute the procedure from the start point to find the final point and facing
+    for the cube map
+    """
+    north_wrappers, south_wrappers, east_wrappers, west_wrappers = wrappers
+    directions = deque([1, 1j, -1, -1j])
+    current_point = start_point
+
+    for item in procedure:
+        if isinstance(item, int):
+            for _ in range(item):
+                if (directions[0] == 1) and (current_point in east_wrappers):
+                    if east_wrappers[current_point][0] not in walls:
+                        while directions[0] != east_wrappers[current_point][1]:
+                            directions.rotate()
+                        current_point = east_wrappers[current_point][0]
+                elif (directions[0] == -1) and (current_point in west_wrappers):
+                    if west_wrappers[current_point][0] not in walls:
+                        while directions[0] != west_wrappers[current_point][1]:
+                            directions.rotate()
+                        current_point = west_wrappers[current_point][0]
+                elif (directions[0] == -1j) and (current_point in north_wrappers):
+                    if north_wrappers[current_point][0] not in walls:
+                        while directions[0] != north_wrappers[current_point][1]:
+                            directions.rotate()
+                        current_point = north_wrappers[current_point][0]
+                elif (directions[0] == 1j) and (current_point in south_wrappers):
+                    if south_wrappers[current_point][0] not in walls:
+                        while directions[0] != south_wrappers[current_point][1]:
+                            directions.rotate()
+                        current_point = south_wrappers[current_point][0]
+                elif current_point + directions[0] not in walls:
+                    current_point += directions[0]
+                else:
+                    break
+        else:
+            if item == "L":
+                directions.rotate()
+            else:
+                directions.rotate(-1)
+
+    return current_point, directions[0]
 
 
-# part 2
-# make cube class with columns/rows for each cube face and links between cube faces
-# links between cube faces are a list of neighbor cube faces
-# method(s) for accessing rows or columns and left/right or up/down
-# note that you need to have the coordinates for the password if you're not using them
+def find_password_2(input_file):
+    """
+    Return the password from formula involving the final point and facing
+    for the cube map
+    """
+    cube_faces_1, proc_1, start_point_1, walls_1 = parse_cube(input_file)
+    (
+        north_wrappers_1,
+        south_wrappers_1,
+        east_wrappers_1,
+        west_wrappers_1,
+    ) = cube_wrappers(cube_faces_1)
+    wrappers_1 = north_wrappers_1, south_wrappers_1, east_wrappers_1, west_wrappers_1
+    end_point, facing = execute_proc_cube(start_point_1, walls_1, wrappers_1, proc_1)
+    facing_scores = {1: 0, 1j: 1, -1: 2, -1j: 3}
+    password = (
+        ((end_point.real + 1) * 4)
+        + ((end_point.imag + 1) * 1000)
+        + facing_scores[facing]
+    )
+    return int(password)
+
+
+print(find_password_2("2022/day_22/input.txt"))
