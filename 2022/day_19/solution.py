@@ -36,3 +36,40 @@ def parse(input_file):
         max_obs = ores[5]
         max_items.append([max_ore, max_clay, max_obs])
     return blue_prints, max_items
+
+def search(blue_print, max_item, cache, time_rem, robots, ores):
+    """Depth first search to find the max geodes for each blueprint"""
+    if time_rem == 0:
+        return ores[3]
+    key = tuple([time_rem, *robots, *ores])
+    if key in cache:
+        return cache[key]
+
+    max_geodes = ores[3] + robots[3] * time_rem
+
+    for robot, type_ores in enumerate(blue_print):
+        if robot != 3 and robots[robot] >= max_item[robot]:
+            continue
+        wait = 0
+        for item_amt, item_type in type_ores:
+            if robots[item_type] == 0:
+                break
+            wait = max(wait, ceil((item_amt - ores[item_type]) / robots[item_type]))
+        else:
+            remtime = time_rem - wait - 1
+            if remtime <= 0:
+                continue
+            robots_ = robots[:]
+            ores_ = [x + y * (wait + 1) for x, y in zip(ores, robots)]
+            for item_amt, item_type in type_ores:
+                ores_[item_type] -= item_amt
+            robots_[robot] += 1
+            for i in range(3):
+                ores_[i] = min(ores_[i], max_item[i] * remtime)
+            max_geodes = max(
+                max_geodes, search(blue_print, max_item, cache, remtime, robots_, ores_)
+            )
+
+    cache[key] = max_geodes
+    return max_geodes
+
