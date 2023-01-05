@@ -73,18 +73,25 @@ def search(blue_print, max_item, cache, time_rem, robots, ores):
     cache[key] = max_geodes
     return max_geodes
 
-def find_quality(input_file):
+def find_solutions(input_file):
     """
     Calculate the quality level by finding the sum of
     the max geodes * blueprint number for each blueprint
+    And, for the first three blueprints, find the max geodes
+    if the time parameter changes to 32 and multiply these
+    three values together
     """
     quality_level = 0
-    blue_prints_1, max_items_1 = parse(input_file)
-    for index, bundle in enumerate(zip(blue_prints_1, max_items_1)):
+    total_2 = 1
+    blue_prints, max_items = parse(input_file)
+    for index, bundle in enumerate(zip(blue_prints, max_items)):
         blue_print, max_item = bundle
         max_geodes = search(blue_print, max_item, {}, 24, [1, 0, 0, 0], [0, 0, 0, 0])
         quality_level += (index + 1) * max_geodes
-    return quality_level
+        if index <= 2:
+            max_geodes_32 = search(blue_print, max_item, {}, 32, [1, 0, 0, 0], [0, 0, 0, 0])
+            total_2 *= max_geodes_32
 
+    return quality_level, total_2
 
-print(find_quality("2022/day_19/input.txt"))
+print(find_solutions("2022/day_19/input.txt"))
