@@ -73,3 +73,18 @@ def search(blue_print, max_item, cache, time_rem, robots, ores):
     cache[key] = max_geodes
     return max_geodes
 
+def find_quality(input_file):
+    """
+    Calculate the quality level by finding the sum of
+    the max geodes * blueprint number for each blueprint
+    """
+    quality_level = 0
+    blue_prints_1, max_items_1 = parse(input_file)
+    for index, bundle in enumerate(zip(blue_prints_1, max_items_1)):
+        blue_print, max_item = bundle
+        max_geodes = search(blue_print, max_item, {}, 24, [1, 0, 0, 0], [0, 0, 0, 0])
+        quality_level += (index + 1) * max_geodes
+    return quality_level
+
+
+print(find_quality("2022/day_19/input.txt"))
