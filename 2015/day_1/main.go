@@ -17,15 +17,15 @@ func main() {
 	currentFloor := 0
 	firstEntry := true
 	var basementIdx int
-	for idx < len(inputData) - 1 {
+	for idx < len(inputData)-1 {
+		if currentFloor == -1 && firstEntry {
+			basementIdx = idx
+			firstEntry = false
+		}
 		if string(inputData[idx]) == "(" {
 			currentFloor += 1
 		} else {
 			currentFloor -= 1
-		}
-		if currentFloor == -1 && firstEntry {
-			basementIdx = idx + 1
-			firstEntry = false
 		}
 		idx += 1
 	}
