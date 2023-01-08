@@ -23,6 +23,7 @@ class Node:
         self.files: list[tuple[str, str]] = []
         self.indirect_size: int = 0
 
+    @property
     def direct_size(self) -> int:
         """Return the direct file size of the node object"""
         return sum([int(size) for size, _ in self.files])
@@ -43,19 +44,19 @@ class FileTree:
         node.parent = parent
         self.nodes.append(node)
         return node
-
+    
     def direct_sizes(self) -> list[int]:
         """
         Return a list of direct sizes of nodes
         """
-        return [node.direct_size() for node in self.nodes]
+        return [node.direct_size for node in self.nodes]
 
     def indirect_sizes(self) -> list[int]:
         """Initialize the indirect size attribute of all nodes"""
         for node in self.nodes:
             parent: Type[Node] = node.parent
             while parent:
-                size: int = node.direct_size()
+                size: int = node.direct_size
                 parent.indirect_size += size
                 parent = parent.parent
         return [node.indirect_size for node in self.nodes]
@@ -72,7 +73,7 @@ class FileTree:
         """
         Return the total amount of used space in the file system
         """
-        return sum(node.direct_size() for node in self.nodes)
+        return sum(node.direct_size for node in self.nodes)
 
     def size_dir_to_del(self):
         """
