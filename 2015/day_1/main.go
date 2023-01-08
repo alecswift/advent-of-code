@@ -15,8 +15,8 @@ func main() {
 
 	idx := 0
 	currentFloor := 0
-	basementIdx := 0
 	firstEntry := true
+	var basementIdx int
 	for idx < len(inputData) - 1 {
 		if string(inputData[idx]) == "(" {
 			currentFloor += 1
