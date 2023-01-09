@@ -23,21 +23,19 @@ func parse(input_file string) string {
 }
 
 func traverseFloors(inputData string) []int {
-	idx := 0
 	currentFloor := 0
 	firstEntry := true
 	var basementIdx int
-	for idx < len(inputData) {
+	for idx, direction := range inputData {
 		if currentFloor == -1 && firstEntry {
 			basementIdx = idx
 			firstEntry = false
 		}
-		if string(inputData[idx]) == "(" {
+		if direction == '(' {
 			currentFloor += 1
 		} else {
 			currentFloor -= 1
 		}
-		idx += 1
 	}
 	return []int{currentFloor, basementIdx} 
 }
