@@ -20,7 +20,8 @@ func main() {
 func findHash(key string, condition byte) int {
 	num := 1
 	hash := makeHash(key, num)
-	for i := 1; !(hash[0] == 0 && hash[1] == 0 && hash[2] <= condition); i++ {
+	// first 3 bytes must be less than 16 or 0 equivalent to 000010 or 000000 in hex
+	for !(hash[0] == 0 && hash[1] == 0 && hash[2] <= condition) {
 		num++
 		hash = makeHash(key, num)
 	}
