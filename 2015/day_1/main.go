@@ -34,9 +34,9 @@ func traverseFloors(inputData string) []int {
 			firstEntry = false
 		}
 		if direction == '(' {
-			currentFloor += 1
+			currentFloor ++
 		} else {
-			currentFloor -= 1
+			currentFloor --
 		}
 	}
 	return []int{currentFloor, basementIdx} 
