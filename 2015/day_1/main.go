@@ -11,8 +11,8 @@ import (
 func main() {
 	inputData := parse("2015/day_1/input.txt")
 	solutions := traverseFloors(inputData)
-	fmt.Println(solutions[0])
-	fmt.Println(solutions[1])
+	fmt.Printf("Santa first enters the basement on position %d\n", solutions[1])
+	fmt.Printf("Santa arrives on floor %d!", solutions[0])
 }
 
 func parse(input_file string) string {
