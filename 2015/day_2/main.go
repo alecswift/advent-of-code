@@ -16,7 +16,7 @@ func main() {
 	paper := totalMaterials[0]
 	ribbon := totalMaterials[1]
 	fmt.Printf(
-		"Order %d square feet of wrapping paper\nOrder %d feet of ribbon",
+		"The elves must order %d square feet of wrapping paper and %d feet of ribbon",
 		paper, ribbon)
 }
 
