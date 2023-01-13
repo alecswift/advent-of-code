@@ -31,6 +31,7 @@ def parse(input_file):
     return instructions, intervals
 
 # make this whole module a class
+# set up the dict first and see if this is faster?
 lights_on_2 = {}
 lights_on = set()
 
