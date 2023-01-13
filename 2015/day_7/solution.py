@@ -2,17 +2,16 @@ from collections import deque
 from re import findall, split
 
 def main():
-    start_end, wires, operations = parse("day_7/input.txt.txt")
+    wires, operations = parse("day_7/input.txt")
+    wires_1, operations_1 = parse("day_7/input_2.txt")
     print(emulate_circuit(wires, operations))
+    print(emulate_circuit(wires_1, operations_1))
 
 def parse(input_file):
-    input_file = "day_7/input.txt.txt"
     in_file = open(input_file, "r", encoding = "utf-8")
     with open(input_file, encoding = "utf-8") as in_file:
         input_data = in_file.read()
     split_lines = split(r"\n", input_data)
-    print(len(split_lines))
-    start_end = findall(r"\n(\d+) -> ([a-z]+)\n", input_data)
     wires = {}
     operations = []
     for line in split_lines:
@@ -39,7 +38,7 @@ def parse(input_file):
             else:
                 source_1, source_2, dest = wire_names
                 operations.append(([source_1, source_2], operator, dest))
-    return start_end, wires, operations
+    return wires, operations
 
 def emulate_circuit(wires, operations):
     queue = deque(operations)
