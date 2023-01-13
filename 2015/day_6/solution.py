@@ -61,8 +61,7 @@ def part_2(instruction, coord):
     if instruction == 1:
         lights_on_2[coord] = lights_on_2.setdefault(coord, 0) + 1
     elif instruction == 0:
-        if lights_on_2.get(coord):
-            lights_on_2[coord] -= 1
+        lights_on_2[coord] = lights_on_2.setdefault(coord, 1) - 1
     else:
         lights_on_2[coord] = lights_on_2.setdefault(coord, 0) + 2
 
