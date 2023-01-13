@@ -34,5 +34,4 @@ func makeHash(key string, num int) []byte {
 	io.WriteString(hash, key)
 	io.WriteString(hash, numStr)
 	return hash.Sum(nil)
-	// make this return a different type?
 }
