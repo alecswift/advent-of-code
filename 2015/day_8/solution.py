@@ -9,11 +9,11 @@ def parse(input_file):
     total_answer = 0
     for line in split_lines:
         length = len(line)
-        line = sub(r"\\\"", " ", line)
-        line = sub(r"\\\\", " ", line)
-        line = sub(r"\\x[0-9a-f][0-9a-f]", " ", line)
-        new_length = len(line)
-        answer = (length + 2) - new_length
+        line = sub(r"\\\"", "1234", line)
+        line = sub(r"\\\\", "1234", line)
+        line = sub(r"\\x[0-9a-f][0-9a-f]", "12345", line)
+        new_length = len(line) + 4
+        answer = new_length - length
         total_answer += answer
     return total_answer
 
