@@ -1,9 +1,11 @@
+"""Puzzle explanation: https://adventofcode.com/2015/day/7"""
+
 from collections import deque
 from re import findall, split
 
 def main():
-    wires, operations = parse("day_7/input.txt")
-    wires_1, operations_1 = parse("day_7/input_2.txt")
+    wires, operations = parse("2015/day_7/input.txt")
+    wires_1, operations_1 = parse("2015/day_7/input_2.txt")
     print(emulate_circuit(wires, operations))
     print(emulate_circuit(wires_1, operations_1))
 
