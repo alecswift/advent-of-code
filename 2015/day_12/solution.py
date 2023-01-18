@@ -14,15 +14,15 @@ for index, char in enumerate(input_data):
 
 print(total)
 
-def search(data, numbers = [], count = 0):
+def search(data, numbers = []):
     if isinstance(data, dict):
         for element in data.values():
             if isinstance(element, dict):
                 if "red" in element.values():
                     continue
-                search(element, numbers, count)
+                search(element, numbers)
             if isinstance(element, list):
-                search(element, numbers, count)
+                search(element, numbers)
             if isinstance(element, int):
                 numbers.append(element)
         return sum(numbers)
@@ -31,9 +31,9 @@ def search(data, numbers = [], count = 0):
             if isinstance(element, dict):
                 if "red" in element.values():
                     continue
-                search(element, numbers, count)
+                search(element, numbers)
             if isinstance(element, list):
-                search(element, numbers, count)
+                search(element, numbers)
             if isinstance(element, int):
                 numbers.append(element)
         return sum(numbers)
