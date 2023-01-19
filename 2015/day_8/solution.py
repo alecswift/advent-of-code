@@ -1,3 +1,5 @@
+"""Puzzle explanation: https://adventofcode.com/2015/day/8"""
+
 from re import split, sub
 
 def main():
