@@ -10,12 +10,13 @@ def main():
     part_2 = find_optimal_arrangement_of(people, True)
     print(
         "The optimal seating arrangement without me",
-        f"leads to a happiness level of: {part_1}"
+        f"leads to a happiness level of: {part_1}",
     )
     print(
         "The optimal seating arrangement with me",
-        f"leads to a happiness level of: {part_2}"
+        f"leads to a happiness level of: {part_2}",
     )
+
 
 def parse(input_file):
     in_file = open(input_file, "r", encoding="utf-8")
@@ -34,7 +35,8 @@ def parse(input_file):
             people[person] = {neighbor: change}
     return people
 
-def find_optimal_arrangement_of(people, plus_one = False):
+
+def find_optimal_arrangement_of(people, plus_one=False):
     if plus_one:
         arrangements = list(permutations(list(people), len(people)))
         arrangements = [[0] + list(arrangement) for arrangement in arrangements]
@@ -43,6 +45,7 @@ def find_optimal_arrangement_of(people, plus_one = False):
         arrangements = list(permutations(people_minus_1, len(people_minus_1)))
         arrangements = [[first] + list(arrangement) for arrangement in arrangements]
     return max(find_happiness_of(arrangement, people) for arrangement in arrangements)
+
 
 def find_happiness_of(arrangement, people):
     length = len(arrangement)
@@ -57,8 +60,9 @@ def find_happiness_of(arrangement, people):
         elif not right:
             happiness += people[person][left]
         else:
-            happiness += (people[person][left] + people[person][right])
+            happiness += people[person][left] + people[person][right]
     return happiness
+
 
 if __name__ == "__main__":
     main()
