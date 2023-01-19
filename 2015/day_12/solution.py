@@ -7,6 +7,7 @@ def main():
         input_data = in_file.read()
     part_1 = add_all_numbers(input_data)
     print(f"The total sum of all numbers is: {part_1}")
+
     data = eval(input_data)
     part_2 = search_nested_data(data)
     print(f"The sum of all numbers with 'red' not in the same object is: {part_2}")
@@ -25,26 +26,21 @@ def add_all_numbers(input_data):
 def search_nested_data(data, numbers = []):
     if isinstance(data, dict):
         for element in data.values():
-            if isinstance(element, dict):
-                if "red" in element.values():
-                    continue
-                search_nested_data(element, numbers)
-            if isinstance(element, list):
-                search_nested_data(element, numbers)
-            if isinstance(element, int):
-                numbers.append(element)
+            check_element(element, numbers)
         return sum(numbers)
     if isinstance(data, list):
         for element in data:
-            if isinstance(element, dict):
-                if "red" in element.values():
-                    continue
-                search_nested_data(element, numbers)
-            if isinstance(element, list):
-                search_nested_data(element, numbers)
-            if isinstance(element, int):
-                numbers.append(element)
-        return sum(numbers)
+            check_element(element, numbers)
+
+def check_element(element, numbers):
+    if isinstance(element, dict):
+        if "red" in element.values():
+            return None
+        search_nested_data(element, numbers)
+    if isinstance(element, list):
+        search_nested_data(element, numbers)
+    if isinstance(element, int):
+        numbers.append(element)
 
 if __name__ == "__main__":
     main()
