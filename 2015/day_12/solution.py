@@ -1,5 +1,6 @@
 """Puzzle Explanation: https://adventofcode.com/2015/day/12"""
 
+
 def main():
     input_file = "2015/day_12/input.txt"
     in_file = open(input_file, "r", encoding="utf-8")
@@ -12,6 +13,7 @@ def main():
     part_2 = search_nested_data(data)
     print(f"The sum of all numbers with 'red' not in the same object is: {part_2}")
 
+
 def add_all_numbers(input_data):
     current_num = ""
     total = 0
@@ -23,14 +25,16 @@ def add_all_numbers(input_data):
             current_num = ""
     return total
 
-def search_nested_data(data, numbers = []):
+
+def search_nested_data(data, numbers=[]):
     if isinstance(data, dict):
         for element in data.values():
             check_element(element, numbers)
-        return sum(numbers)
     if isinstance(data, list):
         for element in data:
             check_element(element, numbers)
+    return sum(numbers)
+
 
 def check_element(element, numbers):
     if isinstance(element, dict):
@@ -41,6 +45,7 @@ def check_element(element, numbers):
         search_nested_data(element, numbers)
     if isinstance(element, int):
         numbers.append(element)
+
 
 if __name__ == "__main__":
     main()
