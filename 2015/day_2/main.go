@@ -4,8 +4,8 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"log"
+	"os"
 	"regexp"
 	"strconv"
 )
@@ -56,13 +56,13 @@ func calcMaterials(boxes [][3]int) [2]int {
 		smallSide := box[1] * box[2]
 		side_2 := box[0] * box[1]
 		side_3 := box[0] * box[2]
-		totalPaper +=  2 * smallSide + 2*side_2 + 2*side_3
+		totalPaper += 2*smallSide + 2*side_2 + 2*side_3
 		totalPaper += smallSide
 		// Total ribbon found by adding the volume and the smallest perimeter
 		totalRibbon += box[0] * box[1] * box[2]
-		totalRibbon += box[1] * 2 + box[2] * 2
+		totalRibbon += box[1]*2 + box[2]*2
 	}
-	return [2]int {totalPaper, totalRibbon}
+	return [2]int{totalPaper, totalRibbon}
 }
 
 func sortDimensions(num_1 int, num_2 int, num_3 int) [3]int {
