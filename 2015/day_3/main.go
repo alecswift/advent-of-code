@@ -22,7 +22,7 @@ func parse(inputFile string) string {
 	return string(inputData)
 }
 
-func deliverPresents(directions string) (int, int){
+func deliverPresents(directions string) (int, int) {
 	pos := complex(0, 0)
 	houses := map[complex128]bool{pos: true}
 	moves := map[rune]complex128{
@@ -44,7 +44,7 @@ func deliverPresents(directions string) (int, int){
 	robotPos := complex(0, 0)
 	houses_2 := map[complex128]bool{santaPos: true}
 	for idx, direction := range directions {
-		if idx % 2 == 0 {
+		if idx%2 == 0 {
 			santaPos += moves[direction]
 			_, visited := houses_2[santaPos]
 			if !visited {
