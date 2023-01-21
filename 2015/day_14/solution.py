@@ -23,26 +23,31 @@ def race_1(reindeer, seconds):
     return initial_distance + distance_per_cycle
 
 def race_2(reindeers, seconds):
-    distances = [0] * len(reindeers)
-    scores = [0] * len(reindeers)
+    length = len(reindeers)
+    distances = [0] * length
+    scores = [0] * length
     for sec in range(1, seconds + 1):
         for index, reindeer in enumerate(reindeers):
             speed, time, rest = reindeer
             cycle_time = time + rest
             if sec % cycle_time in list(range(1, time + 1)):
                 distances[index] += speed
-        index = 1
-        maxes = [0]
-        while index < len(distances):
+        top_scores = find_top_score_positions(distances)
+        for index in top_scores:
+            scores[index] += 1
+    return max(scores)
+
+def find_top_score_positions(distances):
+    index = 1
+    maxes = [0]
+    while index < len(distances):
             if distances[maxes[0]] < distances[index]:
                 maxes = []
                 maxes.append(index)
             elif distances[maxes[0]] == distances[index]:
                 maxes.append(index)
             index += 1
-        for index in maxes:
-            scores[index] += 1
-    return max(scores)
+    return maxes
 
 if __name__ == "__main__":
     main()
