@@ -15,7 +15,7 @@ def parse(input_file):
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     split_lines = input_data.split("\n")
-    reindeers = [list(map(int, findall(r"\d+", line))) for line in split_lines]
+    reindeers = [[int(num) for num in findall(r"\d+", line)] for line in split_lines]
     return reindeers
 
 
