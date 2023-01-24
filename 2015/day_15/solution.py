@@ -1,17 +1,12 @@
 from copy import deepcopy
-from itertools import combinations, permutations
 from re import findall, split
 
 
 def main():
     ingredients = parse("2015/day_15/input.txt")
-    # print(ingredients)
-    combos = []
-    combo = [0,0,0,0]
-    find_x_sums_of(4, 100, combos, combo)
+    combo = [0, 0, 0, 0]
     ingredients = [ingredient[:-1] for ingredient in ingredients]
-    print(find_best_cookie(combos, ingredients))
-
+    print(find_best_cookie(4, 100, ingredients, combo))
 
 
 def parse(input_file):
@@ -19,39 +14,34 @@ def parse(input_file):
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     ingredients = [
-        [int(num) for num in findall(r"-?\d+", line)] for line in split("\n", input_data)
+        [int(num) for num in findall(r"-?\d+", line)]
+        for line in split("\n", input_data)
     ]
     return ingredients
 
-def find_x_sums_of(x, number, combos, combo):
-    if x == 1:
-        # print(number)
-        combo[x - 1] = number
-        combos.append(combo)
-        # print("\n")
-        return None
-    for num in range(number - 1, 0, -1):
-        # print(num)
-        combo[x - 1] = num
-        find_x_sums_of(x - 1, number - num, combos, deepcopy(combo))
 
-def find_best_cookie(combos, ingredients):
+def find_best_cookie(x, number, ingredients, combo):
     max_score = 0
-    for combo in combos:
-        combo_score = 1
-        for column in range(len(ingredients[0])):
-            curr_sum = 0
-            for idx, tspoon in enumerate(combo):
-                curr_sum += (tspoon * ingredients[idx][column])
-            if curr_sum < 0:
-                curr_sum = 0
-            combo_score *= curr_sum
-        max_score = max(max_score, combo_score)
+    if x == 1:
+        combo[x - 1] = number
+        return calc_score(combo, ingredients)
+    for num in range(number - 1, 0, -1):
+        combo[x - 1] = num
+        max_score = max(
+            max_score, find_best_cookie(x - 1, number - num, ingredients, deepcopy(combo))
+        )
     return max_score
-    
-            
 
-            
+
+def calc_score(combo, ingredients):
+    combo_score = 1
+    for column in range(len(ingredients[0])):
+        curr_sum = 0
+        for idx, tspoon in enumerate(combo):
+            curr_sum += tspoon * ingredients[idx][column]
+        curr_sum = max(curr_sum, 0)
+        combo_score *= curr_sum
+    return combo_score
 
 
 if __name__ == "__main__":
