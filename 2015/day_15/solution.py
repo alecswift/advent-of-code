@@ -1,3 +1,5 @@
+"""Puzzle explanation: https://adventofcode.com/2015/day/15"""
+
 from copy import deepcopy
 from re import findall, split
 
