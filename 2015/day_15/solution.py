@@ -6,7 +6,8 @@ def main():
     ingredients = parse("2015/day_15/input.txt")
     combo = [0, 0, 0, 0]
     ingredients = [ingredient[:-1] for ingredient in ingredients]
-    print(find_best_cookie(4, 100, ingredients, combo))
+    num_of_ingredients = len(ingredients)
+    print(find_best_cookie(num_of_ingredients, 100, ingredients, combo))
 
 
 def parse(input_file):
@@ -20,22 +21,25 @@ def parse(input_file):
     return ingredients
 
 
-def find_best_cookie(x, number, ingredients, combo):
+def find_best_cookie(num_of_ingredients, number, ingredients, combo):
     max_score = 0
-    if x == 1:
-        combo[x - 1] = number
+    if num_of_ingredients == 1:
+        combo[num_of_ingredients - 1] = number
         return calc_score(combo, ingredients)
     for num in range(number - 1, 0, -1):
-        combo[x - 1] = num
+        combo[num_of_ingredients - 1] = num
         max_score = max(
-            max_score, find_best_cookie(x - 1, number - num, ingredients, deepcopy(combo))
+            max_score,
+            find_best_cookie(
+                num_of_ingredients - 1, number - num, ingredients, deepcopy(combo)
+            ),
         )
     return max_score
 
 
 def calc_score(combo, ingredients):
     combo_score = 1
-    for column in range(len(ingredients[0])):
+    for column in range(len(ingredients)):
         curr_sum = 0
         for idx, tspoon in enumerate(combo):
             curr_sum += tspoon * ingredients[idx][column]
