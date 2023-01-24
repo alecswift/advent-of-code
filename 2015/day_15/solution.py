@@ -55,10 +55,7 @@ def calc_score(combo, ingredients, part_1):
         else:
             curr_sum = max(curr_sum, 0)
             combo_score *= curr_sum
-
-    if part_1:
-        return combo_score
-    return combo_score if cals == 500 else 0
+    return combo_score if cals == 500 or part_1 else 0
 
 
 if __name__ == "__main__":
