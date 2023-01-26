@@ -91,7 +91,6 @@ def parse(input_file: str) -> list[tuple[str, int | None]]:
     Return a list of commands for execution
     of a CPU from a given input file
     """
-    in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     split_lines: list[str] = input_data.split("\n")

@@ -69,7 +69,6 @@ def parse(input_file: str) -> list[tuple[str, str]]:
     """
     Return a list of motions of a rope head from the given input file
     """
-    in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     split_lines: list[str] = input_data.split("\n")

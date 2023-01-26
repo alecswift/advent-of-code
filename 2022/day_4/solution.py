@@ -12,7 +12,6 @@ def parse(input_file: str) -> list[tuple[str, str]]:
     tuples that represent elves and contain strings
     that represent section ranges
     """
-    in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     parsed_data: list[tuple[str, str]] = re.findall(r"(\d+)-(\d+)", input_data)

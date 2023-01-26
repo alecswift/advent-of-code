@@ -34,7 +34,6 @@ class Tree:
 
     def parse(self):
         """Initializes the data attribute by parsing the input_file"""
-        in_file = open(self.input_file, "r", encoding="utf-8")
         with open(self.input_file, encoding="utf-8") as in_file:
             input_data = in_file.read()
         self.data = findall(r"(\w+): (.+)", input_data)

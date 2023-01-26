@@ -43,7 +43,6 @@ class CaveGraph:
         """
         Initialize the dictionary of valve_objects from the input data
         """
-        in_file = open(self.data, "r", encoding="utf-8")
         with open(self.data, encoding="utf-8") as in_file:
             input_data = in_file.read()
         split_lines = [

@@ -12,7 +12,6 @@ def parse(input_file):
     Return a list of blueprints and a list of the max amount of
     resources needed for each blue print from the given input file
     """
-    in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     blue_prints = []

@@ -15,7 +15,6 @@ def parse(input_file):
     value and original index and the same list with each coordinate multiplied
     by 811589153
     """
-    in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     split_lines = input_data.split("\n")

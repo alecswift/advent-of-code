@@ -12,7 +12,6 @@ cave_grid[0] = array('I', [1, 1, 1, 1, 1, 1, 1])
 
 def parse(input_file):
     """Return the data of the given input file"""
-    in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
 

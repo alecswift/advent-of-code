@@ -11,7 +11,6 @@ def parse(input_file: str) -> list[str]:
     Return parsed data with the given input file. Parsed data is in the format
     of a list containing strings which represent the rucksacks
     """
-    in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     parsed_data: list[str] = input_data.splitlines()

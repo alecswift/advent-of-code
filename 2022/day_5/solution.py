@@ -11,7 +11,6 @@ def parse(input_file: str) -> tuple[list[list[str]], list[tuple[str, str, str]]]
     the input data is a tuple containing two lists:
     The first list represents the diagram.
     The second list represents the procedure"""
-    in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     split_data: list[str] = input_data.split("\n\n")

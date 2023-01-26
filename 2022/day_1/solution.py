@@ -30,7 +30,6 @@ def parse(input_file: str) -> list[list[str]]:
     Returns a list that contains lists of calories that elves are holding
     from a given input file
     """
-    in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     parsed_data: list[list[str]] = [

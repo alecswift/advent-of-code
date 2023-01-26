@@ -19,7 +19,6 @@ class Node:
 
 def split(input_file: str) -> list[list[str, str]]:
     """Split pairs of packets from a given input file"""
-    in_file: TextIO = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     split_lines = input_data.split("\n\n")

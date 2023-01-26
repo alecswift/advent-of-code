@@ -12,7 +12,6 @@ def initial_parse(input_file):
     """
     Return the parsed grid and procedure from the given input file
     """
-    in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     grid_str, procedure_str = input_data.split("\n\n")
