@@ -5,13 +5,12 @@ from itertools import product
 
 
 def main():
-    instructions, intervals = parse("day_6/input.txt")
+    instructions, intervals = parse("2015/day_6/input.txt")
     print(light_show(instructions, intervals))
     print(sum(lights_on_2.values()))
 
 
 def parse(input_file):
-    in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     split_lines = split(r"\n", input_data)

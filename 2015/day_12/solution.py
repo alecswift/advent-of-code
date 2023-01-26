@@ -3,7 +3,6 @@
 
 def main():
     input_file = "2015/day_12/input.txt"
-    in_file = open(input_file, "r", encoding="utf-8")
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
     part_1 = add_all_numbers(input_data)
