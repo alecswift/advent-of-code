@@ -13,11 +13,11 @@ def main():
     print(combos, combos_min_containers)
 
 
-def find_subsets_with_sum_of_150(data):
-    combos = 0
-    combos_min_containers = 0
-    first_hit = False
-    min_containers = -1
+def find_subsets_with_sum_of_150(data: list[int]) -> tuple[int, int]:
+    combos: int = 0
+    combos_min_containers: int = 0
+    first_hit: bool = False
+    min_containers: int = -1
     # we know that there are no 3 combinations that add up to 150
     for num in range(4, len(data)):
         for combo in combinations(data, num):
