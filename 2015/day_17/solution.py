@@ -1,3 +1,5 @@
+"""Puzzle explanation: https://adventofcode.com/2015/day/17"""
+
 from itertools import combinations
 from typing import TextIO
 
