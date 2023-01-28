@@ -1,7 +1,7 @@
 from typing import TextIO
 
 def main():
-    grid = parse("2015/day_18/input.txt")
+    grid: list[list[int]] = parse("2015/day_18/input.txt")
     for _ in range(100):
         grid = step_lights(grid)
     print(len([light for row in grid for light in row if light]))
@@ -26,10 +26,10 @@ def step_lights(grid: list[list[int]], part_1=True):
     new_grid = [[0] * 100 for _ in range(100)]
     for row_num, row in enumerate(grid):
         for col_num, light in enumerate(row):
-            position = complex(col_num, row_num)
+            position: complex = complex(col_num, row_num)
             if not part_1:
                 new_grid[row_num][col_num] = part_2(light, position, grid)
-            count_on = check_neighbors(complex(col_num, row_num), grid)
+            count_on: int = check_neighbors(position, grid)
             if light:
                 if count_on in (2, 3):
                     new_grid[row_num][col_num] = 1
@@ -47,7 +47,7 @@ def part_2(light, position, grid):
     ):
         return 1
 
-    count_on = check_neighbors(position, grid)
+    count_on: int = check_neighbors(position, grid)
     if light:
         if count_on in (2, 3):
             return 1
@@ -60,11 +60,11 @@ def check_neighbors(position: complex, grid: list[list[int]]) -> int:
     count_on: int = 0
     neighbors: list[complex] = [1j, 1 + 1j, 1, 1 - 1j, -1j, -1 - 1j, -1, -1 + 1j]
     for neighbor_pos in map(lambda neighbor: position + neighbor, neighbors):
-        row_num = int(neighbor_pos.imag)
-        col_num = int(neighbor_pos.real)
+        row_num: int = int(neighbor_pos.imag)
+        col_num: int = int(neighbor_pos.real)
         if row_num < 0 or col_num < 0 or len(grid) == row_num or len(grid[0]) == col_num:
             continue
-        neighbor = grid[row_num][col_num]
+        neighbor: int = grid[row_num][col_num]
         if neighbor:
             count_on += 1
     return count_on
