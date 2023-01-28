@@ -5,6 +5,13 @@ def main():
     for _ in range(100):
         grid = step_lights(grid)
     print(len([light for row in grid for light in row if light]))
+    grid = parse("2015/day_18/input.txt")
+    for position in [(0,0), (0,99), (99,0), (99,99)]:
+        col, row = position
+        grid[row][col] = 1
+    for _ in range(100):
+        grid = step_lights(grid, False)
+    print(len([light for row in grid for light in row if light]))
 
 def parse(input_file: str) -> list[list[int]]:
     in_file: TextIO
@@ -15,10 +22,13 @@ def parse(input_file: str) -> list[list[int]]:
     return grid
 
 
-def step_lights(grid: list[list[int]]):
+def step_lights(grid: list[list[int]], part_1=True):
     new_grid = [[0] * 100 for _ in range(100)]
     for row_num, row in enumerate(grid):
         for col_num, light in enumerate(row):
+            position = complex(col_num, row_num)
+            if not part_1:
+                new_grid[row_num][col_num] = part_2(light, position, grid)
             count_on = check_neighbors(complex(col_num, row_num), grid)
             if light:
                 if count_on in (2, 3):
@@ -27,6 +37,23 @@ def step_lights(grid: list[list[int]]):
                 if count_on == 3:
                     new_grid[row_num][col_num] = 1
     return new_grid
+
+def part_2(light, position, grid):
+    if position in (
+        0j,
+        99 * 1j,
+        99 + 0j,
+        99 + 99 * 1j,
+    ):
+        return 1
+
+    count_on = check_neighbors(position, grid)
+    if light:
+        if count_on in (2, 3):
+            return 1
+    if count_on == 3:
+        return 1
+    return 0
 
 
 def check_neighbors(position: complex, grid: list[list[int]]) -> int:
