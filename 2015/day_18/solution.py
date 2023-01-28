@@ -1,3 +1,5 @@
+"""Puzzle explanation: https://adventofcode.com/2015/day/18"""
+
 from typing import TextIO
 
 def main():
