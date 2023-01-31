@@ -57,4 +57,5 @@ function linearSearch(coords, target) {
     return false
 }
 
-console.log(solution(instructions))
+var [part1, part2] = solution(instructions)
+console.log(part1, part2)
