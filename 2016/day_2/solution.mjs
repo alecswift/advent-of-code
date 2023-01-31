@@ -1,3 +1,5 @@
+// Puzzle explanation: https://adventofcode.com/2016/day/2
+
 import { readFileSync } from 'fs';
 
 const instructions = readFileSync('day_2/input.txt', 'utf8').replaceAll("\n", "C")
