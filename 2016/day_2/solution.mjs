@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import { row } from 'mathjs';
 
 const instructions = readFileSync('day_2/input.txt', 'utf8').replaceAll("\n", "C")
 const keyPad1 = [
@@ -11,11 +10,11 @@ const keyPad1 = [
 ]
 const keyPad2 = [
     [null, null, null, null, null, null, null],
-    [null, null, null, 1, null, null, null],
-    [null, null, 2, 3, 4, null, null],
-    [null, 5, 6, 7, 8, 9, null],
-    [null, null, "A", "B", "C", null, null],
-    [null, null, null, "D", null, null, null],
+    [null, null, null, '1', null, null, null],
+    [null, null, '2', '3', '4', null, null],
+    [null, '5', '6', '7', '8', '9', null],
+    [null, null, 'A', 'B', 'C', null, null],
+    [null, null, null, 'D', null, null, null],
     [null, null, null, null, null, null, null]
 ];
 
@@ -63,5 +62,6 @@ function solution(instructions, part1) {
     return code;
 }
 
-console.log(solution(instructions, true))
-console.log(solution(instructions, false))
+const part1Sol = solution(instructions, true).join("")
+const part2Sol = solution(instructions, false).join("")
+console.log(part1Sol, part2Sol);
