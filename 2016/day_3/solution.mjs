@@ -1,23 +1,52 @@
 
 import { readFileSync } from "fs";
 
-const triangles = readFileSync('2016/day_3/input.txt', 'utf8').split("\n")
+const triangles = readFileSync('day_3/input.txt', 'utf8').split("\n")
+let triangle1 = []
+let triangle2 = []
+let triangle3 = []
+let trianglesPart2 = [triangle1, triangle2, triangle3]
 
 function findTriangles(triangles) {
     let triangleCount = 0
+    let triangleCount2 = 0
+    let idx = 0
     for (let triangle of triangles) {
         let arrTriangle = triangle.split(/\s+/)
         arrTriangle.shift()
         for (let i = 0; i < 3; i ++) {
             arrTriangle[i] = parseInt(arrTriangle[i])
         }
-        let [A, B, C] = arrTriangle
-        const isValidTriangle = (A + B > C) && (B + C > A) && (A + C > B)
-        if (isValidTriangle) {
+        if (isValidTriangle(arrTriangle)) {
             triangleCount ++
         }
+        triangleCount2 += part2(arrTriangle, idx)
+        idx ++
     }
-    return triangleCount;
+    return [triangleCount, triangleCount2];
 }
 
-console.log(findTriangles(triangles))
+function part2(arrTriangle, idx) {
+    let triangleCount2 = 0
+    for (let i = 0; i < 3; i ++) {
+        trianglesPart2[i].push(arrTriangle[i])
+    }
+    if ((idx + 1) % 3 === 0) {
+        for (let i = 0; i < 3; i ++) {
+            if (isValidTriangle(trianglesPart2[i])) {
+                triangleCount2 ++
+            }
+            trianglesPart2[i] = []
+        }
+    }
+    return triangleCount2
+}
+
+function isValidTriangle(arrTriangle) {
+    let [A, B, C] = arrTriangle
+    const isValid = (A + B > C) && (B + C > A) && (A + C > B)
+    return (isValid);
+}
+
+let [part1Solution, part2Solution] = findTriangles(triangles)
+console.log(part1Solution, part2Solution)
