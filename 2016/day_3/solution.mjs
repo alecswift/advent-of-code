@@ -1,3 +1,4 @@
+// Puzzle Explanation: https://adventofcode.com/2016/day/3
 
 import { readFileSync } from "fs";
 
@@ -8,6 +9,7 @@ let triangle3 = []
 let trianglesPart2 = [triangle1, triangle2, triangle3]
 
 function findTriangles(triangles) {
+    // Iterates over triangle data and tests if the triangles are valid
     let triangleCount = 0
     let triangleCount2 = 0
     let idx = 0
@@ -27,6 +29,8 @@ function findTriangles(triangles) {
 }
 
 function part2(arrTriangle, idx) {
+    // Tests triangles validity when we have three triangles defined
+    // after every 3 indices (due to triangles being located in columns)
     let triangleCount2 = 0
     for (let i = 0; i < 3; i ++) {
         trianglesPart2[i].push(arrTriangle[i])
