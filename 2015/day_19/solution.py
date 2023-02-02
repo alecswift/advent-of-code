@@ -1,17 +1,11 @@
-from collections import deque
 from re import findall
 from typing import TextIO
 
-cache = set()
-# cache is necessary testing length of string to reduce searches
-# checking length seemed to increase the search time as well
 def main():
-    replacements, molecule = parse("2015/day_19/input_test.txt")
-    rev_replacements = [(to_str, from_str) for from_str, to_str in replacements]
+    replacements, molecule = parse("2015/day_19/input.txt")
     num_possibilities, _ = find_molecules(molecule, replacements)
     print(num_possibilities)
-    print(search('e', molecule, replacements))
-    
+    print(part2(molecule))
 
 def parse(input_file: str) -> tuple[list[tuple[str, str]], str]:
     in_file: TextIO
@@ -36,43 +30,11 @@ def find_molecules(molecule: str, replacements: list[tuple[str, str]]) -> int:
                 possibilities.add(f"{molecule[:idx - step]}{to_str}{molecule[idx:]}")
     return len(possibilities), possibilities
 
-class Node:
-
-    def __init__(self, val=None, parent=None):
-        self._val = val
-        self._parent = parent
-
-    def get_val(self):
-        return self._val
-
-    def get_parent(self):
-        return self._parent
-
-def search(start, target, replacements):
-    queue = deque([Node(start)])
-
-    not_found = True
-    while not_found:
-        for neighbor in find_molecules(queue[0].get_val(), replacements)[1]:
-            if len(target) < len(neighbor):
-                continue
-            if neighbor in cache:
-                continue
-            if neighbor == target:
-                found_node = Node(neighbor, queue[0])
-                not_found = False
-                break
-            queue.append(Node(neighbor, queue[0]))
-            cache.add(neighbor)
-        queue.popleft()
-
-    steps = 0
-    current_node = found_node
-    while current_node.get_parent():
-        current_node = current_node.get_parent()
-        steps += 1
-
-    return steps
+def part2(molecule):
+    count_elements = sum(1 for char in molecule if char.isupper())
+    count_y = len(findall(r"Y", molecule))
+    count_ar_rn = len(findall(r"Rn|Ar", molecule))
+    return count_elements - count_ar_rn - (count_y * 2) - 1
 
 if __name__ == "__main__":
     main()
