@@ -1,3 +1,5 @@
+"""Puzzle explanation: https://adventofcode.com/2015/day/19"""
+
 from re import findall
 from typing import TextIO
 
