@@ -3,7 +3,7 @@ from typing import TextIO
 
 def main():
     replacements, molecule = parse("2015/day_19/input.txt")
-    num_possibilities, _ = find_molecules(molecule, replacements)
+    num_possibilities = find_molecules(molecule, replacements)
     print(num_possibilities)
     print(part2(molecule))
 
@@ -28,12 +28,12 @@ def find_molecules(molecule: str, replacements: list[tuple[str, str]]) -> int:
             scan: str = molecule[idx - step: idx]
             if scan == from_str:
                 possibilities.add(f"{molecule[:idx - step]}{to_str}{molecule[idx:]}")
-    return len(possibilities), possibilities
+    return len(possibilities)
 
-def part2(molecule):
-    count_elements = sum(1 for char in molecule if char.isupper())
-    count_y = len(findall(r"Y", molecule))
-    count_ar_rn = len(findall(r"Rn|Ar", molecule))
+def part2(molecule: str) -> int:
+    count_elements: int = sum(1 for char in molecule if char.isupper())
+    count_y: int = len(findall(r"Y", molecule))
+    count_ar_rn: int = len(findall(r"Rn|Ar", molecule))
     return count_elements - count_ar_rn - (count_y * 2) - 1
 
 if __name__ == "__main__":
