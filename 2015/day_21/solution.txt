@@ -1,0 +1,48 @@
+I solved this one on paper. Since the boss has 9 more hitpoints than I do, I need
+to do more damage per turn than him. He has a total of 10 stats. To do more damage
+I need a total of 11 stats. To pay the least I need to buy the most cost efficient
+items per stat. After looking through the weapons the most cost efficient one is
+the longsword (40 gold, 7 stats). Looking through the armour the most cost efficient
+is the chainmail (31 cost, 2 stats). After that it's more cost effective to buy Rings
+specifically, the defense +2 ring (40 cost, 2 stats). This all adds up to a total of
+(111 gold, 11 stats)
+
+111 gold is my puzzle answer for part 1
+
+For part two I need to buy as much as possible and still lose. This probably means
+I need 10 stats. Now I do the opposite of part 1 and look for the least cost effective
+equipment. Since I need a weapon, I'll get the one with the least stats, since weapons
+are too cost effective: dagger (8 cost, 4 stats). Then i'll skip to rings since they are
+the least cost effective weapon type: damage +3 (100 cost, 3 stats), armour + 3 (80 cost, 3 stats)
+This adds up to a total of:  (188 gold, 10 stats)
+
+188 gold is my puzzle answer for part 2
+
+Boss:
+
+Hit Points: 109
+Damage: 8
+Armor: 2
+
+
+Weapons:    Cost  Damage  Armor
+Dagger        8     4       0
+Shortsword   10     5       0
+Warhammer    25     6       0
+Longsword    40     7       0
+Greataxe     74     8       0
+
+Armor:      Cost  Damage  Armor
+Leather      13     0       1
+Chainmail    31     0       2
+Splintmail   53     0       3
+Bandedmail   75     0       4
+Platemail   102     0       5
+
+Rings:      Cost  Damage  Armor
+Damage +1    25     1       0
+Damage +2    50     2       0
+Damage +3   100     3       0
+Defense +1   20     0       1
+Defense +2   40     0       2
+Defense +3   80     0       3
