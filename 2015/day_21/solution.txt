@@ -1,3 +1,5 @@
+"""Puzzle explanation: https://adventofcode.com/2015/day/21"""
+
 I solved this one on paper. Since the boss has 9 more hitpoints than I do, I need
 to do more damage per turn than him. He has a total of 10 stats. To do more damage
 I need a total of 11 stats. To pay the least I need to buy the most cost efficient
