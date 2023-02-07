@@ -62,6 +62,10 @@ class Wizard:
 # keep track of the minimum amount of mana utilized so far and
 # only continue path if you have used less mana than the minimum
 
+# return function if move is a current prolonged effect.
+# return if one of the characters died
+# return mana is greater than the current min mana
+
 def fight_simulator(wizard, boss):
     # can I get the names of wizard class methods another way
     # rather than hardcoding?
