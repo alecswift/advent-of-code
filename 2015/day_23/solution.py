@@ -24,12 +24,7 @@ def parse(input_file: str) -> list[list[str]]:
     with open(input_file, encoding="utf-8") as in_file:
         input_data: str = in_file.read()
     split_lines: list[str] = input_data.split("\n")[:-1]
-    code = []
-    for line in split_lines:
-        if ',' in line:
-            code.append(findall(r"[a-z0-9+]+", line))
-        else:
-            code.append(line.split(' '))
+    code = [findall(r"[a-z0-9+-]+", line) for line in split_lines]
     return code
 
 code: list[list[str]]
@@ -41,6 +36,7 @@ def execute(code, instructions, part1=True) -> int:
         registers: dict[str,int] = {'a': 0 , 'b': 0}
     else:
         registers = {'a': 1 , 'b': 0}
+
     pos: int = 0
     while pos < len(code):
         instruction, *operands = code[pos]
