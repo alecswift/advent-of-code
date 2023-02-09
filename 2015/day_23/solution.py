@@ -27,10 +27,11 @@ def parse(input_file: str) -> list[list[str]]:
     code = [findall(r"[a-z0-9+-]+", line) for line in split_lines]
     return code
 
+code: list[list[str]]
+instructions: dict[str, str]
+part1: bool
+
 def execute(code, instructions, part1=True) -> int:
-    code: list[list[str]]
-    instructions: dict[str, str]
-    part1: bool
 
     if part1:
         registers: dict[str,int] = {'a': 0 , 'b': 0}
