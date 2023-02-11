@@ -1,5 +1,11 @@
 """Puzzle explanation: https://adventofcode.com/2015/day/22"""
 
+def main():
+    min_mana_spent_my_input = MinManaSpent()
+    min_mana_spent_my_input_2 = MinManaSpent()
+    print(rec_fight_simulator(50, 0, 500, 58, (None, None, None), 0, min_mana_spent_my_input))
+    print(rec_fight_simulator(50, 0, 500, 58, (None, None, None), 0, min_mana_spent_my_input_2, False))
+
 class MinManaSpent:
 
     def __init__(self, min_mana_spent=None):
@@ -115,7 +121,5 @@ def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min
 
     return min_inst.min_mana_spent
 
-min_mana_spent_my_input = MinManaSpent()
-min_mana_spent_my_input_2 = MinManaSpent()
-print(rec_fight_simulator(50, 0, 500, 58, (None, None, None), 0, min_mana_spent_my_input))
-print(rec_fight_simulator(50, 0, 500, 58, (None, None, None), 0, min_mana_spent_my_input_2, False))
+if __name__ == "__main__":
+    main()
