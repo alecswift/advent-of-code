@@ -1,12 +1,11 @@
 """Puzzle explanation: https://adventofcode.com/2015/day/22"""
 
-
 class MinManaSpent:
 
     def __init__(self, min_mana_spent=None):
         self.min_mana_spent = min_mana_spent
 
-def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min_inst=None):
+def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min_inst=None, part_1=True):
     # can I get the names of wizard class methods another way
     # rather than hardcoding?
     wizard_moves = [
@@ -22,6 +21,11 @@ def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min
         shield_visited_temp, poison_visited_temp, recharge_visited_temp = shield_visited, poison_visited, recharge_visited
         temp_wizhp, temp_wizarmour, temp_mana, temp_boss_hp, temp_mana_spent = wizhp, wizarmour, mana, bosshp, mana_spent
         # wiz turn
+        if not part_1:
+            temp_wizhp -= 1
+            if temp_wizhp <= 0:
+                continue
+
         if shield_visited_temp is not None:
             shield_visited_temp -= 1
             if shield_visited_temp == 0:
@@ -107,9 +111,11 @@ def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min
             continue
 
         temp_visited = (shield_visited_temp, poison_visited_temp, recharge_visited_temp)
-        rec_fight_simulator(temp_wizhp, temp_wizarmour, temp_mana, temp_boss_hp, temp_visited, temp_mana_spent, min_inst)
+        rec_fight_simulator(temp_wizhp, temp_wizarmour, temp_mana, temp_boss_hp, temp_visited, temp_mana_spent, min_inst, part_1)
 
     return min_inst.min_mana_spent
 
 min_mana_spent_my_input = MinManaSpent()
+min_mana_spent_my_input_2 = MinManaSpent()
 print(rec_fight_simulator(50, 0, 500, 58, (None, None, None), 0, min_mana_spent_my_input))
+print(rec_fight_simulator(50, 0, 500, 58, (None, None, None), 0, min_mana_spent_my_input_2, False))
