@@ -5,8 +5,8 @@ def main():
     min_mana_spent = MinManaSpent()
     min_mana_spent_2 = MinManaSpent()
     effects = (None, None, None)
-    print(fight_sim(50, 0, 500, 58, effects, 0, min_mana_spent))
-    print(fight_sim(50, 0, 500, 58, effects, 0, min_mana_spent_2, False))
+    print(fight_sim_dfs(50, 0, 500, 58, effects, 0, min_mana_spent))
+    print(fight_sim_dfs(50, 0, 500, 58, effects, 0, min_mana_spent_2, False))
 
 
 class MinManaSpent:
@@ -14,7 +14,7 @@ class MinManaSpent:
         self.min_mana_spent = min_mana_spent
 
 
-def fight_sim(whp, armor, mana, bhp, effects, mana_spent, min_inst, part_1=True):
+def fight_sim_dfs(whp, armor, mana, bhp, effects, mana_spent, min_inst, part_1=True):
     wiz_moves = [
         ("magic_missile", 53),
         ("drain", 73),
@@ -95,7 +95,7 @@ def fight_sim(whp, armor, mana, bhp, effects, mana_spent, min_inst, part_1=True)
             continue
 
         cp_effects = (shield_cp, poison_cp, recharge_cp)
-        fight_sim(
+        fight_sim_dfs(
             cp_whp,
             cp_armor,
             cp_mana,
