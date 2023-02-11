@@ -1,50 +1,8 @@
 """Puzzle explanation: https://adventofcode.com/2015/day/22"""
 
-from random import randint
 # Hit Points: 58
 # Damage: 9
 
-class Boss:
-
-    def __init__(self, hp, damage):
-        self._hp = hp
-        self._damage = damage
-
-    def get_hp(self):
-        return self._hp
-
-    def get_damage(self):
-        return self._damage
-
-    def lose_hp(self, amount):
-        self._hp -= amount
-
-class Wizard:
-
-    def __init__(self):
-        self._hp = 50
-        self._mana = 500
-        # implement stoppers for moves when mana is out
-        self._armor = 0
-
-    def get_hp(self):
-        return self._hp
-
-    def take_damage(self, boss):
-        damage = boss.get_damage()
-        if damage <= self._armor:
-            self._hp -= 1
-        else:
-            self._hp -= boss.get_damage() - self._armor
-
-    def magic_missile(self, boss):
-        self._mana -= 53
-        boss.lose_hp(4)
-
-    def drain(self, boss):
-        # can you heal above 50??
-        self._hp += 2
-        boss.lose_hp(2)
     
     # have to decide how to deal with turned base effects
     # Shield, poison, recharge
@@ -65,25 +23,119 @@ class Wizard:
 # return function if move is a current prolonged effect.
 # return if one of the characters died
 # return mana is greater than the current min mana
+# states: (wizhp, bosshp, mana, visited, counters)
 
-def fight_simulator(wizard, boss):
+class MinManaSpent:
+
+    def __init__(self, min_mana_spent=None):
+        self.min_mana_spent = min_mana_spent
+
+def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min_inst=None):
     # can I get the names of wizard class methods another way
     # rather than hardcoding?
     wizard_moves = [
-        "magic_missile",
-        "drain"
+        ("magic_missile", 53),
+        ("drain", 73),
+        ("shield", 113),
+        ("poison", 173),
+        ("recharge", 229)
     ]
+    shield_visited, poison_visited, recharge_visited = visited
     # currently simulating 1 fight with random moves, will iterate recursively over paths later
-    while 0 < wizard.get_hp() and 0 < boss.get_hp():
-        getattr(w1, wizard_moves[randint(0,1)])(b1)
-        wizard.take_damage(b1)
+    for move, mana_cost in wizard_moves:
+        # wiz turn
+        if shield_visited is not None:
+            if shield_visited == 0:
+                wizarmour = 0
+                shield_visited = None
+            else:
+                shield_visited -= 1
+        if poison_visited is not None:
+            if poison_visited == 0:
+                poison_visited = None
+            else:
+                bosshp -= 3
+                poison_visited -= 1
+        if recharge_visited is not None:
+            if recharge_visited == 0:
+                recharge_visited = None
+            else:
+                mana += 101
+                recharge_visited -= 1
 
-    return boss.get_hp() <= 0
-        
+        if mana < mana_cost:
+            return
 
+        if move == "magic_missile":
+            bosshp -= 4
+            mana -= mana_cost
+            mana_spent += mana_cost
+        elif move == "drain":
+            bosshp -= 2
+            wizhp += 2
+            mana -= mana_cost
+            mana_spent += mana_cost
+        elif move == "shield":
+            if shield_visited is not None:
+                return
+            wizarmour += 7
+            shield_visited = 6
+            mana -= mana_cost
+            mana_spent += mana_cost
+        elif move == "poison":
+            if poison_visited is not None:
+                return
+            poison_visited = 6
+            mana -= mana_cost
+            mana_spent += mana_cost
+        elif move == "recharge":
+            if recharge_visited is not None:
+                return
+            recharge_visited = 5
+            mana -= mana_cost
+            mana_spent += mana_cost
 
+        if min_inst.min_mana_spent is not None and min_inst.min_mana_spent <= mana_spent:
+            return
 
+        if bosshp <= 0:
+            if min_inst.min_mana_spent is None:
+                min_inst.min_mana_spent = mana_spent
+            elif mana_spent < min_inst.min_mana_spent:
+                min_inst.min_mana_spent = mana_spent
+            return min_inst.min_mana_spent
+        # boss turn
+        if shield_visited is not None:
+            if shield_visited == 0:
+                wizarmour = 0
+                shield_visited = None
+            else:
+                shield_visited -= 1
+        if poison_visited is not None:
+            if poison_visited == 0:
+                poison_visited = None
+            else:
+                bosshp -= 3
+                poison_visited -= 1
+        if recharge_visited is not None:
+            if recharge_visited == 0:
+                recharge_visited = None
+            else:
+                mana += 101
+                recharge_visited -= 1
 
-w1 = Wizard()
-b1 = Boss(21, 9)
-print(fight_simulator(w1, b1))
+        if 9 <= wizarmour:
+            wizhp -= 1
+        else:
+            wizhp -= (8 - wizarmour)
+
+        if wizhp <= 0:
+            return None
+
+        visited = (shield_visited, poison_visited, recharge_visited)
+        rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min_inst)
+
+    return min_inst.min_mana_spent
+
+min_mana_spent_my_input = MinManaSpent()
+print(rec_fight_simulator(10, 0, 250, 13, (None, None, None), 0, min_mana_spent_my_input))
