@@ -14,12 +14,8 @@ class MinManaSpent:
         self.min_mana_spent = min_mana_spent
 
 
-def fight_sim(
-    wizhp, armor, mana, bosshp, effects, mana_spent, min_inst=None, part_1=True
-):
-    # can I get the names of wizard class methods another way
-    # rather than hardcoding?
-    wizard_moves = [
+def fight_sim(whp, armor, mana, bhp, effects, mana_spent, min_inst, part_1=True):
+    wiz_moves = [
         ("magic_missile", 53),
         ("drain", 73),
         ("shield", 113),
@@ -27,90 +23,83 @@ def fight_sim(
         ("recharge", 229),
     ]
     shield, poison, recharge = effects
-    # currently simulating 1 fight with random moves, will iterate recursively over paths later
-    for move, mana_cost in wizard_moves:
+
+    for move, mana_cost in wiz_moves:
         shield_cp, poison_cp, recharge_cp = shield, poison, recharge
-        cp_wizhp, cp_armor, cp_mana, cp_boss_hp, cp_mana_spent = (
-            wizhp,
+        cp_whp, cp_armor, cp_mana, cp_bhp, cp_mana_spent = (
+            whp,
             armor,
             mana,
-            bosshp,
+            bhp,
             mana_spent,
         )
-        # wiz turn
+        # wizard turn
         if not part_1:
-            cp_wizhp -= 1
-            if cp_wizhp <= 0:
+            cp_whp -= 1
+            if cp_whp <= 0:
                 continue
 
         shield_cp, cp_armor = shield_effect(shield_cp, cp_armor)
-        poison_cp, cp_boss_hp = poison_effect(poison_cp, cp_boss_hp)
+        poison_cp, cp_bhp = poison_effect(poison_cp, cp_bhp)
         recharge_cp, cp_mana = recharge_effect(recharge_cp, cp_mana)
 
-        if cp_mana < mana_cost:
+        not_enough_mana_for_move = cp_mana < mana_cost
+        if not_enough_mana_for_move:
             continue
 
-        if move == "magic_missile":
-            cp_boss_hp -= 4
-            cp_mana -= mana_cost
-            cp_mana_spent += mana_cost
-        elif move == "drain":
-            cp_boss_hp -= 2
-            cp_wizhp += 2
-            cp_mana -= mana_cost
-            cp_mana_spent += mana_cost
-        elif move == "shield":
-            if shield_cp is not None:
-                continue
-            cp_armor += 7
-            shield_cp = 6
-            cp_mana -= mana_cost
-            cp_mana_spent += mana_cost
-        elif move == "poison":
-            if poison_cp is not None:
-                continue
-            poison_cp = 6
-            cp_mana -= mana_cost
-            cp_mana_spent += mana_cost
-        elif move == "recharge":
-            if recharge_cp is not None:
-                continue
-            recharge_cp = 5
-            cp_mana -= mana_cost
-            cp_mana_spent += mana_cost
+        match move:
+            case "magic_missile":
+                cp_bhp -= 4
+            case "drain":
+                cp_bhp -= 2
+                cp_whp += 2
+            case "shield":
+                if shield_cp is not None:
+                    continue
+                cp_armor += 7
+                shield_cp = 6
+            case "poison":
+                if poison_cp is not None:
+                    continue
+                poison_cp = 6
+            case "recharge":
+                if recharge_cp is not None:
+                    continue
+                recharge_cp = 5
 
-        if (
-            min_inst.min_mana_spent is not None
-            and min_inst.min_mana_spent <= cp_mana_spent
-        ):
+        cp_mana -= mana_cost
+        cp_mana_spent += mana_cost
+
+        min_initialized = min_inst.min_mana_spent is not None
+        if min_initialized and min_inst.min_mana_spent <= cp_mana_spent:
             continue
 
         # boss turn
         shield_cp, cp_armor = shield_effect(shield_cp, cp_armor)
-        poison_cp, cp_boss_hp = poison_effect(poison_cp, cp_boss_hp)
+        poison_cp, cp_bhp = poison_effect(poison_cp, cp_bhp)
         recharge_cp, cp_mana = recharge_effect(recharge_cp, cp_mana)
 
-        if cp_boss_hp <= 0:
-            if min_inst.min_mana_spent is None:
+        if cp_bhp <= 0:
+            if not min_initialized:
                 min_inst.min_mana_spent = cp_mana_spent
             elif cp_mana_spent < min_inst.min_mana_spent:
                 min_inst.min_mana_spent = cp_mana_spent
             return min_inst.min_mana_spent
 
         if 9 <= cp_armor:
-            cp_wizhp -= 1
+            cp_whp -= 1
         else:
-            cp_wizhp -= 9 - cp_armor
+            cp_whp -= 9 - cp_armor
 
-        if cp_wizhp <= 0:
+        if cp_whp <= 0:
             continue
 
         cp_effects = (shield_cp, poison_cp, recharge_cp)
         fight_sim(
-            cp_wizhp,
+            cp_whp,
             cp_armor,
             cp_mana,
-            cp_boss_hp,
+            cp_bhp,
             cp_effects,
             cp_mana_spent,
             min_inst,
@@ -129,13 +118,13 @@ def shield_effect(shield_cp, cp_armor):
     return shield_cp, cp_armor
 
 
-def poison_effect(poison_cp, cp_boss_hp):
+def poison_effect(poison_cp, cp_bhp):
     if poison_cp is not None:
-        cp_boss_hp -= 3
+        cp_bhp -= 3
         poison_cp -= 1
         if poison_cp == 0:
             poison_cp = None
-    return poison_cp, cp_boss_hp
+    return poison_cp, cp_bhp
 
 
 def recharge_effect(recharge_cp, cp_mana):
