@@ -32,21 +32,9 @@ def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min
             if temp_wizhp <= 0:
                 continue
 
-        if shield_visited_temp is not None:
-            shield_visited_temp -= 1
-            if shield_visited_temp == 0:
-                temp_wizarmour = 0
-                shield_visited_temp = None
-        if poison_visited_temp is not None:
-            temp_boss_hp -= 3
-            poison_visited_temp -= 1
-            if poison_visited_temp == 0:
-                poison_visited_temp = None
-        if recharge_visited_temp is not None:
-            temp_mana += 101
-            recharge_visited_temp -= 1
-            if recharge_visited_temp == 0:
-                recharge_visited_temp = None
+        shield_visited_temp, temp_wizarmour = shield_effect(shield_visited_temp, temp_wizarmour)
+        poison_visited_temp, temp_boss_hp = poison_effect(poison_visited_temp, temp_boss_hp)
+        recharge_visited_temp, temp_mana = recharge_effect(recharge_visited_temp, temp_mana)
 
         if temp_mana < mana_cost:
             continue
@@ -85,16 +73,9 @@ def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min
 
 
         # boss turn
-        if shield_visited_temp is not None:
-            shield_visited_temp -= 1
-            if shield_visited_temp == 0:
-                temp_wizarmour = 0
-                shield_visited_temp = None
-        if poison_visited_temp is not None:
-            temp_boss_hp -= 3
-            poison_visited_temp -= 1
-            if poison_visited_temp == 0:
-                poison_visited_temp = None
+        shield_visited_temp, temp_wizarmour = shield_effect(shield_visited_temp, temp_wizarmour)
+        poison_visited_temp, temp_boss_hp = poison_effect(poison_visited_temp, temp_boss_hp)
+        recharge_visited_temp, temp_mana = recharge_effect(recharge_visited_temp, temp_mana)
         if recharge_visited_temp is not None:
             temp_mana += 101
             recharge_visited_temp -= 1
@@ -120,6 +101,31 @@ def rec_fight_simulator(wizhp, wizarmour, mana, bosshp, visited, mana_spent, min
         rec_fight_simulator(temp_wizhp, temp_wizarmour, temp_mana, temp_boss_hp, temp_visited, temp_mana_spent, min_inst, part_1)
 
     return min_inst.min_mana_spent
+
+def shield_effect(shield_visited_temp, temp_wizarmour):
+    if shield_visited_temp is not None:
+        shield_visited_temp -= 1
+        if shield_visited_temp == 0:
+            temp_wizarmour = 0
+            shield_visited_temp = None
+    return shield_visited_temp, temp_wizarmour
+
+def poison_effect(poison_visited_temp, temp_boss_hp):
+    if poison_visited_temp is not None:
+        temp_boss_hp -= 3
+        poison_visited_temp -= 1
+        if poison_visited_temp == 0:
+            poison_visited_temp = None
+    return poison_visited_temp, temp_boss_hp
+
+def recharge_effect(recharge_visited_temp, temp_mana):
+    if recharge_visited_temp is not None:
+            temp_mana += 101
+            recharge_visited_temp -= 1
+            if recharge_visited_temp == 0:
+                recharge_visited_temp = None
+    return recharge_visited_temp, temp_mana
+
 
 if __name__ == "__main__":
     main()
