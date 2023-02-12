@@ -1,4 +1,4 @@
-from typing import TextIO
+from typing import Optional, TextIO
 from itertools import combinations
 
 
@@ -14,23 +14,23 @@ def main() -> None:
     print(part_2)
 
 def parse(input_file: str) -> list[int]:
+    in_file: TextIO
     with open(input_file, encoding="utf-8") as in_file:
-        in_file: TextIO
         weights: list[int] = [int(line) for line in in_file]
     return weights
 
-def find_min_length(weights, target):
-    max_idx = len(weights) - 1
-    stack = []
-    sum_weights = 0
-    pos = 0
+def find_min_length(weights: list[int], target: int) -> int:
+    max_idx: int = len(weights) - 1
+    stack: list[tuple[int, int]] = []
+    sum_weights: int = 0
+    pos: int = 0
     while sum_weights != target:
         if max_idx < pos:
             last_weight, last_pos = stack.pop()
             sum_weights -= last_weight
             pos = last_pos + 1
             break
-        current = weights[pos]
+        current: int = weights[pos]
         if target < sum_weights:
             last_weight, _ = stack.pop()
             sum_weights -= last_weight
@@ -41,8 +41,8 @@ def find_min_length(weights, target):
             pos += 1
     return len(stack)
 
-def find_optimal(weights, min_length, target):
-    minimum = None
+def find_optimal(weights: list[int], min_length: int, target: int) -> Optional[int]:
+    minimum: Optional[int] = None
     for subset in combinations(weights, min_length):
         if sum(subset) == target:
             if minimum is None:
@@ -51,12 +51,11 @@ def find_optimal(weights, min_length, target):
                 minimum = entanglement(subset)
     return minimum
 
-def entanglement(container: list[int]) -> int:
-    product = 1
+def entanglement(container: tuple) -> int:
+    product: int = 1
     for weight in container:
         product *= weight
     return product
-
 
 if __name__ == "__main__":
     main()
