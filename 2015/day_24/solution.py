@@ -1,3 +1,5 @@
+"""https://adventofcode.com/2015/day/24"""
+
 from typing import Optional, TextIO
 from itertools import combinations
 
