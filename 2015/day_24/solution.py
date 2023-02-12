@@ -3,11 +3,15 @@ from itertools import combinations
 
 
 def main() -> None:
-    weights = [11,10,9,8,7,5,4,3,2,1]
+    weights = parse("2015/day_24/input.txt")[::-1]
     target = sum(weights) // 3
     min_length = find_min_length(weights, target)
     part_1 = find_optimal(weights, min_length, target)
     print(part_1)
+    target_2 = sum(weights) // 4
+    min_length = find_min_length(weights, target_2)
+    part_2 = find_optimal(weights, min_length, target_2)
+    print(part_2)
 
 def parse(input_file: str) -> list[int]:
     with open(input_file, encoding="utf-8") as in_file:
@@ -21,14 +25,15 @@ def find_min_length(weights, target):
     sum_weights = 0
     pos = 0
     while sum_weights != target:
-        current = weights[pos]
         if max_idx < pos:
             last_weight, last_pos = stack.pop()
             sum_weights -= last_weight
             pos = last_pos + 1
+            break
+        current = weights[pos]
         if target < sum_weights:
-            stack.pop()
-            sum_weights -= current
+            last_weight, _ = stack.pop()
+            sum_weights -= last_weight
             pos += 1
         else:
             stack.append((current, pos))
@@ -40,8 +45,9 @@ def find_optimal(weights, min_length, target):
     minimum = None
     for subset in combinations(weights, min_length):
         if sum(subset) == target:
-            if minimum is not None and entanglement(subset) < minimum:
-                minimum = entanglement(subset)
+            if minimum is not None:
+                if entanglement(subset) < minimum:
+                    minimum = entanglement(subset)
             else:
                 minimum = entanglement(subset)
     return minimum
