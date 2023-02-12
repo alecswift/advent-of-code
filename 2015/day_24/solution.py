@@ -45,10 +45,9 @@ def find_optimal(weights, min_length, target):
     minimum = None
     for subset in combinations(weights, min_length):
         if sum(subset) == target:
-            if minimum is not None:
-                if entanglement(subset) < minimum:
-                    minimum = entanglement(subset)
-            else:
+            if minimum is None:
+                minimum = entanglement(subset)
+            elif entanglement(subset) < minimum:
                 minimum = entanglement(subset)
     return minimum
 
