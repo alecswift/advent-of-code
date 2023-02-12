@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	boxes := parse("2015/day_2/input.txt")
+	boxes := parse("2015/day_02/input.txt")
 	totalMaterials := calcMaterials(boxes)
 	paper := totalMaterials[0]
 	ribbon := totalMaterials[1]

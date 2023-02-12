@@ -4,8 +4,8 @@ from collections import deque
 from re import findall, split
 
 def main():
-    wires, instructions = parse("2015/day_7/input.txt")
-    wires_1, instructions_1 = parse("2015/day_7/input_2.txt")
+    wires, instructions = parse("2015/day_07/input.txt")
+    wires_1, instructions_1 = parse("2015/day_07/input_2.txt")
     print(emulate_circuit(wires, instructions))
     print(emulate_circuit(wires_1, instructions_1))
 

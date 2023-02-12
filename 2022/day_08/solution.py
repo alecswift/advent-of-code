@@ -97,6 +97,6 @@ def max_scenic_score(tree_matrix):
         scores.append(product)
     return sorted(scores)[-1]
 
-tree_matrix_1 = build_matrix('2022/day_8/input.txt')
+tree_matrix_1 = build_matrix('2022/day_08/input.txt')
 print(num_of_visible_trees(tree_matrix_1))
 print(max_scenic_score(tree_matrix_1))

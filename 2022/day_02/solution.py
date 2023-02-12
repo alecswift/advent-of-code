@@ -53,4 +53,4 @@ def total_score(input_file: str) -> int:
         score_2 += sum(outcome_scores_2[game])
     return score, score_2
 
-print(total_score("2022/day_2/input.txt"))
+print(total_score("2022/day_02/input.txt"))

@@ -2,7 +2,7 @@
 
 import { readFileSync } from "fs";
 
-const triangles = readFileSync('day_3/input.txt', 'utf8').split("\n")
+const triangles = readFileSync('2016/day_03/input.txt', 'utf8').split("\n")
 let triangle1 = []
 let triangle2 = []
 let triangle3 = []

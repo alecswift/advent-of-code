@@ -5,7 +5,7 @@ import re
 from typing import TextIO
 
 def main():
-    parsed_data = parse("2022/day_1/input.txt")
+    parsed_data = parse("2022/day_01/input.txt")
     first,  top_three = find_top_three(parsed_data)
     print(first)
     print(top_three)

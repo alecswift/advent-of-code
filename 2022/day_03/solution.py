@@ -54,5 +54,5 @@ def total_priority_2(input_file: str) -> int:
         cp_parsed_data = rest
     return total
 
-print(total_priority("2022/day_3/input.txt"))
-print(total_priority_2("2022/day_3/input.txt"))
+print(total_priority("2022/day_03/input.txt"))
+print(total_priority_2("2022/day_03/input.txt"))

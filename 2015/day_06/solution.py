@@ -5,7 +5,7 @@ from itertools import product
 
 
 def main():
-    instructions, intervals = parse("2015/day_6/input.txt")
+    instructions, intervals = parse("2015/day_06/input.txt")
     print(light_show(instructions, intervals))
     print(sum(lights_on_2.values()))
 

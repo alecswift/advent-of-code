@@ -2,7 +2,7 @@
 
 import { readFileSync } from 'fs';
 
-const instructions = readFileSync('day_2/input.txt', 'utf8').replaceAll("\n", "C")
+const instructions = readFileSync('2016/day_02/input.txt', 'utf8').replaceAll("\n", "C")
 const keyPad1 = [
     [null, null, null, null],
     [null, '1', '2', '3', null],

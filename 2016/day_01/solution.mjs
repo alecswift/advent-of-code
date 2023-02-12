@@ -3,7 +3,7 @@
 import { complex, add } from 'mathjs'
 import { readFileSync } from 'fs';
 
-const instructions = readFileSync('day_1/input.txt', 'utf8').split(", ");
+const instructions = readFileSync('2016/day_01/input.txt', 'utf8').split(", ");
 
 function solution(instructions) {
     let part2 = false

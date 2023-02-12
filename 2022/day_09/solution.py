@@ -174,5 +174,5 @@ def num_of_positions_2(input_file):
     return len(tail_positions)
 
 
-print(num_of_tail_positions("2022/day_9/input.txt"))
-print(num_of_positions_2("2022/day_9/input.txt"))
+print(num_of_tail_positions("2022/day_09/input.txt"))
+print(num_of_positions_2("2022/day_09/input.txt"))

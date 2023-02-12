@@ -3,7 +3,7 @@
 from re import split, sub
 
 def main():
-    solution_1, solution_2 = parse("2015/day_8/input.txt")
+    solution_1, solution_2 = parse("2015/day_08/input.txt")
     print(f"{solution_1}\n{solution_2}")
 
 def parse(input_file):

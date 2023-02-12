@@ -26,5 +26,5 @@ def sub_routine(input_file: str, num_digits: int) -> int:
             break
     return marker_location
 
-print(sub_routine('2022/day_6/input.txt', 4))
-print(sub_routine('2022/day_6/input.txt', 14))
+print(sub_routine('2022/day_06/input.txt', 4))
+print(sub_routine('2022/day_06/input.txt', 14))

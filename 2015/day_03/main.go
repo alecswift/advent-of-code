@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	directions := parse("2015/day_3/input.txt")
+	directions := parse("2015/day_03/input.txt")
 	santa, robotAndSanta := deliverPresents(directions)
 	fmt.Printf("Santa delivers presents to %d presents on his own\n", santa)
 	fmt.Printf("With the excellent help of robot santa, they deliver %d presents", robotAndSanta)

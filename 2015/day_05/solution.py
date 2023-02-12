@@ -3,7 +3,7 @@
 from re import findall, search, split
 
 def main():
-    input_file = "2015/day_5/input.txt"
+    input_file = "2015/day_05/input.txt"
     with open(input_file, "r", encoding="utf-8") as in_file:
         input_data = in_file.read()
 

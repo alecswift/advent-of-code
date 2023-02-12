@@ -121,6 +121,6 @@ def build_tree(input_file: str) -> Type[FileTree]:
     return file_tree_1
 
 
-file_tree_data = build_tree("2022/day_7/input.txt")
+file_tree_data = build_tree("2022/day_07/input.txt")
 print(sum(size for size in file_tree_data.sizes() if size <= 100000))
 print(file_tree_data.size_dir_to_del())

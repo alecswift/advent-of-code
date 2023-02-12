@@ -4,7 +4,7 @@ from re import findall, split
 
 
 def main():
-    indices, connections = parse("2015/day_9/input.txt")
+    indices, connections = parse("2015/day_09/input.txt")
     distances = []
     max_distance = 0
     for node in indices:
