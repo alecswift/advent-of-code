@@ -5,12 +5,14 @@ from typing import TextIO
 
 Checker = list[tuple[str, tuple[str, int]]]
 
+
 def main():
     rooms = parse("2016/day_04/input.txt")
     part_1 = find_real_rooms(rooms)
     print(part_1)
     part_2 = decrypt(rooms)
     print(part_2)
+
 
 def parse(input_file: str) -> list:
     in_file: TextIO
@@ -26,15 +28,14 @@ def parse(input_file: str) -> list:
         rooms.append(room)
     return rooms
 
+
 def find_real_rooms(rooms: list) -> int:
     id_sum: int = 0
     for room in rooms:
         name, room_id, check_sum = room
         check_sum = check_sum.strip("[]")
-        char_counter: Counter = Counter(name)
-        char_counts: list
-        char_counts = sorted(char_counter.items(), key=lambda x: x[1], reverse=True)
-        char_counts = [[char, amt] for char, amt in char_counts]
+        char_counts: list = [[char, amt] for char, amt in Counter(name).items()]
+        char_counts.sort(key=lambda x: x[1], reverse=True)
         secondary_sort(char_counts)
         letters: str = "".join([char for char, _ in char_counts])[:5]
         if letters == check_sum:
@@ -66,6 +67,7 @@ def decrypt(rooms) -> int:
         if "northpole" in decrypted_name:
             return room_id
     return -1
+
 
 if __name__ == "__main__":
     main()
