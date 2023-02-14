@@ -1,3 +1,5 @@
+// Puzzle explanation: https://adventofcode.com/2016/day/5
+
 package main
 
 import (
@@ -14,7 +16,7 @@ func main() {
 	doorID := "reyedfim"
 	fmt.Print("Initializing password for door 2...\n")
 	password := findPassword(doorID, 0)
-	fmt.Printf("Password for door 1: %s", password)
+	fmt.Printf("\nPassword for door 1: %s", password)
 }
 
 func findPassword(doorID string, idx int) string {
@@ -26,6 +28,7 @@ func findPassword(doorID string, idx int) string {
 			hash = makeHash(doorID, idx)
 			idx++
 		}
+		// part 1
 		hexHash := hex.EncodeToString(hash)
 		if utf8.RuneCountInString(password) < 8 {
 			password += string(hexHash[5])
