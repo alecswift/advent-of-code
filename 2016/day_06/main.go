@@ -18,7 +18,7 @@ func main() {
 func parse(inputFile string) []string {
 	inFile, err := os.ReadFile(inputFile)
 	if err != nil {
-		fmt.Print("hello")
+		panic(err)
 	}
 	rows := strings.Split(string(inFile), "\n")
 	return rows
