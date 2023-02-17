@@ -10,7 +10,7 @@ def main():
     print(f"{count_ssl} IPs support SSL")
 
 
-def parse(input_file: str) -> list[str]:
+def parse(input_file: str) -> list:
     in_file: TextIO
     with open(input_file, encoding="utf-8") as in_file:
         input_data = in_file.read()
@@ -40,7 +40,7 @@ def parse(input_file: str) -> list[str]:
     return data
 
 
-def count_valid(data: list) -> int:
+def count_valid(data: list) -> tuple[int, int]:
     count_tls = 0
     count_ssl = 0
     for supernets, hypernets in data:
@@ -59,7 +59,7 @@ def count_valid(data: list) -> int:
     return count_tls, count_ssl
 
 
-def contains_abba(sequences: list[str], sub_seq_length) -> tuple[str, bool]:
+def contains_abba(sequences: list[str], sub_seq_length) -> tuple[bool, list[str]]:
     abbas = []
     for sequence in sequences:
         for idx in range(sub_seq_length, len(sequence) + 1):
