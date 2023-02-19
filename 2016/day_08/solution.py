@@ -46,7 +46,7 @@ class Screen:
             last_val = self._grid[-1][col]
             for row in range(self._rows - 2, -1, -1):
                 curr_val = self._grid[row][col]
-                self._grid[(row + 1) % self._rows][col] = curr_val
+                self._grid[row + 1][col] = curr_val
             self._grid[0][col] = last_val
 
     def rect(self, length: int, width: int) -> None:
