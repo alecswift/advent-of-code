@@ -1,3 +1,5 @@
+"""Puzzle explanation: https://adventofcode.com/2016/day/8"""
+
 from __future__ import annotations
 from re import findall
 from typing import TextIO
@@ -6,9 +8,10 @@ from typing import TextIO
 def main():
     instructions = parse("2016/day_08/input.txt")
     screen = Screen(6, 50)
-    execute(instructions, screen)
-    print(screen.count_lit_pixels())
+    screen.execute(instructions)
+    print(f"{screen.count_lit_pixels()} pixels are lit after the instructions\n")
     print(str(screen))
+
 
 def parse(input_file: str) -> list[list[str]]:
     in_file: TextIO
@@ -26,15 +29,8 @@ def parse(input_file: str) -> list[list[str]]:
             instructions.append(instruction)
     return instructions
 
-def execute(instructions: list[list], screen: Screen) -> None:
-    for line in instructions:
-        instruction, *operands = line
-        usable = map(int, operands)
-        getattr(screen, instruction)(*usable)
-
 
 class Screen:
-
     def __init__(self, rows: int, columns: int):
         self._rows = rows
         self._columns = columns
@@ -58,11 +54,18 @@ class Screen:
             for col in range(length):
                 self._grid[row][col] = "#"
 
+    def execute(self, instructions: list[list[str]]):
+        for line in instructions:
+            instruction, *operands = line
+            usable = map(int, operands)
+            getattr(self, instruction)(*usable)
+
     def count_lit_pixels(self) -> int:
         return sum(1 for row in self._grid for pix in row if pix == "#")
 
     def __str__(self) -> str:
         return "\n".join(["".join(row) for row in self._grid])
+
 
 if __name__ == "__main__":
     main()
