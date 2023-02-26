@@ -12,8 +12,8 @@ import (
 
 func main() {
 	file := parse("2016/day_09/input.txt")
-	newSeq, length := findLength(file)
-	fmt.Print(newSeq, " ")
+	_, length := findLength(file)
+	//fmt.Print(newSeq, " ")
 	fmt.Print(length)
 }
 
@@ -30,28 +30,33 @@ func findLength(file string) (string, int) {
 	newSeq := ""
 	for idx := 0; idx < utf8.RuneCountInString(file); idx++ {
 		if file[idx] == '(' {
-			idx2 := idx
-			for file[idx2] != ')' {
-				idx2++
-			}
-			marker := file[idx + 1: idx2]
-			nums := strings.Split(marker, `x`)
-
-			times, err := strconv.Atoi(nums[1])
-			if err != nil {
-				panic(err)
-			}
-			chars, err := strconv.Atoi(nums[0])
-			if err != nil {
-				panic(err)
-			}
+			chars, times := parseMarker(file, &idx)
 			for num := 0; num < times; num++ {
-				newSeq += string(file[idx2 + 1: idx2 + chars + 1])
+				newSeq += string(file[idx + 1: idx + chars + 1])
 			}
-			idx = idx2 + chars
+			idx += chars
 		} else {
 			newSeq += string(file[idx])
 		}
 	}
 	return newSeq, utf8.RuneCountInString(newSeq)
+}
+
+
+func parseMarker(file string, pidx *int) (int, int) {
+	start := *pidx
+	for file[*pidx] != ')' {
+		*pidx++
+	}
+	marker := file[start + 1: *pidx]
+	nums := strings.Split(marker, `x`)
+	chars, err := strconv.Atoi(nums[0])
+	if err != nil {
+		panic(err)
+	}
+	times, err := strconv.Atoi(nums[1])
+	if err != nil {
+		panic(err)
+	}
+	return chars, times
 }
