@@ -55,14 +55,12 @@ func findLengthPart2(file string) int {
 				multipliers = append(multipliers, mult)
 			}
 		}
+
 		if file[idx] == '(' {
 			chars, times := parseMarker(file, &idx)
-			product := 1
 			multipliers = append(multipliers, []int{times, idx + chars})
 			if file[idx + 1] != '(' {
-				for _, mult := range multipliers {
-					product *= mult[0]
-				}
+				product := calcMultiplier(multipliers)
 				count += chars * product
 				idx += chars
 			}
@@ -90,4 +88,12 @@ func parseMarker(file string, pidx *int) (int, int) {
 		panic("error")
 	}
 	return chars, times
+}
+
+func calcMultiplier(multipliers [][]int) int {
+	product := 1
+	for _, mult := range multipliers {
+		product *= mult[0]
+	}
+	return product
 }
