@@ -63,8 +63,7 @@ def find_bot(
 ) -> BotNum:
     curr_bot = curr_bots[0]
     vals = b_vals[curr_bot.bot_num]
-    low_val = min(vals)
-    high_val = max(vals)
+    low_val, high_val = min(vals), max(vals)
     low_out, high_out = curr_bot.out_nums
     low_type, high_type = curr_bot.out_types
     next_bot = None
