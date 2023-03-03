@@ -1,7 +1,8 @@
 """Puzzle explanation: https://adventofcode.com/2016/day/10"""
 
+from __future__ import annotations
 from re import findall
-from typing import TextIO
+from typing import Optional, TextIO
 
 
 def main():
@@ -10,22 +11,27 @@ def main():
     for bot, vals in bot_vals.items():
         if len(vals) == 2:
             curr_bot = bot_instructions[bot]
-    bot_num, outputs = find_bot(bot_vals, bot_instructions, [curr_bot], {})
+    outputs = {}
+    bot_num = find_bot(bot_vals, bot_instructions, [curr_bot], outputs)
     print(bot_num)
     print(outputs["0"][0] * outputs["1"][0] * outputs["2"][0])
 
 
 class Bot:
-    def __init__(self, bot_num, out_nums, out_types):
+    def __init__(self, bot_num: str, out_nums: list[str], out_types: list[str]):
         self.bot_num = bot_num
         self.out_nums = out_nums
         self.out_types = out_types
 
 
-def parse(input_file: str) -> list[str]:
+BotVals = dict[str, list[int]]
+Bots = dict[str, Bot]
+
+
+def parse(input_file: str) -> tuple[BotVals, Bots]:
     in_file: TextIO
-    bot_vals = {}
-    bot_instructions = {}
+    bot_vals: BotVals = {}
+    bot_instructions: Bots = {}
     with open(input_file, encoding="utf-8") as in_file:
         for line in in_file:
             if "value" in line:
@@ -44,9 +50,19 @@ def parse(input_file: str) -> list[str]:
     return bot_vals, bot_instructions
 
 
-def find_bot(bot_vals, bot_instructions, curr_bots, outputs, bot=None):
+Out = dict[str, list[int]]
+BotNum = Optional[str]
+
+
+def find_bot(
+    b_vals: BotVals,
+    bots: Bots,
+    curr_bots: list[Bot],
+    outs: Out,
+    bot: BotNum = None,
+) -> BotNum:
     curr_bot = curr_bots[0]
-    vals = bot_vals[curr_bot.bot_num]
+    vals = b_vals[curr_bot.bot_num]
     low_val = min(vals)
     high_val = max(vals)
     low_out, high_out = curr_bot.out_nums
@@ -54,27 +70,27 @@ def find_bot(bot_vals, bot_instructions, curr_bots, outputs, bot=None):
     next_bot = None
 
     if low_type == "output":
-        add_val_to(outputs, low_out, low_val)
+        add_val_to(outs, low_out, low_val)
     else:
-        add_val_to(bot_vals, low_out, low_val)
-        if len(bot_vals[low_out]) == 2:
-            curr_bots.append(bot_instructions[low_out])
+        add_val_to(b_vals, low_out, low_val)
+        if len(b_vals[low_out]) == 2:
+            curr_bots.append(bots[low_out])
 
     if high_type == "output":
-        add_val_to(outputs, high_out, high_val)
+        add_val_to(outs, high_out, high_val)
     else:
-        add_val_to(bot_vals, high_out, high_val)
-        if len(bot_vals[high_out]) == 2:
-            curr_bots.append(bot_instructions[high_out])
+        add_val_to(b_vals, high_out, high_val)
+        if len(b_vals[high_out]) == 2:
+            curr_bots.append(bots[high_out])
 
-    bot_vals[curr_bot.bot_num].clear()
+    b_vals[curr_bot.bot_num].clear()
     curr_bots.pop(0)
     next_bot = curr_bots[0]
-    if min(bot_vals[next_bot.bot_num]) == 17 and max(bot_vals[next_bot.bot_num]) == 61:
-        bot = next_bot
-    if outputs.get("0") and outputs.get("1") and outputs.get("2"):
-        return bot.bot_num, outputs
-    return find_bot(bot_vals, bot_instructions, curr_bots, outputs, bot)
+    if min(b_vals[next_bot.bot_num]) == 17 and max(b_vals[next_bot.bot_num]) == 61:
+        bot = next_bot.bot_num
+    if outs.get("0") and outs.get("1") and outs.get("2"):
+        return bot
+    return find_bot(b_vals, bots, curr_bots, outs, bot)
 
 
 def add_val_to(a_dict, key, val):
