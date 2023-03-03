@@ -15,12 +15,6 @@ def main():
     print(outputs["0"][0] * outputs["1"][0] * outputs["2"][0])
 
 
-# first carry out the instructions that initialize bot with
-# values. Also, add instructions to dict with key: value = bot num: (low, high)
-# find bots with two values (have a full bot stack) and execute their instructions checking the values they
-# have until we find the ones we're looking for
-
-
 class Bot:
     def __init__(self, bot_num, out_nums, out_types):
         self.bot_num = bot_num
