@@ -88,15 +88,15 @@ def handle_moves(curr_node, direction, queue):
         item_is_microchip = item.imag == 0
         if item_is_microchip:
             new_node = move_item(curr_floors, curr_node, next_floor, item)
-            if new_node is not None:
-                queue.append(new_node)
-                new_floors = new_node.floors
-                if direction != -1:
-                    for item in set(new_floors[curr_floor]):
-                        new_node = move_item(new_floors, curr_node, next_floor, item)
-                        if new_node is not None:
-                            queue.append(new_node)
             if direction == 1:
+                if new_node is not None:
+                    queue.append(new_node)
+                    new_floors = new_node.floors
+                    if direction != -1:
+                        for item in set(new_floors[curr_floor]):
+                            new_node = move_item(new_floors, curr_node, next_floor, item)
+                            if new_node is not None:
+                                queue.append(new_node)
                 if item + 1j in curr_floors[curr_floor]:
                     cp_floors = deepcopy(curr_floors)
                     cp_floors[curr_node.curr_floor].remove(item)
@@ -105,6 +105,10 @@ def handle_moves(curr_node, direction, queue):
                     cp_floors[next_floor].add(item + 1j)
                     new_node = Node(cp_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
                     queue.append(new_node)
+            else:
+                if new_node is not None:
+                    queue.append(new_node)
+                    new_floors = new_node.floors
 
 
 def move_item(curr_floors, curr_node, next_floor, item):
