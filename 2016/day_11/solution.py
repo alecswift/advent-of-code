@@ -6,6 +6,7 @@ from copy import deepcopy
 
 def main():
     floors = parse("2016/day_11/input.txt")
+    print(build_state(floors))
     target = sum(len(items) for items in floors.values())
     steps = bfs(floors, target)
     print(steps)
@@ -114,6 +115,16 @@ def handle_moves(queue, direction, curr_node, item):
         if new_node is not None:
             queue.append(new_node)
             new_floors = new_node.floors
+
+def build_state(curr_floors):
+    state = []
+    for floor, items in curr_floors.items():
+        state_items = []
+        for item in items:
+            state_items.append(int(item.imag))
+        state.append((floor, tuple(state_items)))
+    return tuple(state)
+    # not correct have to correspond pairs
 
 
 def move_item(curr_floors, curr_node, next_floor, item):
