@@ -19,6 +19,11 @@ def main():
     target = sum(len(items) for items in floors.values())
     steps = bfs(floors, target)
     print(steps)
+    floors = parse("2016/day_11/input_part_2.txt")
+    # print(floors)
+    # target = sum(len(items) for items in floors.values())
+    # steps = bfs(floors, target)
+    # print(steps)
 
 
 def parse(input_file):
@@ -100,23 +105,28 @@ def check_items(curr_node, direction, queue):
     next_floor = curr_floor + direction
     next_floor_items = curr_floors[next_floor]
     # how to handle two item move?
-    for move in possible_moves(curr_floor_items):
+    double_move_up = False
+    for move in potential_moves(curr_floor_items):
+        if double_move_up and len(move) == 1 and direction == 1:
+            break
         new_curr_floor = curr_floor_items.difference(set(move))
         new_next_floor = set(next_floor_items)
         new_next_floor.update(set(move))
         move_is_possible = test_move(new_next_floor) and test_move(new_curr_floor)
         if move_is_possible:
+            if len(move) == 2:
+                double_move_up = True
             new_floors = deepcopy(curr_floors)
             new_floors[curr_floor] = new_curr_floor
             new_floors[next_floor] = new_next_floor
             new_node = Node(new_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
             queue.append(new_node)
 
-def possible_moves(curr_floor_items):
+def potential_moves(curr_floor_items):
     moves = []
-    moves.extend(combinations(curr_floor_items, 1))
     if 1 < len(curr_floor_items):
         moves.extend(combinations(curr_floor_items, 2))
+    moves.extend(combinations(curr_floor_items, 1))
     return moves
 
 def test_move(floor_items):
@@ -130,7 +140,6 @@ def test_move(floor_items):
             if complex(ele, 1) not in floor_items:
                 return False
     return True
-
 
 def build_state(curr_floors):
     state = []
