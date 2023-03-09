@@ -46,10 +46,11 @@ def parse(input_file):
 
 
 class Node:
-    def __init__(self, floors, curr_floor, steps):
+    def __init__(self, floors, curr_floor, steps, bottom_floor):
         self.floors = floors
         self.curr_floor = curr_floor
         self.steps = steps
+        self.bottom_floor = bottom_floor
 
 
 def bfs(floors, target):
@@ -58,17 +59,19 @@ def bfs(floors, target):
     on the fourth floor
     """
     curr_floor = 1
-    root = Node(floors, 1, 0)
+    root = Node(floors, 1, 0, 1)
     queue = deque([root])
-    bottom_floor = 1
     while len(queue[0].floors[4]) != target:
         curr_node = queue[0]
+        if not curr_node.floors[curr_node.bottom_floor]:
+            del curr_node.floors[curr_node.bottom_floor]
+            curr_node.bottom_floor += 1
         direction = 1
         curr_floor = curr_node.curr_floor
         if curr_floor != 4:
             handle_moves(curr_node, direction, queue)
         direction = -1
-        if curr_node.floors.get(curr_floor - 1) is not None:
+        if curr_floor != curr_node.bottom_floor:
             handle_moves(curr_node, direction, queue)
         queue.popleft()
     return queue[0].steps
@@ -97,7 +100,7 @@ def handle_moves(curr_node, direction, queue):
                 cp_floors[next_floor].add(item)
                 cp_floors[curr_node.curr_floor].remove(item + 1j)
                 cp_floors[next_floor].add(item + 1j)
-                new_node = Node(cp_floors, next_floor, curr_node.steps + 1)
+                new_node = Node(cp_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
                 queue.append(new_node)
 
 
@@ -108,7 +111,7 @@ def move_item(curr_floors, curr_node, next_floor, item):
         cp_floors = deepcopy(curr_floors)
         cp_floors[curr_node.curr_floor].remove(item)
         cp_floors[next_floor].add(item)
-        new_node = Node(cp_floors, next_floor, curr_node.steps + 1)
+        new_node = Node(cp_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
         return new_node
     return None
 
