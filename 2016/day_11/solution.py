@@ -78,6 +78,7 @@ def bfs(floors, target):
 
 
 def handle_moves(curr_node, direction, queue):
+    cache = {} # state = dict[int, set]: move = (direction, items)
     curr_floor = curr_node.curr_floor
     curr_floors = curr_node.floors
     curr_floor_items = set(curr_floors[curr_floor])
@@ -90,18 +91,20 @@ def handle_moves(curr_node, direction, queue):
             if new_node is not None:
                 queue.append(new_node)
                 new_floors = new_node.floors
-                for item in set(new_floors[curr_floor]):
-                    new_node = move_item(new_floors, curr_node, next_floor, item)
-                    if new_node is not None:
-                        queue.append(new_node)
-            if item + 1j in curr_floors[curr_floor]:
-                cp_floors = deepcopy(curr_floors)
-                cp_floors[curr_node.curr_floor].remove(item)
-                cp_floors[next_floor].add(item)
-                cp_floors[curr_node.curr_floor].remove(item + 1j)
-                cp_floors[next_floor].add(item + 1j)
-                new_node = Node(cp_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
-                queue.append(new_node)
+                if direction != -1:
+                    for item in set(new_floors[curr_floor]):
+                        new_node = move_item(new_floors, curr_node, next_floor, item)
+                        if new_node is not None:
+                            queue.append(new_node)
+            if direction == 1:
+                if item + 1j in curr_floors[curr_floor]:
+                    cp_floors = deepcopy(curr_floors)
+                    cp_floors[curr_node.curr_floor].remove(item)
+                    cp_floors[next_floor].add(item)
+                    cp_floors[curr_node.curr_floor].remove(item + 1j)
+                    cp_floors[next_floor].add(item + 1j)
+                    new_node = Node(cp_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
+                    queue.append(new_node)
 
 
 def move_item(curr_floors, curr_node, next_floor, item):
