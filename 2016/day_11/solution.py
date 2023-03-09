@@ -7,7 +7,9 @@ from copy import deepcopy
 def main():
     floors = parse("2016/day_11/input.txt")
     target = sum(len(items) for items in floors.values())
-    print(floors)
+    steps = bfs(floors, target)
+    print(steps)
+
 
 def parse(input_file):
     in_file: TextIO
@@ -42,28 +44,77 @@ def parse(input_file):
                 floors[floor].add(complex(code, type_item))
     return floors
 
-class Node:
 
-    def __init__(self, floors, steps):
+class Node:
+    def __init__(self, floors, curr_floor, steps):
         self.floors = floors
+        self.curr_floor = curr_floor
         self.steps = steps
 
 
 def bfs(floors, target):
+    """
+    Breadth first search of paths to get all items
+    on the fourth floor
+    """
     curr_floor = 1
-    root = Node(floors, 0)
+    root = Node(floors, 1, 0)
     queue = deque([root])
-    while True:
+    bottom_floor = 1
+    while len(queue[0].floors[4]) != target:
+        curr_node = queue[0]
         direction = 1
-        # how to handle possible moves if two compatible items on the same floor and have to move??
-        for item in floors[curr_floor]:
-            if move_possible(floors, curr_floor + direction, item):
-                # handle move
-                pass
-
+        curr_floor = curr_node.curr_floor
+        if curr_floor != 4:
+            handle_moves(curr_node, direction, queue)
         direction = -1
+        if curr_node.floors.get(curr_floor - 1) is not None:
+            handle_moves(curr_node, direction, queue)
+        queue.popleft()
+    return queue[0].steps
+
+
+def handle_moves(curr_node, direction, queue):
+    curr_floor = curr_node.curr_floor
+    curr_floors = curr_node.floors
+    curr_floor_items = set(curr_floors[curr_floor])
+    # how to handle two item move?
+    for item in curr_floor_items:
+        next_floor = curr_floor + direction
+        item_is_microchip = item.imag == 0
+        if item_is_microchip:
+            new_node = move_item(curr_floors, curr_node, next_floor, item)
+            if new_node is not None:
+                queue.append(new_node)
+                new_floors = new_node.floors
+                for item in set(new_floors[curr_floor]):
+                    new_node = move_item(new_floors, curr_node, next_floor, item)
+                    if new_node is not None:
+                        queue.append(new_node)
+            if item + 1j in curr_floors[curr_floor]:
+                cp_floors = deepcopy(curr_floors)
+                cp_floors[curr_node.curr_floor].remove(item)
+                cp_floors[next_floor].add(item)
+                cp_floors[curr_node.curr_floor].remove(item + 1j)
+                cp_floors[next_floor].add(item + 1j)
+                new_node = Node(cp_floors, next_floor, curr_node.steps + 1)
+                queue.append(new_node)
+
+
+def move_item(curr_floors, curr_node, next_floor, item):
+    """Move item to another floor if possible"""
+    if move_possible(curr_floors, next_floor, item):
+        # handle single move
+        cp_floors = deepcopy(curr_floors)
+        cp_floors[curr_node.curr_floor].remove(item)
+        cp_floors[next_floor].add(item)
+        new_node = Node(cp_floors, next_floor, curr_node.steps + 1)
+        return new_node
+    return None
+
 
 def move_possible(floors, next_floor, item):
+    """Check if a moving an item is possible"""
     if next_floor not in floors:
         return False
 
@@ -76,6 +127,7 @@ def move_possible(floors, next_floor, item):
         if other_type_on_next_floor and not is_compatible_item:
             return False
     return True
+
 
 if __name__ == "__main__":
     main()
