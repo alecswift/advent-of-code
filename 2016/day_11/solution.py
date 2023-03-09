@@ -69,46 +69,51 @@ def bfs(floors, target):
         direction = 1
         curr_floor = curr_node.curr_floor
         if curr_floor != 4:
-            handle_moves(curr_node, direction, queue)
+            check_items(curr_node, direction, queue)
+
         direction = -1
         if curr_floor != curr_node.bottom_floor:
-            handle_moves(curr_node, direction, queue)
+            check_items(curr_node, direction, queue)
         queue.popleft()
     return queue[0].steps
 
 
-def handle_moves(curr_node, direction, queue):
+def check_items(curr_node, direction, queue):
     cache = {} # state = dict[int, set]: move = (direction, items)
     curr_floor = curr_node.curr_floor
     curr_floors = curr_node.floors
-    curr_floor_items = set(curr_floors[curr_floor])
+    curr_floor_items = curr_floors[curr_floor]
     # how to handle two item move?
     for item in curr_floor_items:
-        next_floor = curr_floor + direction
         item_is_microchip = item.imag == 0
         if item_is_microchip:
-            new_node = move_item(curr_floors, curr_node, next_floor, item)
-            if direction == 1:
+            handle_moves(queue, direction, curr_node, item)
+
+def handle_moves(queue, direction, curr_node, item):
+    curr_floors = curr_node.floors
+    curr_floor = curr_node.curr_floor
+    next_floor = curr_floor + direction
+    new_node = move_item(curr_floors, curr_node, next_floor, item)
+    if direction == 1:
+        if new_node is not None:
+            queue.append(new_node)
+            new_floors = new_node.floors
+            for item2 in new_floors[curr_floor]:
+                new_node = move_item(new_floors, curr_node, next_floor, item2)
                 if new_node is not None:
                     queue.append(new_node)
-                    new_floors = new_node.floors
-                    if direction != -1:
-                        for item in set(new_floors[curr_floor]):
-                            new_node = move_item(new_floors, curr_node, next_floor, item)
-                            if new_node is not None:
-                                queue.append(new_node)
-                if item + 1j in curr_floors[curr_floor]:
-                    cp_floors = deepcopy(curr_floors)
-                    cp_floors[curr_node.curr_floor].remove(item)
-                    cp_floors[next_floor].add(item)
-                    cp_floors[curr_node.curr_floor].remove(item + 1j)
-                    cp_floors[next_floor].add(item + 1j)
-                    new_node = Node(cp_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
-                    queue.append(new_node)
-            else:
-                if new_node is not None:
-                    queue.append(new_node)
-                    new_floors = new_node.floors
+        if item + 1j in curr_floors[curr_floor]:
+            cp_floors = deepcopy(curr_floors)
+            cp_floors[curr_node.curr_floor].remove(item)
+            cp_floors[next_floor].add(item)
+            cp_floors[curr_node.curr_floor].remove(item + 1j)
+            cp_floors[next_floor].add(item + 1j)
+            new_node = Node(cp_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
+            queue.append(new_node)
+    else:
+        if new_node is not None:
+            queue.append(new_node)
+            new_floors = new_node.floors
 
 
 def move_item(curr_floors, curr_node, next_floor, item):
