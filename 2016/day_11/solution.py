@@ -81,6 +81,7 @@ def bfs(floors, target):
     while len(queue[0].floors[4]) != target:
         curr_node = queue[0]
         curr_state = build_state(curr_node.floors)
+        curr_floor = curr_node.curr_floor
         if (curr_floor, curr_node.steps, curr_state) in seen:
             queue.popleft()
             continue
@@ -88,7 +89,6 @@ def bfs(floors, target):
             curr_node.bottom_floor += 1
 
         direction = 1
-        curr_floor = curr_node.curr_floor
         if curr_floor != 4:
             steps = check_items(curr_node, direction, queue, target)
 
