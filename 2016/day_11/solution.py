@@ -1,18 +1,11 @@
+"""https://adventofcode.com/2016/day/11"""
+
 from collections import deque
 from itertools import combinations
 from re import findall
 from typing import TextIO
 from copy import deepcopy
 
-# check items function does not work
-# iterates through items that have already been added to nodes
-# Consider changing to finding potential combinations of moves (all 1 or 2 combos)
-# iterate through those, first check if it's a possible move
-# check this by seeing if there is a microchip
-# And comparing it to the floor we're moving to
-# to see if there are any incompatible parts
-# Check the directions again for conditions!
-# then create the new node
 
 def main():
     floors = parse("2016/day_11/input.txt")
@@ -21,7 +14,6 @@ def main():
     print(steps)
     part_2_floors = parse("2016/day_11/input_part_2.txt")
     part_2_target = sum(len(items) for items in part_2_floors.values())
-    print(part_2_target)
     part_2_steps = bfs(part_2_floors, part_2_target)
     print(part_2_steps)
 
@@ -108,7 +100,6 @@ def check_items(curr_node, dire, queue, target):
     curr_floor_items = curr_floors[curr_floor]
     next_floor = curr_floor + dire
     next_floor_items = curr_floors[next_floor]
-    # how to handle two item move?
     double_move_up = False
     single_move_down = False
     for move in potential_moves(curr_floor_items, dire):
@@ -128,10 +119,13 @@ def check_items(curr_node, dire, queue, target):
             new_floors = deepcopy(curr_floors)
             new_floors[curr_floor] = new_curr_floor
             new_floors[next_floor] = new_next_floor
-            new_node = Node(new_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor)
+            new_node = Node(
+                new_floors, next_floor, curr_node.steps + 1, curr_node.bottom_floor
+            )
             if len(new_floors[4]) == target:
                 return new_node.steps
             queue.append(new_node)
+
 
 def potential_moves(curr_floor_items, dire):
     moves = []
@@ -142,6 +136,7 @@ def potential_moves(curr_floor_items, dire):
     if dire == 1:
         moves.extend(combinations(curr_floor_items, 1))
     return moves
+
 
 def test_move(floor_items):
     gens = [item for item in floor_items if item.imag == 1]
@@ -155,6 +150,7 @@ def test_move(floor_items):
                 return False
     return True
 
+
 def build_state(curr_floors):
     state = []
     for floor, items in curr_floors.items():
@@ -165,6 +161,7 @@ def build_state(curr_floors):
             state_items.append((gen_or_micro, pair_floor))
         state.append((floor, tuple(state_items)))
     return tuple(state)
+
 
 def find_floor_pair(curr_floors, ele, gen_or_micro):
     other_type = 1 if gen_or_micro == 0 else 1
