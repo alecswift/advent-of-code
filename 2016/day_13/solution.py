@@ -25,8 +25,6 @@ def bfs(target: complex, adder: int) -> tuple[int, int]:
     locations_under_50: set[complex] = set()
     while True:
         coord, steps = queue[0]
-        if steps == 50 and not tracked:
-            tracked = True
         if coord == target:
             return steps, len(locations_under_50)
         if queue[0] in seen:
