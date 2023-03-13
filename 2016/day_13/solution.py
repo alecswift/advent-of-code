@@ -24,15 +24,11 @@ def bfs(target: complex, adder: int) -> tuple[int, int]:
     locations_under_50: set[complex] = set()
     while True:
         coord, steps = queue[0]
+        negative_coord = coord.real < 0 or coord.imag < 0
+        not_valid_coord = is_wall(coord, adder) or negative_coord or queue[0] in seen
         if coord == target:
             return steps, len(locations_under_50)
-        if queue[0] in seen:
-            queue.popleft()
-            continue
-        if is_wall(coord, adder):
-            queue.popleft()
-            continue
-        if coord.real < 0 or coord.imag < 0:
+        if not_valid_coord:
             queue.popleft()
             continue
         for direction in directions:
