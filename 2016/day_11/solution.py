@@ -1,4 +1,4 @@
-"""https://adventofcode.com/2016/day/11"""
+"""Puzzle Explanation: https://adventofcode.com/2016/day/11"""
 
 from collections import deque
 from itertools import combinations
