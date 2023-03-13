@@ -31,9 +31,7 @@ def bfs(target: complex, adder: int) -> tuple[int, int]:
         if not_valid_coord:
             queue.popleft()
             continue
-        for direction in directions:
-            neighbor = coord + direction
-            queue.append((neighbor, steps + 1))
+        queue.extend((coord + dire, steps + 1) for dire in directions)
         seen.add(queue[0])
         if steps <= 50:
             locations_under_50.add(coord)
