@@ -21,7 +21,6 @@ def bfs(target: complex, adder: int) -> tuple[int, int]:
     start = complex(1, 1), 0
     queue = deque([start])
     directions = [1j, 1+0j,-1+0j,-1j]
-    tracked = False
     locations_under_50: set[complex] = set()
     while True:
         coord, steps = queue[0]
