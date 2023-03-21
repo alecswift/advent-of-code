@@ -1,4 +1,4 @@
-// https://adventofcode.com/2016/day/15
+// Puzzle explanation: https://adventofcode.com/2016/day/15
 
 package main
 
