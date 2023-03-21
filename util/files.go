@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func fileToStr(inputFile string) string {
+func FileToStr(inputFile string) string {
 	inputData, err := os.ReadFile(inputFile)
 	if err != nil {
 		panic(err)
