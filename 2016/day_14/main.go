@@ -3,19 +3,16 @@
 package main
 
 import (
-	"crypto/md5"
 	"fmt"
-	"encoding/hex"
-	"io"
-	"strconv"
+	"github.com/alecswift/advent_of_code/md5"
 )
 
 func main() {
 	salt := "zpqevtbw"
 	idx := find64thkey(salt, nil)
 	cache := map[int]string{}
-	initial_hash := makeHash(salt, 0)
-	initial_hash = stretchHash(initial_hash)
+	initial_hash := md5.HashWithIdxToString(salt, 0)
+	initial_hash = md5.StretchHash(initial_hash, 2016)
 	cache[0] = initial_hash
 	idx2 := find64thkey(salt, cache)
 	fmt.Printf("%d\n", idx)
@@ -30,7 +27,7 @@ func find64thkey(salt string, cache map[int]string) int {
 		if cache != nil {
 			hash = searchCache(salt, cache, idx)
 		} else {
-			hash = makeHash(salt, idx)
+			hash = md5.HashWithIdxToString(salt, idx)
 		}
 		hasTriplet, char := findThreeSequence(hash)
 		if hasTriplet {
@@ -48,7 +45,7 @@ func lookForward(salt string, char rune, idx int, cache map[int]string) bool {
 		if cache != nil {
 			hash = searchCache(salt, cache, idx + i)
 		} else {
-			hash = makeHash(salt, idx + i)
+			hash = md5.HashWithIdxToString(salt, idx + i)
 		}
 		if findFiveSequence(hash, char) {
 			return true
@@ -60,8 +57,8 @@ func lookForward(salt string, char rune, idx int, cache map[int]string) bool {
 func searchCache(salt string, cache map[int]string, idx int) string {
 	hash, exists := cache[idx]
 	if !exists {
-		hash = makeHash(salt, idx)
-		hash = stretchHash(hash)
+		hash = md5.HashWithIdxToString(salt, idx)
+		hash = md5.StretchHash(hash, 2016)
 		cache[idx] = hash
 	}
 	return hash
@@ -69,7 +66,6 @@ func searchCache(salt string, cache map[int]string, idx int) string {
 
 
 func findThreeSequence(hash string) (bool, rune) {
-	// am I looking for sequences of exactly 3?
 	var lastDigit rune
 	count := 1
 	for _, hexDigit := range hash {
@@ -100,21 +96,4 @@ func findFiveSequence(hash string, char rune) bool {
 		}
 	}
 	return false
-}
-
-func makeHash(key string, idx int) string {
-	numStr := strconv.Itoa(idx)
-	hash := md5.New()
-	io.WriteString(hash, key)
-	io.WriteString(hash, numStr)
-	return hex.EncodeToString(hash.Sum(nil))
-}
-
-func stretchHash(hash string) string {
-	for i := 0; i < 2016; i++ {
-		newHash := md5.New()
-		io.WriteString(newHash, hash)
-		hash = hex.EncodeToString(newHash.Sum(nil))
-	}
-	return hash
 }

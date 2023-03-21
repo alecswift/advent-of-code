@@ -3,13 +3,12 @@
 package main
 
 import (
-	"crypto/md5"
 	"fmt"
 	"encoding/hex"
-	"io"
 	"strconv"
 	"strings"
 	"unicode/utf8"
+	"github.com/alecswift/advent_of_code/md5"
 )
 
 func main() {
@@ -23,9 +22,9 @@ func findPassword(doorID string, idx int) string {
 	password := ""
 	password2 := []string{"_","_","_","_","_","_","_","_"}
 	for isNotFilled(password2) {
-		hash := makeHash(doorID, idx)
+		hash := md5.HashWithIdxToBytes(doorID, idx)
 		for !(hash[0] == 0 && hash[1] == 0 && hash[2] <= 15) {
-			hash = makeHash(doorID, idx)
+			hash = md5.HashWithIdxToBytes(doorID, idx)
 			idx++
 		}
 		// part 1
@@ -50,12 +49,4 @@ func isNotFilled(password2 []string) bool {
 		}
 	}
 	return false
-}
-
-func makeHash(key string, num int) []byte {
-	numStr := strconv.Itoa(num)
-	hash := md5.New()
-	io.WriteString(hash, key)
-	io.WriteString(hash, numStr)
-	return hash.Sum(nil)
 }

@@ -3,12 +3,11 @@
 package main
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
-	"io"
 	"unicode/utf8"
+	"github.com/alecswift/advent_of_code/md5"
 )
+
 func main() {
 	passCode := "ioramepc"
 	puzzleMap := []string{
@@ -51,7 +50,7 @@ func bfs(puzzleMap []string, passCode string) (string, int) {
 			}
 
 			idx := data[2]
-			hash := makeHash(passCode, curr_path)
+			hash := md5.HashToString(passCode, curr_path)
 			_, doorOpen := valid[rune(hash[idx])]
 			if !doorOpen {
 				continue;
@@ -72,11 +71,4 @@ func bfs(puzzleMap []string, passCode string) (string, int) {
 		queuePath = queuePath[1:]
 	}
 	return part1, part2
-}
-
-func makeHash(key, path string) string {
-	hash := md5.New()
-	io.WriteString(hash, key)
-	io.WriteString(hash, path)
-	return hex.EncodeToString(hash.Sum(nil))
 }
