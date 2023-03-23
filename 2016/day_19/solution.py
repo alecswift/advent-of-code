@@ -1,3 +1,7 @@
+"""Puzzle explanation: https://adventofcode.com/2016/day/19
+Related video: https://www.youtube.com/watch?v=uCsD3ZGzMgE
+"""
+
 from math import log2
 
 y = ((3014387 - 2**(int(log2(3014327)))) * 2) + 1
