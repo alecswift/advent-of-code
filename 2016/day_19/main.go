@@ -1,9 +1,10 @@
 package main
 
 import (
-	"math"
 	"fmt"
+	"math"
 )
+
 func main() {
 	input := 3014387
 	part1Sol := part1(input)
@@ -20,13 +21,13 @@ func part1(input int) int {
 
 func part2(input int) int {
 	powerOfThree := int(math.Pow(3, math.Floor(logb(float64(input), 3))))
-    winForElf1 := input - int(powerOfThree)
-    if input == powerOfThree {
+	winForElf1 := input - int(powerOfThree)
+	if input == powerOfThree {
 		return powerOfThree
 	} else if winForElf1 < powerOfThree {
-        return winForElf1
+		return winForElf1
 	} else {
-		return winForElf1 * 2 - powerOfThree
+		return winForElf1*2 - powerOfThree
 	}
 }
 
