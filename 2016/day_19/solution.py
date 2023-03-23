@@ -1,20 +1,7 @@
-from math import floor
+from math import log2
 
-x = list(range(1, 3014388, 2))
-start = 1
-while len(x) != 1:
-    length = len(x)
-    largest = x[-1]
-    b = []
-    for idx in range(start, len(x), 2):
-        b.append(x[idx])
-    if largest == b[-1]:
-        start = 1
-    else:
-        start = 0
-    x = b
-
-print(x)
+y = ((3014387 - 2**(int(log2(3014327)))) * 2) + 1
+print(y)
 
 x = list(range(1, 3014388))
 curr_idx = 0
