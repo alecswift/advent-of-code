@@ -11,8 +11,21 @@ func main() {
 	inputData := util.FileToStr("/home/alec/Desktop/code/advent_of_code/2016/day_20/input.txt")
 	intervals := parse(inputData)
 	insertionSort(intervals)
-	lowest := findLowest(intervals)
-	fmt.Print(lowest)
+	intervalsIP := findIPIntervals(intervals)
+	numberOfValidIPS := countValid(intervalsIP)
+	lowest := intervalsIP[0][0]
+	fmt.Print(lowest, "\n", numberOfValidIPS)
+	// fmt.Print(lowest, "\n")
+	// fmt.Print(intervals)
+}
+
+func countValid(intervalsIP [][]int) int {
+	count := 0
+	for _, interval := range intervalsIP {
+		low, high := interval[0], interval[1]
+		count += high - low + 1
+	}
+	return count
 }
 
 func parse(inputData string) [][]int {
@@ -35,28 +48,39 @@ func insertionSort(intervals [][]int) {
 		low := val[0]
 		pos := idx - 1
 		for 0 <= pos && low < intervals[pos][0] {
-			intervals[pos + 1] = intervals[pos]
+			intervals[pos+1] = intervals[pos]
 			pos--
 		}
-		intervals[pos + 1] = val
+		intervals[pos+1] = val
 	}
 }
 
-func findLowest(intervals [][]int) int {
+func findIPIntervals(intervals [][]int) [][]int {
+	intervalsIP := [][]int{}
 	lowBound := intervals[0][0]
 	highBound := intervals[0][1]
+
 	if lowBound != 0 {
-		return intervals[0][0] - 1
+		intervalsIP = append(intervalsIP, []int{0, lowBound - 1})
 	}
-	// add found bool for lowest to use this loop if possible for part 2
+
 	for idx := 1; idx < len(intervals); idx++ {
 		currLow := intervals[idx][0]
 		currHigh := intervals[idx][1]
-		if highBound + 1 < currLow {
-			return highBound + 1
+		if highBound+1 < currLow {
+			lowIP := highBound + 1
+			highIP := currLow - 1
+			intervalsIP = append(intervalsIP, []int{lowIP, highIP})
+			lowBound = currLow
+			highBound = currHigh
 		} else if highBound < currHigh {
 			highBound = currHigh
 		}
 	}
-	return -1
+
+	if highBound != 4294967295 {
+		intervalsIP = append(intervalsIP, []int{highBound + 1, 4294967295})
+	}
+
+	return intervalsIP
 }
