@@ -1,6 +1,6 @@
 package arrayOps
 
-func rotate(seq []string, steps, direction int) []string {
+func Rotate(seq []string, steps, direction int) []string {
 	/* 
 	rotate an array a given number of steps in the specified direction
 	1 = right, -1 = left
@@ -18,7 +18,7 @@ func rotate(seq []string, steps, direction int) []string {
 	return seq
 }
 
-func reverseFrom(seq []string, start, end int) {
+func ReverseFrom(seq []string, start, end int) {
 	/*
 	Reverse the given sequence from position start to position end
 	*/
