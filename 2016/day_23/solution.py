@@ -1,14 +1,10 @@
 
 def main():
     assemble = Assemble("2016/day_23/input.txt", 7)
-    assemble._instructions[4:10] = [["mul", "a", "b", "d", "c"]] * 6
-    assemble.execute()
-    print(assemble._registers["a"])
+    print(assemble.execute())
 
     assemble = Assemble("2016/day_23/input.txt", 12)
-    assemble._instructions[4:10] = [["mul", "a", "b", "d", "c"]] * 6
-    assemble.execute()
-    print(assemble._registers["a"])
+    print(assemble.execute())
 
 class Assemble:
 
@@ -25,6 +21,7 @@ class Assemble:
                 split = line.strip("\n").split(" ")
                 instruction = [int(val) if (val.isdigit() or val[0] == "-") else val for val in split]
                 self._instructions.append(instruction)
+        self._instructions[4:10] = [["mul", "a", "b", "d", "c"]] * 6
 
     def execute(self):
         while self._curr_instr < len(self._instructions):
@@ -32,6 +29,7 @@ class Assemble:
             instruction = line[0]
             ops = line[1:]
             getattr(self, instruction)(*ops)
+        return self._registers["a"]
 
     def cpy(self, op_1, op_2):
         if isinstance(op_2, str):
