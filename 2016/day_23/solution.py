@@ -1,3 +1,4 @@
+"""Puzzle explanation: https://adventofcode.com/2016/day/23"""
 
 def main():
     assemble = Assemble("2016/day_23/input.txt", 7)
