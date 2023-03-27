@@ -1,6 +1,12 @@
 
 def main():
     assemble = Assemble("2016/day_23/input.txt", 7)
+    assemble._instructions[4:10] = [["mul", "a", "b", "d", "c"]] * 6
+    assemble.execute()
+    print(assemble._registers["a"])
+
+    assemble = Assemble("2016/day_23/input.txt", 12)
+    assemble._instructions[4:10] = [["mul", "a", "b", "d", "c"]] * 6
     assemble.execute()
     print(assemble._registers["a"])
 
@@ -32,6 +38,11 @@ class Assemble:
             val_1 = self._registers.get(op_1, op_1)
             self._registers[op_2] = val_1
         self._curr_instr += 1
+
+    def mul(self, op_1, op_2, op_3, op_4):
+        self._registers[op_1] += self._registers[op_2] * self._registers[op_3]
+        self._registers[op_3], self._registers[op_4] = 0, 0
+        self._curr_instr = 10
 
     def inc(self, op):
         if isinstance(op, str):
