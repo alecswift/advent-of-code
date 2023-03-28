@@ -44,8 +44,6 @@ def parse(input_file):
                 continue
 
             up_node = nodes_up[col_num]
-            # these next two statements and in the previous
-            # loop need to check
             path_right = grid[row_num][col_num + 1] != "#"
             path_down = grid[row_num + 1][col_num] != "#"
             path_up = up_node is not None
