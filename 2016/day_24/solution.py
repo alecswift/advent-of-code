@@ -1,13 +1,30 @@
 """Puzzle explanation: https://adventofcode.com/2016/day/24"""
 
 import heapq
+from collections import OrderedDict
 from line_profiler import LineProfiler
 
 def main():
-    unvisited, goals = parse("2016/day_24/input.txt")
-    distance = dijsktras(goals["7"], goals["1"], unvisited)
-    print(distance)
+    """unvisited, goals = parse("2016/day_24/input.txt")
+    for num_1 in range(8):
+        for num_2 in range(num_1 + 1, 8):
+            distance = dijsktras(goals[str(num_1)], goals[str(num_2)], unvisited)
+            print(num_1, " ", num_2, " ", distance)
+    print(distance)"""
 
+    nodes = OrderedDict({
+        0 : {1: 20, 2: 76, 3: 28, 6: 16, 7: 166},
+        1 : {0: 20, 2: 76, 3: 44, 6: 24, 7: 162},
+        2 : {0: 76, 1: 76, 3: 92, 6: 88},
+        3 : {0: 28, 1: 44, 2: 92, 6: 32, 7: 162},
+        4 : {5: 38, 7: 84},
+        5 : {4: 38, 7: 66},
+        6 : {0: 16, 1: 24, 2: 88, 3: 32, 7: 162},
+        7 : {0: 166, 1: 162, 3: 162, 4: 84, 5: 66, 6: 162}
+    })
+    
+    mins = dfs(0, nodes)
+    print(min(mins))
 
     """lp = LineProfiler()
     lp_wrapper = lp(dijsktras)
@@ -36,9 +53,9 @@ def parse(input_file):
         elif path_down:
             new_node = Node((1, col_num), val)
             if left_node is not None:
-                left_row_num, left_col_num = left_node.pos
-                left_node.neighbors.append(new_node)
-                new_node.neighbors.append(left_node)
+                dist = distance((1, col_num), left_node.pos)
+                left_node.neighbors.append((new_node, dist))
+                new_node.neighbors.append((left_node, dist))
             left_node = new_node
             nodes_up[col_num] = new_node
             unvisited.add(new_node)
@@ -67,11 +84,13 @@ def parse(input_file):
             if val.isdigit() or junction:
                 new_node = Node((row_num, col_num), val)
                 if path_left:
-                    left_node.neighbors.append(new_node)
-                    new_node.neighbors.append(left_node)
+                    dist = distance((row_num, col_num), left_node.pos)
+                    left_node.neighbors.append((new_node, dist))
+                    new_node.neighbors.append((left_node, dist))
                 if path_up:
-                    nodes_up[col_num].neighbors.append(new_node)
-                    new_node.neighbors.append(nodes_up[col_num])
+                    dist = distance((row_num, col_num), up_node.pos)
+                    up_node.neighbors.append((new_node, dist))
+                    new_node.neighbors.append((up_node, dist))
                 left_node = new_node
                 nodes_up[col_num] = new_node
                 
@@ -91,24 +110,38 @@ def dijsktras(start, target, unvisited):
 
     while queue[0][2] != target:
         curr_dist, _, curr_node = queue[0]
+        if curr_dist > 170:
+            break
         heapq.heappop(queue)
 
-        curr_pos = curr_node.pos
-        for neighbor in curr_node.neighbors:
+        for neighbor, dist in curr_node.neighbors:
             if neighbor in visited:
                 continue
 
-            dist = curr_dist + distance(curr_pos, neighbor.pos)
-            if dist < dists[neighbor]:
-                dists[neighbor] = dist
+            new_dist = curr_dist + dist
+            if new_dist < dists[neighbor]:
+                dists[neighbor] = new_dist
             
-            heapq.heappush(queue, (dist, entry, neighbor))
+            heapq.heappush(queue, (new_dist, entry, neighbor))
             entry += 1
 
         
         visited.add(curr_node)
     
     return dists[target]
+
+def dfs(curr_node, nodes, bitmask=1, full_dist = 0, mins = None):
+    if mins is None:
+        mins = []
+    if bitmask == 2**len(nodes) - 1:
+        mins.append(full_dist)
+        return
+    for neighbor, dist in nodes[curr_node].items():
+        bit = 1 << neighbor
+        if bitmask & bit:
+            continue
+        dfs(neighbor, nodes, bitmask | bit, full_dist + dist, mins) 
+    return mins
 
 
 def distance(start_pos, end_pos):
