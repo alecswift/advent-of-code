@@ -1,10 +1,18 @@
 """Puzzle explanation: https://adventofcode.com/2016/day/24"""
 
-from collections import deque
+import heapq
+from line_profiler import LineProfiler
 
 def main():
-    start = parse("2016/day_24/input_test.txt")
-    x = 1
+    unvisited, goals = parse("2016/day_24/input.txt")
+    distance = dijsktras(goals["7"], goals["1"], unvisited)
+    print(distance)
+
+
+    """lp = LineProfiler()
+    lp_wrapper = lp(dijsktras)
+    lp_wrapper(goals["0"], goals["3"], unvisited)
+    lp.print_stats()"""
     
 
 class Node:
@@ -20,6 +28,7 @@ def parse(input_file):
     grid = input_data.split("\n")
     nodes_up = [None] * len(grid[0])
     left_node = None
+    unvisited = set()
     for col_num, val in enumerate(grid[1]):
         path_down = grid[2][col_num] != "#"
         if val == "#":
@@ -27,12 +36,14 @@ def parse(input_file):
         elif path_down:
             new_node = Node((1, col_num), val)
             if left_node is not None:
+                left_row_num, left_col_num = left_node.pos
                 left_node.neighbors.append(new_node)
                 new_node.neighbors.append(left_node)
             left_node = new_node
             nodes_up[col_num] = new_node
+            unvisited.add(new_node)
     
-    start = None
+    goals = {}
     for idx, row in enumerate(grid[2:-1]):
         left_node = None
         row_num = idx + 2
@@ -52,6 +63,7 @@ def parse(input_file):
                 (path_left and path_right and not path_down and not path_up) or
                 (path_up and path_down and not path_left and not path_right)
             )
+
             if val.isdigit() or junction:
                 new_node = Node((row_num, col_num), val)
                 if path_left:
@@ -63,39 +75,46 @@ def parse(input_file):
                 left_node = new_node
                 nodes_up[col_num] = new_node
                 
-                if val == "0":
-                    start = new_node
+                if val.isdigit():
+                    goals[val] = new_node
+                unvisited.add(new_node)
 
-    return start
+    return unvisited, goals
 
-            
+def dijsktras(start, target, unvisited):
+    queue = [(0, 0, start)]
+    entry = 1
 
-
-
-    # need to optimize pathfinding here with cutting down number of nodes
-    # add distance as weights between nodes and use 
-    # use dijsktras algorithm
-                
-            
-def bfs(start, grid, target):
-    queue = deque([(start, 0)])
-    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    dists = {node: float("inf") for node in unvisited}
+    dists[start] = 0
     visited = set()
-    while queue:
-        curr_pos, steps = queue[0]
-        visited.add(curr_pos)
-        if 180 < steps:
-            return -1
-        curr_row, curr_col = curr_pos
-        for direction in directions:
-            neighbor_row, neighbor_col = curr_row + direction[0], curr_col + direction[1]
-            neighbor = (neighbor_row, neighbor_col)
-            if neighbor == target:
-                return steps + 1
-            if grid[neighbor_row][neighbor_col] == "#" or neighbor in visited:
+
+    while queue[0][2] != target:
+        curr_dist, _, curr_node = queue[0]
+        heapq.heappop(queue)
+
+        curr_pos = curr_node.pos
+        for neighbor in curr_node.neighbors:
+            if neighbor in visited:
                 continue
-            queue.append((neighbor, steps + 1))
-        queue.popleft()
+
+            dist = curr_dist + distance(curr_pos, neighbor.pos)
+            if dist < dists[neighbor]:
+                dists[neighbor] = dist
+            
+            heapq.heappush(queue, (dist, entry, neighbor))
+            entry += 1
+
+        
+        visited.add(curr_node)
+    
+    return dists[target]
+
+
+def distance(start_pos, end_pos):
+    x_coord, y_coord = start_pos
+    x_coord_2, y_coord_2 = end_pos
+    return abs(x_coord - x_coord_2) + abs(y_coord - y_coord_2)
 
 
 if __name__ == "__main__":
