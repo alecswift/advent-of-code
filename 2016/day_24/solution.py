@@ -5,13 +5,14 @@ from collections import OrderedDict
 from line_profiler import LineProfiler
 
 def main():
-    """unvisited, goals = parse("2016/day_24/input.txt")
-    for num_1 in range(8):
+    unvisited, goals = parse("2016/day_24/input.txt")
+    """for num_1 in range(8):
         for num_2 in range(num_1 + 1, 8):
             distance = dijsktras(goals[str(num_1)], goals[str(num_2)], unvisited)
             print(num_1, " ", num_2, " ", distance)
     print(distance)"""
-
+    distance = dijsktras(goals["7"], goals["3"], unvisited)
+    print(distance)
     nodes = OrderedDict({
         0 : {1: 20, 2: 76, 3: 28, 6: 16, 7: 166},
         1 : {0: 20, 2: 76, 3: 44, 6: 24, 7: 162},
@@ -23,8 +24,8 @@ def main():
         7 : {0: 166, 1: 162, 3: 162, 4: 84, 5: 66, 6: 162}
     })
     
-    mins = dfs(0, nodes)
-    print(min(mins))
+    minimum = dfs(0, nodes)
+    print(minimum)
 
     """lp = LineProfiler()
     lp_wrapper = lp(dijsktras)
@@ -37,7 +38,7 @@ class Node:
     def __init__(self, pos, val):
         self.pos = pos
         self.val = val
-        self.neighbors = []
+        self.neighbors = set()
 
 def parse(input_file):
     with open(input_file, "r", encoding = "utf-8") as in_file:
@@ -54,8 +55,8 @@ def parse(input_file):
             new_node = Node((1, col_num), val)
             if left_node is not None:
                 dist = distance((1, col_num), left_node.pos)
-                left_node.neighbors.append((new_node, dist))
-                new_node.neighbors.append((left_node, dist))
+                left_node.neighbors.add((new_node, dist))
+                new_node.neighbors.add((left_node, dist))
             left_node = new_node
             nodes_up[col_num] = new_node
             unvisited.add(new_node)
@@ -85,18 +86,33 @@ def parse(input_file):
                 new_node = Node((row_num, col_num), val)
                 if path_left:
                     dist = distance((row_num, col_num), left_node.pos)
-                    left_node.neighbors.append((new_node, dist))
-                    new_node.neighbors.append((left_node, dist))
+                    left_node.neighbors.add((new_node, dist))
+                    new_node.neighbors.add((left_node, dist))
                 if path_up:
                     dist = distance((row_num, col_num), up_node.pos)
-                    up_node.neighbors.append((new_node, dist))
-                    new_node.neighbors.append((up_node, dist))
+                    up_node.neighbors.add((new_node, dist))
+                    new_node.neighbors.add((up_node, dist))
                 left_node = new_node
                 nodes_up[col_num] = new_node
                 
                 if val.isdigit():
                     goals[val] = new_node
                 unvisited.add(new_node)
+
+    # prune deadends
+    deadends = []
+    for node in unvisited:
+        if len(node.neighbors) == 1:
+            deadends.append(node)
+
+    while deadends:
+        curr_node = deadends[0]
+        while not curr_node.val.isdigit() and len(curr_node.neighbors) == 1:
+            unvisited.remove(curr_node)
+            neighbor, dist = next(iter(curr_node.neighbors))
+            neighbor.neighbors.remove((curr_node, dist))
+            curr_node = neighbor
+        deadends.pop(0)
 
     return unvisited, goals
 
@@ -110,8 +126,8 @@ def dijsktras(start, target, unvisited):
 
     while queue[0][2] != target:
         curr_dist, _, curr_node = queue[0]
-        if curr_dist > 170:
-            break
+        # if curr_dist > 170:
+            # break
         heapq.heappop(queue)
 
         for neighbor, dist in curr_node.neighbors:
@@ -130,18 +146,18 @@ def dijsktras(start, target, unvisited):
     
     return dists[target]
 
-def dfs(curr_node, nodes, bitmask=1, full_dist = 0, mins = None):
+def dfs(curr_node, nodes, bitmask=1, full_dist = 0, mins = None, prev=None):
     if mins is None:
         mins = []
     if bitmask == 2**len(nodes) - 1:
-        mins.append(full_dist)
+        mins.append(full_dist + nodes[prev].get(0, float("inf")))
         return
     for neighbor, dist in nodes[curr_node].items():
         bit = 1 << neighbor
         if bitmask & bit:
             continue
-        dfs(neighbor, nodes, bitmask | bit, full_dist + dist, mins) 
-    return mins
+        dfs(neighbor, nodes, bitmask | bit, full_dist + dist, mins, neighbor) 
+    return min(mins)
 
 
 def distance(start_pos, end_pos):
