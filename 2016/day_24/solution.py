@@ -6,14 +6,15 @@ from line_profiler import LineProfiler
 
 def main():
     unvisited, goals = parse("2016/day_24/input.txt")
-    """for num_1 in range(8):
+    tsp_nodes = {int(goal): {num: 0 for num in range(8) if num != int(goal)} for goal in goals}
+    for num_1 in range(8):
         for num_2 in range(num_1 + 1, 8):
             distance = dijsktras(goals[str(num_1)], goals[str(num_2)], unvisited)
-            print(num_1, " ", num_2, " ", distance)
-    print(distance)"""
+            tsp_nodes[int(num_1)][int(num_2)] = distance
+            tsp_nodes[int(num_2)][int(num_1)] = distance
     #distance = dijsktras(goals["4"], goals["0"], unvisited)
     #print(distance)
-    nodes = OrderedDict({
+    """nodes = {
         0 : {1: 20, 2: 76, 3: 28, 4: 238, 5: 220, 6: 16, 7: 166},
         1 : {0: 20, 2: 76, 3: 44, 4: 234, 5: 216, 6: 24, 7: 162},
         2 : {0: 76, 1: 76, 3: 92, 4: 302, 5: 284, 6: 88, 7: 230},
@@ -22,15 +23,12 @@ def main():
         5 : {0: 220, 1: 216, 2: 284, 3: 212, 4: 38, 6: 212, 7: 66},
         6 : {0: 16, 1: 24, 2: 88, 3: 32, 4: 230, 5: 212, 7: 162},
         7 : {0: 166, 1: 162, 2: 230, 3: 162, 4: 84, 5: 66, 6: 162}
-    })
+    }"""
     
-    minimum = dfs(0, nodes)
+    minimum = dfs(0, tsp_nodes)
     print(minimum)
-
-    """lp = LineProfiler()
-    lp_wrapper = lp(dijsktras)
-    lp_wrapper(goals["0"], goals["3"], unvisited)
-    lp.print_stats()"""
+    minimum_2 = dfs(0, tsp_nodes, part1=False)
+    print(minimum_2)
     
 
 class Node:
@@ -131,39 +129,36 @@ def dijsktras(start, target, unvisited):
     visited = set()
 
     while queue[0][3] != target:
-        weight, _, curr_dist, curr_node = queue[0]
-        # if curr_dist > 170:
-            # break
-        heapq.heappop(queue)
+        _, _, curr_dist, curr_node = heapq.heappop(queue)
 
         for neighbor, dist in curr_node.neighbors:
-            if neighbor in visited:
-                continue
-
-            new_dist = curr_dist + dist
-            if new_dist < dists[neighbor]:
-                dists[neighbor] = new_dist
+            if neighbor not in visited:
+                new_dist = curr_dist + dist
+                if new_dist < dists[neighbor]: 
+                    dists[neighbor] = new_dist
             
-            new_weight = new_dist + neighbor.goal_dists[target.val]
-            heapq.heappush(queue, (new_weight, entry, new_dist, neighbor))
-            entry += 1
+                weight = 2 * (new_dist + neighbor.goal_dists[target.val])
+                heapq.heappush(queue, (weight, entry, new_dist, neighbor))
+                entry += 1
 
-        
         visited.add(curr_node)
     
     return dists[target]
 
-def dfs(curr_node, nodes, bitmask=1, full_dist = 0, mins = None, prev=None):
+def dfs(curr_node, nodes, bitmask=1, full_dist = 0, mins = None, prev=None, part1=True):
     if mins is None:
         mins = []
     if bitmask == 2**len(nodes) - 1:
-        mins.append(full_dist + nodes[prev][0])
+        if part1:
+            mins.append(full_dist)
+        else:
+            mins.append(full_dist + nodes[prev][0])
         return
     for neighbor, dist in nodes[curr_node].items():
         bit = 1 << neighbor
         if bitmask & bit:
             continue
-        dfs(neighbor, nodes, bitmask | bit, full_dist + dist, mins, neighbor) 
+        dfs(neighbor, nodes, bitmask | bit, full_dist + dist, mins, neighbor, part1) 
     return min(mins)
 
 
