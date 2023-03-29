@@ -1,30 +1,15 @@
 """Puzzle explanation: https://adventofcode.com/2016/day/24"""
 
 import heapq
-from collections import OrderedDict
-from line_profiler import LineProfiler
 
 def main():
     unvisited, goals = parse("2016/day_24/input.txt")
     tsp_nodes = {int(goal): {num: 0 for num in range(8) if num != int(goal)} for goal in goals}
     for num_1 in range(8):
         for num_2 in range(num_1 + 1, 8):
-            distance = dijsktras(goals[str(num_1)], goals[str(num_2)], unvisited)
+            distance = a_star_search(goals[str(num_1)], goals[str(num_2)], unvisited)
             tsp_nodes[int(num_1)][int(num_2)] = distance
             tsp_nodes[int(num_2)][int(num_1)] = distance
-    #distance = dijsktras(goals["4"], goals["0"], unvisited)
-    #print(distance)
-    """nodes = {
-        0 : {1: 20, 2: 76, 3: 28, 4: 238, 5: 220, 6: 16, 7: 166},
-        1 : {0: 20, 2: 76, 3: 44, 4: 234, 5: 216, 6: 24, 7: 162},
-        2 : {0: 76, 1: 76, 3: 92, 4: 302, 5: 284, 6: 88, 7: 230},
-        3 : {0: 28, 1: 44, 2: 92, 4: 230, 5: 212, 6: 32, 7: 162},
-        4 : {0: 238, 1: 234, 2: 302, 3: 230, 5: 38, 6: 230, 7: 84},
-        5 : {0: 220, 1: 216, 2: 284, 3: 212, 4: 38, 6: 212, 7: 66},
-        6 : {0: 16, 1: 24, 2: 88, 3: 32, 4: 230, 5: 212, 7: 162},
-        7 : {0: 166, 1: 162, 2: 230, 3: 162, 4: 84, 5: 66, 6: 162}
-    }"""
-    
     minimum = dfs(0, tsp_nodes)
     print(minimum)
     minimum_2 = dfs(0, tsp_nodes, part1=False)
@@ -120,7 +105,7 @@ def parse(input_file):
 
     return unvisited, goals
 
-def dijsktras(start, target, unvisited):
+def a_star_search(start, target, unvisited):
     queue = [(0, 0, 0, start)]
     entry = 1
 
