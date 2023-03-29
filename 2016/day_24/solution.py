@@ -11,17 +11,17 @@ def main():
             distance = dijsktras(goals[str(num_1)], goals[str(num_2)], unvisited)
             print(num_1, " ", num_2, " ", distance)
     print(distance)"""
-    distance = dijsktras(goals["7"], goals["3"], unvisited)
-    print(distance)
+    #distance = dijsktras(goals["4"], goals["0"], unvisited)
+    #print(distance)
     nodes = OrderedDict({
-        0 : {1: 20, 2: 76, 3: 28, 6: 16, 7: 166},
-        1 : {0: 20, 2: 76, 3: 44, 6: 24, 7: 162},
-        2 : {0: 76, 1: 76, 3: 92, 6: 88},
-        3 : {0: 28, 1: 44, 2: 92, 6: 32, 7: 162},
-        4 : {5: 38, 7: 84},
-        5 : {4: 38, 7: 66},
-        6 : {0: 16, 1: 24, 2: 88, 3: 32, 7: 162},
-        7 : {0: 166, 1: 162, 3: 162, 4: 84, 5: 66, 6: 162}
+        0 : {1: 20, 2: 76, 3: 28, 4: 238, 5: 220, 6: 16, 7: 166},
+        1 : {0: 20, 2: 76, 3: 44, 4: 234, 5: 216, 6: 24, 7: 162},
+        2 : {0: 76, 1: 76, 3: 92, 4: 302, 5: 284, 6: 88, 7: 230},
+        3 : {0: 28, 1: 44, 2: 92, 4: 230, 5: 212, 6: 32, 7: 162},
+        4 : {0: 238, 1: 234, 2: 302, 3: 230, 5: 38, 6: 230, 7: 84},
+        5 : {0: 220, 1: 216, 2: 284, 3: 212, 4: 38, 6: 212, 7: 66},
+        6 : {0: 16, 1: 24, 2: 88, 3: 32, 4: 230, 5: 212, 7: 162},
+        7 : {0: 166, 1: 162, 2: 230, 3: 162, 4: 84, 5: 66, 6: 162}
     })
     
     minimum = dfs(0, nodes)
@@ -39,6 +39,7 @@ class Node:
         self.pos = pos
         self.val = val
         self.neighbors = set()
+        self.goal_dists = {}
 
 def parse(input_file):
     with open(input_file, "r", encoding = "utf-8") as in_file:
@@ -114,18 +115,23 @@ def parse(input_file):
             curr_node = neighbor
         deadends.pop(0)
 
+    # add to nodes manhattan distance to goals for a* heuristic
+    for node in unvisited:
+        for val, goal_node in goals.items():
+            node.goal_dists[val] = distance(node.pos, goal_node.pos)
+
     return unvisited, goals
 
 def dijsktras(start, target, unvisited):
-    queue = [(0, 0, start)]
+    queue = [(0, 0, 0, start)]
     entry = 1
 
     dists = {node: float("inf") for node in unvisited}
     dists[start] = 0
     visited = set()
 
-    while queue[0][2] != target:
-        curr_dist, _, curr_node = queue[0]
+    while queue[0][3] != target:
+        weight, _, curr_dist, curr_node = queue[0]
         # if curr_dist > 170:
             # break
         heapq.heappop(queue)
@@ -138,7 +144,8 @@ def dijsktras(start, target, unvisited):
             if new_dist < dists[neighbor]:
                 dists[neighbor] = new_dist
             
-            heapq.heappush(queue, (new_dist, entry, neighbor))
+            new_weight = new_dist + neighbor.goal_dists[target.val]
+            heapq.heappush(queue, (new_weight, entry, new_dist, neighbor))
             entry += 1
 
         
@@ -150,7 +157,7 @@ def dfs(curr_node, nodes, bitmask=1, full_dist = 0, mins = None, prev=None):
     if mins is None:
         mins = []
     if bitmask == 2**len(nodes) - 1:
-        mins.append(full_dist + nodes[prev].get(0, float("inf")))
+        mins.append(full_dist + nodes[prev][0])
         return
     for neighbor, dist in nodes[curr_node].items():
         bit = 1 << neighbor
