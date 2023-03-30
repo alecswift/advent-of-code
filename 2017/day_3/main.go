@@ -30,14 +30,14 @@ func part_1_sol(num float64) int {
 }
 
 func part_2_sol(num int) int {
-	row := [21]int{}
-	matrix := [21][21]int{row}
-	matrix[10][10] = 1
+	row := [11]int{}
+	matrix := [11][11]int{row}
+	matrix[5][5] = 1
 	// right, up, left, down
 	directions := [][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	neighbors := [][2]int{{1, 1}, {-1, 1}, {1, -1}, {-1, -1}}
 	neighbors = append(neighbors, directions...)
-	pos := [2]int{11, 10}
+	pos := [2]int{6, 5}
 	idx := 0
 	var val int
 
