@@ -3,16 +3,16 @@
 #include <string>
 
 int main() {
-    int parse(std::string file_name);
+    int part_1(std::string file_name);
 
-    int sum = parse("/home/alec/Desktop/code/advent_of_code/2017/day_2/input.txt");
+    int sum = part_1("/home/alec/Desktop/code/advent_of_code/2017/day_2/input.txt");
 
     std::cout << sum;
 
     return 0;
 }
 
-int parse(std::string file_name) {
+int part_1(std::string file_name) {
     std::fstream in_file;
     std::string  data;
     int          min_max_diff(std::string line);
