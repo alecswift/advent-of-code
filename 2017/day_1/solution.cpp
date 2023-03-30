@@ -8,7 +8,7 @@ int main() {
     std::string parse(std::string input_file);
     int count_rep_chars(std::string data, bool part_1);
 
-    std::string data = parse("/home/alec/Desktop/code/advent_of_code/2017/day_1/solution.cpp");
+    std::string data = parse("/home/alec/Desktop/code/advent_of_code/2017/day_1/input.txt");
     int count1 = count_rep_chars(data, true);
     int count2 = count_rep_chars(data, false);
 
@@ -22,7 +22,7 @@ std::string parse(std::string input_file) {
     std::fstream my_file;
     std::string  data;
 
-    my_file.open("/home/alec/Desktop/code/advent_of_code/2017/day_1/input.txt", std::ios::in);
+    my_file.open(input_file, std::ios::in);
     if (!my_file) {
         std::cout << "no such file";
     } else {
