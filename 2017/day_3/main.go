@@ -23,8 +23,8 @@ func part_1_sol(num float64) int {
 
 	cornerVal := math.Pow(cornerRoot, 2)
 	diff := cornerVal - num
-	numOfDistances := math.Floor((cornerRoot + 1) / 2)
-	distance := int((cornerRoot - 1)) - (int(diff) % int(numOfDistances))
+	numOfDistances := int((cornerRoot + 1) / 2)
+	distance := int((cornerRoot - 1)) - (int(diff) % numOfDistances)
 	
 	return distance
 }
