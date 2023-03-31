@@ -9,6 +9,7 @@ import (
 
 	"github.com/alecswift/advent_of_code/util"
 )
+
 func main() {
 	nums := parse("/home/alec/Desktop/code/advent_of_code/2017/day_5/input.txt")
 	steps1 := traverse(nums, true)
@@ -23,7 +24,7 @@ func traverse(nums []int, part1 bool) int {
 	idx := 0
 
 	for idx > -1 && idx < len(nums) {
-		
+
 		if part1 {
 			prevIdx = idx
 			idx += nums[idx]
@@ -38,7 +39,7 @@ func traverse(nums []int, part1 bool) int {
 			}
 		}
 
-		steps ++
+		steps++
 	}
 
 	return steps
@@ -48,7 +49,7 @@ func parse(file_name string) []int {
 	data := util.FileToStr(file_name)
 	splitLines := strings.Split(data, "\n")
 	nums := []int{}
-	
+
 	for _, line := range splitLines {
 		num, err := strconv.Atoi(line)
 
@@ -58,6 +59,6 @@ func parse(file_name string) []int {
 
 		nums = append(nums, num)
 	}
-	
+
 	return nums
 }
