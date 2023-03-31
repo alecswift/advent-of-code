@@ -48,7 +48,7 @@ func parse(fileName string) {
 				weight: weight,
 			}
 			// possibly check for membership in dict first
-			// might not have to do this for leafs
+			// might not have to do this for leafs, i think I do so I don't erase the parent data member
 			// Also look up struct info to see if you need to initialize every data member
 			nodes[name] = &newNode
 		} else {
