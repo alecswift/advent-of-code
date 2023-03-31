@@ -4,9 +4,9 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
+	"github.com/alecswift/advent_of_code/arrayOps"
 	"github.com/alecswift/advent_of_code/util"
 )
 
@@ -48,17 +48,7 @@ func traverse(nums []int, part1 bool) int {
 func parse(file_name string) []int {
 	data := util.FileToStr(file_name)
 	splitLines := strings.Split(data, "\n")
-	nums := []int{}
-
-	for _, line := range splitLines {
-		num, err := strconv.Atoi(line)
-
-		if err != nil {
-			panic("Error")
-		}
-
-		nums = append(nums, num)
-	}
+	nums := arrayOps.StrListToIntList(splitLines)
 
 	return nums
 }
