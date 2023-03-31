@@ -1,3 +1,5 @@
+// Puzzle explanation: https://adventofcode.com/2017/day/4
+
 #include <fstream>
 #include <iostream>
 #include <map>
