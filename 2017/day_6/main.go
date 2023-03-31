@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/alecswift/advent_of_code/arrayOps"
@@ -13,11 +14,11 @@ const Length = 16
 func main() {
 	cache := make(map[[Length]int]bool)
 	banks := parse("/home/alec/Desktop/code/advent_of_code/2017/day_6/input.txt")
-	cycles := part1(banks, cache)
-	fmt.Print(cycles)
+	part1, part2  := solution(banks, cache)
+	fmt.Print(part1, "\n", part2)
 }
 
-func part1(banks [Length]int, cache map[[Length]int]bool) int {
+func solution(banks [Length]int, cache map[[Length]int]bool) (int, int) {
 	var initialCycles int
 	_, exists := cache[banks]
 
@@ -28,8 +29,21 @@ func part1(banks [Length]int, cache map[[Length]int]bool) int {
 		cache[banks] = true
 		initialCycles++
 	}
+
+	cycles := initialCycles
+	target := banks
+
+	for true {
+		maxIdx := maxBlock(banks)
+		redistribute(&banks, maxIdx)
+		cycles++
+		
+		if reflect.DeepEqual(banks, target) {
+			break
+		}
+	}
 	
-	return initialCycles
+	return initialCycles, cycles - initialCycles
 }
 
 func redistribute(banks *[Length]int, maxIdx int) {
