@@ -17,14 +17,23 @@ type Node struct {
 }
 
 func main() {
-	parse("/home/alec/Desktop/code/advent_of_code/2017/day_7/input.txt")
+	nodes := parse("/home/alec/Desktop/code/advent_of_code/2017/day_7/input.txt")
+	var node *Node
+	for _, randNode := range nodes {
+		node = randNode
+	}
+	root := findRoot(node)
+	fmt.Print(root.name)
 }
 
 func findRoot(node *Node) *Node {
-	panic("nobody")
+	if node.parent == nil {
+		return node
+	}
+	return findRoot(node.parent)
 }
 
-func parse(fileName string) {
+func parse(fileName string) map[string]*Node {
 	data := util.FileToStr(fileName)
 	splitLines := strings.Split(data, "\n")
 	nodes := make(map[string]*Node)
@@ -40,19 +49,62 @@ func parse(fileName string) {
 			panic("Error")
 		}
 
-		fmt.Print(nodeData, "\n")
-
 		if isLeaf {
-			newNode := Node{
-				name: name,
-				weight: weight,
+			_, exists := nodes[name]
+
+			if exists {
+				nodes[name].weight = weight
+			} else {
+				newNode := Node{
+					name: name,
+					weight: weight,
+				}
+				nodes[name] = &newNode
 			}
-			// possibly check for membership in dict first
-			// might not have to do this for leafs, i think I do so I don't erase the parent data member
-			// Also look up struct info to see if you need to initialize every data member
-			nodes[name] = &newNode
+			
 		} else {
-			panic("nobody")
+			chNames := nodeData[2:]
+			chNodes := []*Node{}
+
+
+			for _, chName := range chNames {
+				_, exists := nodes[chName]
+				var chNode Node
+
+				if exists {
+					pChNode, _ := nodes[chName]
+					chNodes = append(chNodes, pChNode)
+				} else {
+					chNode = Node {
+						name: chName,
+					}
+					chNodes = append(chNodes, &chNode)
+					nodes[chName] = &chNode
+				}
+			}
+
+			var pNewNode *Node
+			_, exists := nodes[name]
+
+			if exists {
+				pNewNode, _ = nodes[name]
+			} else {
+				newNode := Node{
+					name: name,
+					weight: weight,
+					children: chNodes,
+				}
+				pNewNode = &newNode
+			}
+
+			for _, chNode := range chNodes {
+				chNode.parent = pNewNode
+			}
+
+			nodes[name] = pNewNode
 		}
 	}
+
+	return nodes
 }
+
