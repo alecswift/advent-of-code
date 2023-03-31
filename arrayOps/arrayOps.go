@@ -1,5 +1,22 @@
 package arrayOps
 
+import "strconv"
+
+func StrListToIntList(seq []string) []int {
+	nums := []int{}
+	for _, line := range seq {
+		num, err := strconv.Atoi(line)
+
+		if err != nil {
+			panic("Error")
+		}
+
+		nums = append(nums, num)
+	}
+
+	return nums
+}
+
 func Rotate(seq []string, steps, direction int) []string {
 	/* 
 	rotate an array a given number of steps in the specified direction
