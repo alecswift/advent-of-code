@@ -21,7 +21,6 @@ func main() {
 }
 
 func solution(banks [Length]int, cache map[[Length]int]bool) (int, int) {
-	var initialCycles int
 	_, exists := cache[banks]
 
 	for !exists {
@@ -29,9 +28,9 @@ func solution(banks [Length]int, cache map[[Length]int]bool) (int, int) {
 		redistribute(&banks, maxIdx)
 		_, exists = cache[banks]
 		cache[banks] = true
-		initialCycles++
 	}
 
+	initialCycles := len(cache) + 1
 	cycles := initialCycles
 	target := banks
 
