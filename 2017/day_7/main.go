@@ -23,7 +23,17 @@ func main() {
 		node = randNode
 	}
 	root := findRoot(node)
+	traverse(root)
 	fmt.Print(root.name)
+}
+
+func traverse(node *Node) {
+	weight := 0
+	for _, child := range node.children {
+		traverse(child)
+	}
+	weight += node.weight
+	fmt.Print(weight, "\n")
 }
 
 func findRoot(node *Node) *Node {
@@ -91,11 +101,12 @@ func parse(fileName string) map[string]*Node {
 			} else {
 				newNode := Node{
 					name: name,
-					weight: weight,
-					children: chNodes,
 				}
 				pNewNode = &newNode
 			}
+
+			pNewNode.weight = weight
+			pNewNode.children = chNodes
 
 			for _, chNode := range chNodes {
 				chNode.parent = pNewNode
