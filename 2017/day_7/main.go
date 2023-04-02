@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/alecswift/advent_of_code/util"
@@ -23,17 +23,89 @@ func main() {
 		node = randNode
 	}
 	root := findRoot(node)
-	traverse(root)
-	fmt.Print(root.name)
+	fmt.Print(root.name, "\n")
+	x := findInbalance(root)
+	fmt.Print(x)
 }
 
-func traverse(node *Node) {
-	weight := 0
-	for _, child := range node.children {
-		traverse(child)
+func findInbalance(root *Node) int {
+	type QueueNode struct {
+		node  *Node
+		depth int
 	}
-	weight += node.weight
-	fmt.Print(weight, "\n")
+	var prevDepth int
+	var solution int
+	start := QueueNode{
+		node: root,
+		depth: 0,
+	}
+	queue := []QueueNode{start}
+
+	for len(queue) > 0 {
+		currNode := queue[0].node
+		currDepth := queue[0].depth
+		if prevDepth < currDepth {
+			prevDepth++
+			fmt.Print(" x\n")
+		}
+
+
+		type Counter struct{
+			count int
+			nodes []*Node
+		}
+		stws := make(map[int]Counter)
+
+		for _, child := range(currNode.children) {
+			weight := 0
+			subTreeWeight(child, &weight)
+			fmt.Print(weight, " ")
+
+			counter := stws[weight]
+
+			counter.count++
+			counter.nodes = append(counter.nodes, child)
+			stws[weight] = counter
+
+			queueNode := QueueNode{
+				node: child,
+				depth: currDepth + 1,
+			}
+			queue = append(queue, queueNode)
+		}
+
+		if len(stws) == 1 { // wrong!!!
+			return -1
+		}
+
+
+		var incorrect_stw int
+		var correct_stw int
+		var incorrect_node *Node
+
+		for stw, counter := range stws {
+			if counter.count == 1 {
+				incorrect_stw = stw
+				incorrect_node = counter.nodes[0]
+			} else {
+				correct_stw = stw
+			}
+		}
+
+		findInbalance(incorrect_node)
+
+		solution = incorrect_node.weight + (correct_stw - incorrect_stw)
+		return solution
+	}
+
+	return solution
+}
+
+func subTreeWeight(node *Node, weight *int) {
+	for _, child := range node.children {
+		subTreeWeight(child, weight)
+	}
+	*weight += node.weight
 }
 
 func findRoot(node *Node) *Node {
