@@ -24,7 +24,7 @@ func solutions(groups string) (int, int) {
 		char := rune(groups[i])
 
 		if ignore && char == '!' {
-			i += 1
+			i++
 		} else if char == '>' {
 			ignore = false
 		} else if ignore {
