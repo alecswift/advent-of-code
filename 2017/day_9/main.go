@@ -16,8 +16,7 @@ func main() {
 
 func solutions(groups string) (int, int) {
 	var stack []rune
-	var score int
-	var ignoreChars int
+	var score, ignoreChars int
 	var ignore bool
 
 	for i := 0; i < len(groups) ; i++ {
