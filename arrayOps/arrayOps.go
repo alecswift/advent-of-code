@@ -2,6 +2,11 @@ package arrayOps
 
 import "strconv"
 
+func Remove(arr []string, idx int) []string {
+	arr[idx] = arr[len(arr) - 1]
+	return arr[:len(arr) - 1]
+}
+
 func StrListToIntList(seq []string) []int {
 	nums := []int{}
 	for _, line := range seq {
