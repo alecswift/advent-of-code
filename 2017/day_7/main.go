@@ -1,3 +1,5 @@
+// Puzzle explanation: https://adventofcode.com/2017/day/8
+
 package main
 
 import (
@@ -164,4 +166,3 @@ func parse(fileName string) map[string]*Node {
 
 	return nodes
 }
-
