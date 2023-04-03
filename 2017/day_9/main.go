@@ -8,11 +8,11 @@ import (
 
 func main() {
 	groups := util.FileToStr("/home/alec/Desktop/code/advent_of_code/2017/day_9/input.txt")
-	score, ignoreChars := findScore(groups)
-	fmt.Print(score, "\n", ignoreChars)
+	part1, part2 := solutions(groups)
+	fmt.Print(part1, "\n", part2)
 }
 
-func findScore(groups string) (int, int) {
+func solutions(groups string) (int, int) {
 	var stack []rune
 	var score int
 	var ignoreChars int
