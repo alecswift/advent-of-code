@@ -23,22 +23,15 @@ func findScore(groups string) (int, int) {
 
 		if ignore && char == '!' {
 			i += 1
-			continue
-		}
-		if char == '>' {
+		} else if char == '>' {
 			ignore = false
-		}
-		if ignore {
+		} else if ignore {
 			ignoreChars++
-			continue
-		}
-		if char == '<' {
+		} else if char == '<' {
 			ignore = true
-		}
-		if char == '{' {
+		} else if char == '{' {
 			stack = append(stack, char)
-		}
-		if char == '}' {
+		} else if char == '}' {
 			score += len(stack)
 			stack = stack[:len(stack) - 1]
 		}
