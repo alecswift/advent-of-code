@@ -51,8 +51,8 @@ func ReverseFrom[T any] (seq []T, start, end int) {
 		endCond := int(lengthToRev / 2)
 
 		for i := 0; i < endCond; start, end, i = start + 1, end - 1, i + 1 {
-			end %= len(seq)
-			start %= len(seq)
+			end = mod(end, len(seq))
+			start = mod(start, len(seq))
 			seq[start], seq[end] = seq[end], seq[start]
 		}
 
@@ -63,6 +63,10 @@ func ReverseFrom[T any] (seq []T, start, end int) {
 		}
 
 	}
+}
+
+func mod(num, div int) int {
+	return (div + num) % div
 }
 
 func abs(num int) int {
