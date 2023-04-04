@@ -54,3 +54,43 @@ func TestReverseFrom(t *testing.T) {
 		t.Errorf("got %v want %v", output, expected)
 	}
 }
+
+func TestReverseCircularStartEndLengthFour(t *testing.T) {
+	output := []string{"a", "b", "c", "d", "e"}
+	expected := []string{"b", "a", "e", "d", "c"}
+	ReverseFrom(output, 4, 2)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}
+
+func TestReverseCircularStartEndLengthThree(t *testing.T) {
+	output := []string{"a", "b", "c", "d", "e"}
+	expected := []string{"d", "b", "c", "a", "e"}
+	ReverseFrom(output, 3, 0)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}
+
+func TestReverseCircularStartEndTwo(t *testing.T) {
+	output := []string{"a", "b", "c", "d", "e"}
+	expected := []string{"e", "b", "c", "d", "a"}
+	ReverseFrom(output, 4, 0)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}
+
+func TestReverseCircularStartEndFive(t *testing.T) {
+	output := []string{"a", "b", "c", "d", "e"}
+	expected := []string{"a", "e", "d", "c", "b"}
+	ReverseFrom(output, 3, 2)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}

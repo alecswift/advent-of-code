@@ -1,6 +1,8 @@
 package arrayOps
 
-import "strconv"
+import (
+	"strconv"
+)
 
 func Remove(arr []string, idx int) []string {
 	arr[idx] = arr[len(arr) - 1]
@@ -44,7 +46,25 @@ func ReverseFrom(seq []string, start, end int) {
 	/*
 	Reverse the given sequence from position start to position end
 	*/
-	for ; start <= end; start, end = start + 1, end - 1 {
-		seq[start], seq[end] = seq[end], seq[start]
+	if start > end {
+		lengthToRev := (len(seq) - start) + end + 1
+		endCond := int(lengthToRev / 2)
+		for i := 0; i < endCond; start, end, i = start + 1, end - 1, i + 1 {
+			end %= len(seq)
+			start %= len(seq)
+			seq[start], seq[end] = seq[end], seq[start]
+		}
+	} else {
+		for ; start <= end; start, end = start + 1, end - 1 {
+			seq[start], seq[end] = seq[end], seq[start]
+		}
 	}
+}
+
+func abs(num int) int {
+	if num < 0 {
+		return -num
+	}
+
+	return num
 }
