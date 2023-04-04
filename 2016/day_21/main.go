@@ -15,7 +15,7 @@ import (
 func main() {
 	password := "abcdefgh"
 	seq := strings.Split(password, "")
-	instructions := parse("/home/alec/Desktop/code/advent_of_code/2016/day_21/input.txt")
+	instructions := parse("/home/alec/Desktop/code/advent-of-code/2016/day_21/input.txt")
 	scrambled := scramble(seq, instructions)
 	fmt.Print(scrambled, "\n")
 	part2scrambled := "fbgdceah"
