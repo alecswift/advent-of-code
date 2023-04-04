@@ -11,6 +11,7 @@ func Remove(arr []string, idx int) []string {
 
 func StrListToIntList(seq []string) []int {
 	nums := []int{}
+
 	for _, line := range seq {
 		num, err := strconv.Atoi(line)
 
@@ -30,6 +31,7 @@ func Rotate(seq []string, steps, direction int) []string {
 	1 = right, -1 = left
 	*/
 	length := len(seq)
+
 	if direction == 1 {
 		for ;0 < steps; steps-- {
 			seq = append(seq[length - 1:], seq[0:length - 1]...)
@@ -47,12 +49,15 @@ func ReverseFrom[T any] (seq []T, start, end int) {
 	Reverse the given sequence from position start to position end
 	*/
 	var revSeg []T
+
 	if start < end {
 		revSeg = reverse(seq[start: end])
+
 		copy(seq[start: end], revSeg)
 	} else if start > end {
 		revSeg = reverse(seq[:end])
 		revSeg = append(revSeg, reverse(seq[start:])...)
+
 		copy(seq[start:], revSeg[:len(seq) - start])
 		copy(seq[:end], revSeg[len(seq) - start:])
 	}
@@ -60,8 +65,10 @@ func ReverseFrom[T any] (seq []T, start, end int) {
 
 func reverse[T any] (seq []T) []T {
 	var rev []T
+
 	for i := len(seq) - 1; i >= 0; i-- {
 		rev = append(rev, seq[i])
 	}
+
 	return rev
 }
