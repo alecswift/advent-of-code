@@ -17,7 +17,7 @@ func main() {
 	for i := 0; i < 256; i++ {
 		nums = append(nums, i)
 	}
-	fmt.Print(nums, "\n")
+
 	hashList(nums, lengths)
 	part1 := nums[0] * nums[1]
 	fmt.Print(part1)
@@ -26,11 +26,11 @@ func main() {
 func hashList(nums, lengths []int) {
 	pos := 0
 	for idx, length := range lengths {
-		skipSize := idx
-		end := (pos + length - 1) % len(nums)
+		end := (pos + length) % len(nums)
 
 		arrayOps.ReverseFrom(nums, pos, end)
-		pos += (length + skipSize)
+		pos += length
+		pos += idx
 		pos %= len(nums)
 	}
 }
