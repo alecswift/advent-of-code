@@ -94,3 +94,13 @@ func TestReverseCircularStartEndFive(t *testing.T) {
 		t.Errorf("got %v want %v", output, expected)
 	}
 }
+
+func TestReverseCircularStartSecondEndFirst(t *testing.T) {
+	output := []int{1, 2, 3, 4, 5}
+	expected := []int{2, 1, 5, 4, 3}
+	ReverseFrom(output, 1, 0)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}
