@@ -27,7 +27,7 @@ func TestRotateLeftTwo(t *testing.T) {
 
 func TestReverseFromPosOneToPosThree(t *testing.T) {
 	output := []string{"a", "b", "c", "d", "e"}
-	expected := []string{"a", "d", "c", "b", "e"}
+	expected := []string{"a", "c", "b", "d", "e"}
 	ReverseFrom(output, 1, 3)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -35,9 +35,9 @@ func TestReverseFromPosOneToPosThree(t *testing.T) {
 	}
 }
 
-func TestReverseFromFullArray(t *testing.T) {
+func TestReverseFromZeroToFour(t *testing.T) {
 	output := []string{"a", "b", "c", "d", "e"}
-	expected := []string{"e", "d", "c", "b", "a"}
+	expected := []string{"d", "c", "b", "a", "e"}
 	ReverseFrom(output, 0, 4)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -47,7 +47,7 @@ func TestReverseFromFullArray(t *testing.T) {
 
 func TestReverseFrom(t *testing.T) {
 	output := []string{"a", "b", "c", "d", "e"}
-	expected := []string{"a", "e", "d", "c", "b"}
+	expected := []string{"a", "d", "c", "b", "e"}
 	ReverseFrom(output, 1, 4)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -57,7 +57,7 @@ func TestReverseFrom(t *testing.T) {
 
 func TestReverseCircularStartEndLengthFour(t *testing.T) {
 	output := []string{"a", "b", "c", "d", "e"}
-	expected := []string{"b", "a", "e", "d", "c"}
+	expected := []string{"a", "e", "c", "d", "b"}
 	ReverseFrom(output, 4, 2)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -67,7 +67,7 @@ func TestReverseCircularStartEndLengthFour(t *testing.T) {
 
 func TestReverseCircularStartEndLengthThree(t *testing.T) {
 	output := []string{"a", "b", "c", "d", "e"}
-	expected := []string{"d", "b", "c", "a", "e"}
+	expected := []string{"a", "b", "c", "e", "d"}
 	ReverseFrom(output, 3, 0)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -77,7 +77,7 @@ func TestReverseCircularStartEndLengthThree(t *testing.T) {
 
 func TestReverseCircularStartEndTwo(t *testing.T) {
 	output := []string{"a", "b", "c", "d", "e"}
-	expected := []string{"e", "b", "c", "d", "a"}
+	expected := []string{"a", "b", "c", "d", "e"}
 	ReverseFrom(output, 4, 0)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -87,7 +87,7 @@ func TestReverseCircularStartEndTwo(t *testing.T) {
 
 func TestReverseCircularStartEndFive(t *testing.T) {
 	output := []int{1, 2, 3, 4, 5}
-	expected := []int{1, 5, 4, 3, 2}
+	expected := []int{5, 4, 3, 2, 1}
 	ReverseFrom(output, 3, 2)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -97,7 +97,7 @@ func TestReverseCircularStartEndFive(t *testing.T) {
 
 func TestReverseCircularStartSecondEndFirst(t *testing.T) {
 	output := []int{1, 2, 3, 4, 5}
-	expected := []int{2, 1, 5, 4, 3}
+	expected := []int{1, 5, 4, 3, 2}
 	ReverseFrom(output, 1, 0)
 
 	if !reflect.DeepEqual(output, expected) {
@@ -107,7 +107,7 @@ func TestReverseCircularStartSecondEndFirst(t *testing.T) {
 
 func TestReverseCircularEvenNumList(t *testing.T) {
 	output := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	expected := []int{9, 8, 7, 4, 5, 6, 3, 2, 1, 10}
+	expected := []int{8, 7, 3, 4, 5, 6, 2, 1, 10, 9}
 	ReverseFrom(output, 6, 2)
 
 	if !reflect.DeepEqual(output, expected) {

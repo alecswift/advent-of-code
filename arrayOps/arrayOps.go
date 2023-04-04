@@ -46,33 +46,22 @@ func ReverseFrom[T any] (seq []T, start, end int) {
 	/*
 	Reverse the given sequence from position start to position end
 	*/
-	if start > end {
-		lengthToRev := (len(seq) - start) + end + 1
-		endCond := int(lengthToRev / 2)
-
-		for i := 0; i < endCond; start, end, i = start + 1, end - 1, i + 1 {
-			end = mod(end, len(seq))
-			start = mod(start, len(seq))
-			seq[start], seq[end] = seq[end], seq[start]
-		}
-
-	} else {
-
-		for ; start <= end; start, end = start + 1, end - 1 {
-			seq[start], seq[end] = seq[end], seq[start]
-		}
-
+	var revSeg []T
+	if start < end {
+		revSeg = reverse(seq[start: end])
+		copy(seq[start: end], revSeg)
+	} else if start > end {
+		revSeg = reverse(seq[:end])
+		revSeg = append(revSeg, reverse(seq[start:])...)
+		copy(seq[start:], revSeg[:len(seq) - start])
+		copy(seq[:end], revSeg[len(seq) - start:])
 	}
 }
 
-func mod(num, div int) int {
-	return (num % div + div) % div
-}
-
-func abs(num int) int {
-	if num < 0 {
-		return -num
+func reverse[T any] (seq []T) []T {
+	var rev []T
+	for i := len(seq) - 1; i >= 0; i-- {
+		rev = append(rev, seq[i])
 	}
-
-	return num
+	return rev
 }
