@@ -72,7 +72,7 @@ func scramble(seq []string, instructions [][]string) string {
 
 		case "reverse":
 			start, end := strToNum(instruction[1]), strToNum(instruction[2])
-			arrayOps.ReverseFrom(seq, start, end)
+			arrayOps.ReverseFrom(seq, start, end + 1)
 		case "move":
 			idx1, idx2 := strToNum(instruction[1]), strToNum(instruction[2])
 			move(seq, idx1, idx2)
@@ -116,7 +116,7 @@ func unscramble(seq []string, instructions [][]string) string {
 
 		case "reverse":
 			start, end := strToNum(instruction[1]), strToNum(instruction[2])
-			arrayOps.ReverseFrom(seq, start, end)
+			arrayOps.ReverseFrom(seq, start, end + 1)
 		case "move":
 			idx2, idx1 := strToNum(instruction[1]), strToNum(instruction[2])
 			move(seq, idx1, idx2)
