@@ -42,22 +42,26 @@ func Rotate(seq []string, steps, direction int) []string {
 	return seq
 }
 
-func ReverseFrom(seq []string, start, end int) {
+func ReverseFrom[T any] (seq []T, start, end int) {
 	/*
 	Reverse the given sequence from position start to position end
 	*/
 	if start > end {
 		lengthToRev := (len(seq) - start) + end + 1
 		endCond := int(lengthToRev / 2)
+
 		for i := 0; i < endCond; start, end, i = start + 1, end - 1, i + 1 {
 			end %= len(seq)
 			start %= len(seq)
 			seq[start], seq[end] = seq[end], seq[start]
 		}
+
 	} else {
+
 		for ; start <= end; start, end = start + 1, end - 1 {
 			seq[start], seq[end] = seq[end], seq[start]
 		}
+
 	}
 }
 

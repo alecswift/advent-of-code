@@ -86,8 +86,8 @@ func TestReverseCircularStartEndTwo(t *testing.T) {
 }
 
 func TestReverseCircularStartEndFive(t *testing.T) {
-	output := []string{"a", "b", "c", "d", "e"}
-	expected := []string{"a", "e", "d", "c", "b"}
+	output := []int{1, 2, 3, 4, 5}
+	expected := []int{1, 5, 4, 3, 2}
 	ReverseFrom(output, 3, 2)
 
 	if !reflect.DeepEqual(output, expected) {
