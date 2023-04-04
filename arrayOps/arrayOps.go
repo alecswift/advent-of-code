@@ -66,7 +66,7 @@ func ReverseFrom[T any] (seq []T, start, end int) {
 }
 
 func mod(num, div int) int {
-	return (div + num) % div
+	return (num % div + div) % div
 }
 
 func abs(num int) int {

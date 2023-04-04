@@ -104,3 +104,13 @@ func TestReverseCircularStartSecondEndFirst(t *testing.T) {
 		t.Errorf("got %v want %v", output, expected)
 	}
 }
+
+func TestReverseCircularEvenNumList(t *testing.T) {
+	output := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	expected := []int{9, 8, 7, 4, 5, 6, 3, 2, 1, 10}
+	ReverseFrom(output, 6, 2)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}
