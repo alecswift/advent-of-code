@@ -1,3 +1,5 @@
+//
+
 package main
 
 import (
@@ -15,8 +17,11 @@ func main() {
 }
 
 func distFromStart(end [2]float64) float64 {
-	a := abs(end[0]) / 0.75
-	dist := a + abs(end[1]) - (a * 0.5)
+	/* Derived distance for hexagonal grid from point (0, 0) to an end point */
+	x_coord, y_coord := end[0], end[1]
+	x_dist := abs(x_coord) / 0.75
+	y_dist := abs(y_coord) - (x_dist * 0.5)
+	dist := x_dist + y_dist
 
 	return dist
 }
