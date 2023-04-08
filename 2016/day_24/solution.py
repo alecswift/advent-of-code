@@ -114,17 +114,19 @@ def a_star_search(start, target, unvisited):
     visited = set()
 
     while queue[0][3] != target:
-        _, _, curr_dist, curr_node = heapq.heappop(queue)
+        *_, curr_dist, curr_node = heapq.heappop(queue)
 
         for neighbor, dist in curr_node.neighbors:
-            if neighbor not in visited:
-                new_dist = curr_dist + dist
-                if new_dist < dists[neighbor]: 
-                    dists[neighbor] = new_dist
+            if neighbor in visited:
+                continue
+        
+            new_dist = curr_dist + dist
+            if new_dist < dists[neighbor]: 
+                dists[neighbor] = new_dist
             
-                weight = 2 * (new_dist + neighbor.goal_dists[target.val])
-                heapq.heappush(queue, (weight, entry, new_dist, neighbor))
-                entry += 1
+            weight = 2 * (new_dist + neighbor.goal_dists[target.val])
+            heapq.heappush(queue, (weight, entry, new_dist, neighbor))
+            entry += 1
 
         visited.add(curr_node)
     
