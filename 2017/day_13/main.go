@@ -10,12 +10,12 @@ import (
 
 func main() {
 	ranges := parse("/home/alec/Desktop/code/advent-of-code/2017/day_13/input.txt")
-	part1Sol, _ := part1(ranges, 0)
+	part1Sol, _ := part1(ranges, 0, false)
 	part2Sol := part2(ranges)
 	fmt.Print(part1Sol, "\n", part2Sol)
 }
 
-func part1(ranges [][]int, start int) (int, bool) {
+func part1(ranges [][]int, start int, part2 bool) (int, bool) {
 	var total int
 	var caught bool
 
@@ -24,6 +24,9 @@ func part1(ranges [][]int, start int) (int, bool) {
 
 		if (depth + start) % ((fRange - 1) * 2) == 0 {
 			caught = true
+			if part2 {
+				return 0, caught
+			}
 			total += depth * fRange
 		}
 	}
@@ -33,7 +36,7 @@ func part1(ranges [][]int, start int) (int, bool) {
 func part2(ranges [][]int) int {
 	var start int
 	for true {
-		_, caught := part1(ranges, start)
+		_, caught := part1(ranges, start, true)
 
 		if !caught {
 			return start
