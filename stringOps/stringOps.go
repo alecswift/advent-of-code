@@ -4,7 +4,7 @@ import (
 	"strconv"
 )
 
-func strToInt(numStr string) int {
+func StrToInt(numStr string) int {
 	num, err := strconv.Atoi(numStr)
 
 	if err != nil {
