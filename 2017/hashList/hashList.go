@@ -1,10 +1,12 @@
 package hashList
 
 import (
+	"encoding/hex"
 
-	
+	"github.com/alecswift/advent_of_code/arrayOps"
 )
-func part2(nums []int, byteLengths []byte) string {
+
+func Part2Hash(nums []int, byteLengths []byte) string {
 	pos := 0
 	skipSize := 0
 	lengths := make([]int, len(byteLengths))
@@ -15,7 +17,7 @@ func part2(nums []int, byteLengths []byte) string {
 
 
 	for i := 0; i < 64; i++ {
-		pos = hashList(nums, lengths, pos, skipSize)
+		pos = HashList(nums, lengths, pos, skipSize)
 		skipSize += len(lengths)
 	}
 
@@ -43,7 +45,7 @@ func part2(nums []int, byteLengths []byte) string {
 }
 
 
-func hashList(nums, lengths []int, pos, skipSize int) int {
+func HashList(nums, lengths []int, pos, skipSize int) int {
 	for _, length := range lengths {
 		end := (pos + length) % len(nums)
 
