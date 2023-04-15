@@ -9,16 +9,45 @@ import (
 )
 
 func main() {
-	input := "wenycdww"
+	input := "flqrgnkx"
 	byteInput := []byte(input)
 	byteInput = append(byteInput, '-')
 
-	part1Sol := part1(byteInput)
-	fmt.Print(part1Sol)
+	grid := makeGrid(byteInput)
+	part1Sol := len(grid)
+	part2Sol := part2(grid)
+	fmt.Print(part1Sol, "\n", part2Sol)
 }
 
-func part1(byteLengths []byte) int {
-	total := 0
+func part2(grid map[[2]int]bool) int {
+	var countGroups int
+	moves := [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+
+	for pos, unvisited := range grid {
+		if unvisited {
+			grid[pos] = false
+			countGroups++
+			dfs(pos, grid, moves)
+		}
+	}
+
+	return countGroups
+}
+
+func dfs(pos [2]int, grid map[[2]int]bool, moves [][2]int) {
+	for _, move := range(moves) {
+		neighbor := [2]int{move[0] + pos[0], move[1] + pos[1]}
+		unvisited, exists := grid[neighbor]
+
+		if exists && unvisited{
+			grid[neighbor] = false
+			dfs(neighbor, grid, moves)
+		}
+	}
+}
+
+func makeGrid(byteLengths []byte) map[[2]int]bool {
+	grid := make(map[[2]int]bool)
 
 	for i := 0; i < 128; i++ {
 		nums := genNums()
@@ -27,13 +56,21 @@ func part1(byteLengths []byte) int {
 		if err != nil {
 			panic(err)
 		}
-
+		idx := 0
 		for _, byte_ := range bytes {
-			total += countSet(byte_)
+			for byte_ != 0 {
+				if int(byte_ & 1) == 1 {
+					grid[[2]int{i, idx}] = true
+				}
+				idx++
+				fmt.Print(idx, " ")
+				byte_ >>= 1
+			}
 		}
+		fmt.Print("\n")
 	}
 
-	return total
+	return grid
 }
 
 func countSet(byte_ byte) int {
