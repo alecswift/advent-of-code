@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	input := "flqrgnkx"
+	input := "wenycdww"
 	byteInput := []byte(input)
 	byteInput = append(byteInput, '-')
 
@@ -56,18 +56,19 @@ func makeGrid(byteLengths []byte) map[[2]int]bool {
 		if err != nil {
 			panic(err)
 		}
+
 		idx := 0
 		for _, byte_ := range bytes {
-			for byte_ != 0 {
-				if int(byte_ & 1) == 1 {
+			for bit_idx := 7; bit_idx >= 0; bit_idx-- {
+				bit := byte(1 << bit_idx)
+
+				if byte_ & bit != 0 {
 					grid[[2]int{i, idx}] = true
 				}
+	
 				idx++
-				fmt.Print(idx, " ")
-				byte_ >>= 1
 			}
 		}
-		fmt.Print("\n")
 	}
 
 	return grid
