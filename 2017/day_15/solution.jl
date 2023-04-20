@@ -1,3 +1,4 @@
+# Puzzle explanation: https://adventofcode.com/2017/day/15
 
 function main()
     gen_a = 883
