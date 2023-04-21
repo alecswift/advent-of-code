@@ -114,3 +114,39 @@ func TestReverseCircularEvenNumList(t *testing.T) {
 		t.Errorf("got %v want %v", output, expected)
 	}
 }
+
+func TestInsertFuncOneElListFront(t *testing.T) {
+	seq := []int{1}
+	idx := 0
+	val := 0
+	expected := []int{0, 1}
+	output := insert(seq, idx, val)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}
+
+func TestInsertFuncOneElListBack(t *testing.T) {
+	seq := []int{1}
+	idx := 1
+	val := 0
+	expected := []int{1, 0}
+	output := insert(seq, idx, val)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}
+
+func TestInsertFuncfourElListmiddle(t *testing.T) {
+	seq := []int{1,2,4,5}
+	idx := 2
+	val := 3
+	expected := []int{1, 2, 3, 4, 5}
+	output := insert(seq, idx, val)
+
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("got %v want %v", output, expected)
+	}
+}

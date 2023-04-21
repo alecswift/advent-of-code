@@ -72,3 +72,14 @@ func reverse[T any] (seq []T) []T {
 
 	return rev
 }
+
+func insert[T any] (seq []T, idx int, val T) []T {
+	if idx == len(seq) {
+		seq = append(seq, val)
+	} else {
+		seq = append(seq[:idx + 1], seq[idx:]...)
+		seq[idx] = val
+	}
+
+	return seq
+}
