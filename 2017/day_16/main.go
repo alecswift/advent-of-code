@@ -13,13 +13,15 @@ import (
 func main() {
 	instructions := parse("/home/alec/Desktop/code/advent-of-code/2017/day_16/input.txt")
 	letters := "abcdefghijklmnop"
-	seqPart1 := strings.Split(letters, "")
-	part1Sol := part1(seqPart1, instructions)
+
+	part1Seq := strings.Split(letters, "")
+	part1Seq = part1(part1Seq, instructions)
+	part1Sol := strings.Join(part1Seq, "")
 	fmt.Print(part1Sol, "\n")
+
 	initialSeq := strings.Split(letters, "") 
-	seq := strings.Split(letters, "")
-	
-	part2Seq := part2(seq, initialSeq, instructions)
+	part2Seq := strings.Split(letters, "")
+	part2Seq = part2(part2Seq, initialSeq, instructions)
 	part2Sol := strings.Join(part2Seq, "")
 	fmt.Print(part2Sol)
 	
@@ -35,7 +37,7 @@ func part1(seq, instructions []string) []string {
 			seq = spin(seq, num)
 			i += 2
 		case "p":
-			seq = partner(seq, instructions[i + 1], instructions[i + 2])
+			partner(seq, instructions[i + 1], instructions[i + 2])
 			i += 3
 		case "x":
 			num1 := stringOps.StrToInt(instructions[i + 1])
@@ -82,7 +84,7 @@ func spin(seq []string, num int) []string {
 	return out
 }
 
-func partner(seq []string, char1, char2 string) []string {
+func partner(seq []string, char1, char2 string) {
 	var idx1, idx2 int
 
 	for idx, char := range seq {
@@ -96,6 +98,4 @@ func partner(seq []string, char1, char2 string) []string {
 	}
 
 	seq[idx1], seq[idx2] = seq[idx2], seq[idx1]
-	
-	return seq
 }
