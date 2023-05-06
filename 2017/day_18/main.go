@@ -19,8 +19,9 @@ import (
 
 func main() {
 	instructions, registers := parse("/home/alec/Desktop/code/advent-of-code/2017/day_18/input.txt")
-	part1Sol, _ := execute(instructions, registers, []int{}, 0, true)
-	fmt.Print(part1Sol[len(part1Sol) - 1], "\n")
+	queue, _ := execute(instructions, registers, []int{}, 0, true)
+	part1Sol := queue[len(queue) - 1]
+	fmt.Print(part1Sol, "\n")
 
 	sendCount := sync(instructions, registers)
 	fmt.Print(sendCount)
