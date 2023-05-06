@@ -43,12 +43,10 @@ func execute(instructions [][]string, registers map[string]int) int {
 			registers[reg] %= val
 		case "rcv":
 			val := determineVal(instr[1], registers)
-			if val == 0 {continue}
-			return prevFreq
+			if val != 0 {return prevFreq}
 		case "jgz":
 			condVal, jmpVal := determineVal(instr[1], registers), determineVal(instr[2], registers)
-			if condVal <= 0 {continue}
-			idx += jmpVal - 1
+			if condVal > 0 {idx += jmpVal - 1}
 		}
 	}
 	return -1
