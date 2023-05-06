@@ -19,15 +19,16 @@ import (
 
 func main() {
 	instructions, registers := parse("/home/alec/Desktop/code/advent-of-code/2017/day_18/input.txt")
-	part1Sol := execute(instructions, registers, []int{})
-	fmt.Print(part1Sol[len(part1Sol) - 1])
+	part1Sol, _ := execute(instructions, registers, []int{}, 0, true)
+	fmt.Print(part1Sol[len(part1Sol) - 1], "\n")
 
-	sync(instructions, registers)
+	sendCount := sync(instructions, registers)
+	fmt.Print(sendCount)
 }
 
-func execute(instructions [][]string, registers map[string]int, queue []int) []int {
+func execute(instructions [][]string, registers map[string]int, queue []int, idx int, part1 bool) ([]int, int) {
 
-	for idx := 0; idx < len(instructions); idx++ {
+	for ;idx < len(instructions); idx++ {
 		instr := instructions[idx]
 		instrName := instr[0]
 
@@ -48,18 +49,19 @@ func execute(instructions [][]string, registers map[string]int, queue []int) []i
 			registers[reg] %= val
 		case "rcv":
 			val := determineVal(instr[1], registers)
-			if val != 0 {return queue}
+			if part1 && val != 0 { return queue, idx
+				} else { return queue, idx}
 		case "jgz":
 			condVal, jmpVal := determineVal(instr[1], registers), determineVal(instr[2], registers)
 			if condVal > 0 {idx += jmpVal - 1}
 		}
 	}
-	return queue
+	return queue, -1
 }
 
-func sync(instructions [][]string, registers1 map[string]int) {
-	//queue1 := []int{}
-	//queue2 := []int{}
+func sync(instructions [][]string, registers1 map[string]int) int {
+	var queue1, queue2 []int
+	var idx1, idx2, sendCount int
 	registers2 := make(map[string]int)
 
 	for reg := range registers1 {
@@ -72,8 +74,30 @@ func sync(instructions [][]string, registers1 map[string]int) {
 	}
 
 	for true {
+		queue1, idx1 = execute(instructions, registers1, queue1, idx1, false)
+		queue2, idx2 = execute(instructions, registers2, queue2, idx2, false)
 
-	}
+		if len(queue1) != 0 {
+			sentVal1 := queue1[0]
+			rcvReg2 := instructions[idx2][1]
+			registers2[rcvReg2] = sentVal1
+			queue1 = queue1[1:]
+			idx2++
+		}
+		if len(queue2) != 0 {
+			sentVal2 := queue2[0]
+			rcvReg1 := instructions[idx1][1]
+			registers1[rcvReg1] = sentVal2
+			idx1++
+			sendCount++
+			queue2 = queue2[1:]	
+		}
+		if len(queue1) == 0 && len(queue2) == 0 {
+			break
+		}
+ 	}
+
+	return sendCount
 }
 
 func determineVal(char string, registers map[string]int) int {
