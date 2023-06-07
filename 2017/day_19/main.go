@@ -24,10 +24,11 @@ func main() {
 
 	start[0] = 1
 
-	sequence := bfs(path, start, [2]int{1, 0})
+	sequence, steps := bfs(path, start, [2]int{1, 0})
 
-	fmt.Print(sequence)
+	fmt.Print(sequence, "\n", steps)
 }
+
 
 func addBorders(path []string) []string {
 	border := ""
@@ -41,21 +42,24 @@ func addBorders(path []string) []string {
 	return path
 }
 
-func bfs(path []string, startPos [2]int, startDir [2]int) string {
+func bfs(path []string, startPos [2]int, startDir [2]int) (string, int) {
 	sequence := ""
 	sequenceAdd := ""
+	steps := 0
+	stepsChg := 0
 	directions := [][2]int{{0, 1}, {1, 0}, {-1, 0}, {0, -1}}
 	currPos := startPos
 	currDir := startDir
 
 	for true {
-		currPos, sequenceAdd = followLine(path, currPos, currDir)
+		currPos, sequenceAdd, stepsChg = followLine(path, currPos, currDir)
+		steps += stepsChg + 1
 		sequence += sequenceAdd
 		row, col := currPos[0], currPos[1]
 		currVal := path[row][col]
 
 		if currVal == ' ' {
-			return sequence
+			return sequence, steps
 		}
 
 		for _, direction := range directions {
@@ -71,13 +75,15 @@ func bfs(path []string, startPos [2]int, startDir [2]int) string {
 			break
 		}
 	}
-	return sequence
+	return sequence, steps
 }
 
-func followLine(path []string, coord, direction [2]int) ([2]int, string) {
+func followLine(path []string, coord, direction [2]int) ([2]int, string, int) {
+	stepsChg := 0
 	row, col := coord[0], coord[1]
 	sequence := ""
 	for path[row][col] != ' ' && path[row][col] != '+' {
+		stepsChg++
 		char := path[row][col]
 		if unicode.IsLetter(rune(char)) {
 			sequence += string(char)
@@ -85,7 +91,7 @@ func followLine(path []string, coord, direction [2]int) ([2]int, string) {
 		row, col = move(row, col, direction)
 	}
 	newPos := [2]int{row, col}
-	return newPos, sequence
+	return newPos, sequence, stepsChg
 }
 
 func move(row, col int, direction [2]int) (int, int) {
