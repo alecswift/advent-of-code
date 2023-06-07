@@ -45,10 +45,8 @@ func addBorders(path []string) []string {
 }
 
 func bfs(path []string, startPos [2]int, startDir [2]int) (string, int) {
-	sequence := ""
-	sequenceAdd := ""
-	steps := 0
-	stepsChg := 0
+	var sequence, sequenceAdd string
+	var steps, stepsChg int
 	directions := [][2]int{{0, 1}, {1, 0}, {-1, 0}, {0, -1}}
 	currPos := startPos
 	currDir := startDir
