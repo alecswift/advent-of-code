@@ -31,12 +31,12 @@ func parse(inputFile string) map[int]int {
 
 func strToBits(str string) int {
 	var out int
-	exponent := len(str) - (int(math.Log2(float64(len(str)))) - 1)
+	exponent := len(str) - (int(math.Log2(float64(len(str)))))
 
 	for _, char := range str {
 		if char == '/' { continue }
 		if char == '#' {
-			out += 2 ^ exponent
+			out += int(math.Pow(2, float64(exponent)))
 		}
 		exponent -= 1
 	}
