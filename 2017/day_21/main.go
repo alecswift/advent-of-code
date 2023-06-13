@@ -18,7 +18,11 @@ func main() {
 }
 
 func split4by4(bits16 uint) []uint {
-	out := []uint{}
+	one := ((bits16 & 49152) >> 12) | ((bits16 & 3072) >> 10)
+	two := ((bits16 & 12288) >> 10) | ((bits16 & 768) >> 8)
+	three := ((bits16 & 192) >> 4) | ((bits16 & 12) >> 2)
+	four := ((bits16 & 48) >> 2) | (bits16 & 3)
+	out := []uint{one, two, three, four}
 	return out
 }
 
