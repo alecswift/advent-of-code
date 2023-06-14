@@ -8,20 +8,18 @@ import (
 )
 
 func main() {
-	grid := parse("/home/alec/Desktop/code/advent-of-code/2017/day_22/input.txt")
-	infectedCount := part1(grid)
-
-	grid = parse("/home/alec/Desktop/code/advent-of-code/2017/day_22/input.txt")
-	infectedCount2 := part2(grid)
-
-	fmt.Print(infectedCount, "\n", infectedCount2)
-}
-
-func part1(grid map[complex128]int) int {
 	currPos := complex(12, -12)
 	dir := 0
 	dirs := []complex128{complex(0,1), complex(1,0), complex(0,-1), complex(-1, 0)}
 	infectedCount := 0
+	part1Sol := part1(currPos, dirs, dir, infectedCount)
+	part2Sol := part2(currPos, dirs, dir, infectedCount)
+
+	fmt.Print(part1Sol, "\n", part2Sol)
+}
+
+func part1(currPos complex128, dirs []complex128, dir, infectedCount int) int {
+	grid := parse("/home/alec/Desktop/code/advent-of-code/2017/day_22/input.txt")
 
 	for i := 0; i < 10000; i++ {
 		if grid[currPos] == 2 {
@@ -32,20 +30,14 @@ func part1(grid map[complex128]int) int {
 			grid[currPos] = 2
 			infectedCount += 1
 		}
-		currPos += dirs[dir]
-		_, exists := grid[currPos]
-		if !exists {
-			grid[currPos] = 0
-		}
+
+		currPos, dir = updateGrid(currPos, grid, dirs, dir)
 	}
 	return infectedCount
 }
 
-func part2(grid map[complex128]int) int {
-	currPos := complex(12, -12)
-	dir := 0
-	dirs := []complex128{complex(0,1), complex(1,0), complex(0,-1), complex(-1, 0)}
-	infectedCount := 0
+func part2(currPos complex128, dirs []complex128, dir, infectedCount int) int {
+	grid := parse("/home/alec/Desktop/code/advent-of-code/2017/day_22/input.txt")
 
 	for i := 0; i < 10000000; i++ {
 		switch grid[currPos] {
@@ -60,14 +52,18 @@ func part2(grid map[complex128]int) int {
 		}
 
 		grid[currPos] = mod(grid[currPos] + 1, 4)
-
-		currPos += dirs[dir]
-		_, exists := grid[currPos]
-		if !exists {
-			grid[currPos] = 0
-		}
+		currPos, dir = updateGrid(currPos, grid, dirs, dir)
 	}
 	return infectedCount
+}
+
+func updateGrid(currPos complex128, grid map[complex128]int, dirs []complex128, dir int) (complex128, int) {
+	currPos += dirs[dir]
+	_, exists := grid[currPos]
+	if !exists {
+		grid[currPos] = 0
+	}
+	return currPos, dir
 }
 
 func mod(a, b int) int {
