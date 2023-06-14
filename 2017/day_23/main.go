@@ -10,12 +10,12 @@ import (
 
 func main() {
 	instructions := parse("/home/alec/Desktop/code/advent-of-code/2017/day_23/input.txt")
-	countMul := execute(instructions)
+	countMul, _ := execute(instructions, 0)
 	fmt.Print(countMul)
 }
 
-func execute(instructions [][]string) int {
-	regs := map[string]int{"a": 0, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0}
+func execute(instructions [][]string, regA int) (int, int) {
+	regs := map[string]int{"a": regA, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0}
 	countMul := 0
 
 	for idx := 0; idx < len(instructions); idx++ {
@@ -40,7 +40,7 @@ func execute(instructions [][]string) int {
 		}
 	}
 	
-	return countMul
+	return countMul, regs["h"]
 }
 
 func determineVal(val string, regs map[string]int) int {
