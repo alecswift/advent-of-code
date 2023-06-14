@@ -16,9 +16,52 @@ func main() {
 	//fmt.Print("\n", rules9, "\n", len(rules9))
 	
 	start := []uint{143}
-	end := iterate(start, rules9, rules4)
+	end := iterate(start, rules9, rules4, 5)
 	count := countSet(end)
 	fmt.Print(count)
+
+	start = []uint{143}
+	rules3Cycles := rules3Cycles(rules4, rules9)
+	part2Sol := part2(start, rules3Cycles)
+	fmt.Print("\n", part2Sol)
+}
+
+func part2(picture []uint, rules3Cycles map[uint][]uint) uint {
+
+	for i := 0; i < 6; i++ {
+		new := []uint{}
+		for _, bits := range picture {
+			new = append(new, rules3Cycles[bits]...)
+		}
+		picture = new
+	}
+
+	return countSet(picture)
+}
+
+func rules3Cycles(rules4, rules9 map[uint]uint) map[uint][]uint {
+	out := make(map[uint][]uint)
+
+	for cube3 := range rules9 {
+		new := iterate([]uint{cube3}, rules9, rules4, 3)
+		for _, bits := range possibilities(cube3) {
+			out[bits] = new
+		}
+	}
+	return out
+}
+
+func possibilities(bits uint) []uint {
+	out := []uint{}
+
+	for i := 0; i < 4; i++ {
+		out = append(out, bits)
+		flipped := flipVert9(bits)
+		out = append(out, flipped)
+		bits = rotate9(bits)
+	}
+	
+	return out
 }
 
 func countSet(picture []uint) uint {
@@ -33,10 +76,10 @@ func countSet(picture []uint) uint {
 	return count
 }
 
-func iterate(picture []uint, rules9, rules4 map[uint]uint) []uint {
+func iterate(picture []uint, rules9, rules4 map[uint]uint, times int) []uint {
 	size := 3
 
-	for i := 0; i < 18; i++ {
+	for i := 0; i < times; i++ {
 		if size % 2 == 0 {
 			bits := int(math.Pow(float64(size), 2))
 			if bits / len(picture) % 2 != 0 {
