@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strings"
 
 	"github.com/alecswift/advent_of_code/stringOps"
@@ -10,12 +11,36 @@ import (
 
 func main() {
 	instructions := parse("/home/alec/Desktop/code/advent-of-code/2017/day_23/input.txt")
-	countMul, _ := execute(instructions, 0)
-	fmt.Print(countMul)
+	countMul := execute(instructions)
+	fmt.Print(countMul, "\n")
+	fmt.Print(optimized(), "\n")
 }
 
-func execute(instructions [][]string, regA int) (int, int) {
-	regs := map[string]int{"a": regA, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0}
+func optimized() int {
+	var count int
+	var leave bool
+	
+	for i := 109300; i < 126301; i += 17 {
+		leave = false
+		for j := 2; j < i; j++ {
+			for k := 2; k <= int(math.Sqrt(float64(i))); k++ {
+				if j * k == i {
+					count++
+					leave = true
+					break
+				}
+			}
+			if leave {
+				break
+			}
+		}
+	}
+
+	return count
+}
+
+func execute(instructions [][]string) int {
+	regs := map[string]int{"a": 0, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0}
 	countMul := 0
 
 	for idx := 0; idx < len(instructions); idx++ {
@@ -39,8 +64,7 @@ func execute(instructions [][]string, regA int) (int, int) {
 			}
 		}
 	}
-	
-	return countMul, regs["h"]
+	return countMul
 }
 
 func determineVal(val string, regs map[string]int) int {
