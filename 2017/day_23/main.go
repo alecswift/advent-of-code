@@ -1,3 +1,5 @@
+// Puzzle explanation: https://adventofcode.com/2017/day/23
+
 package main
 
 import (
