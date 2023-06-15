@@ -18,25 +18,23 @@ func main() {
 
 func optimized() int {
 	var count int
-	var leave bool
 	
 	for i := 109300; i < 126301; i += 17 {
-		leave = false
-		for j := 2; j < i; j++ {
-			for k := 2; k <= int(math.Sqrt(float64(i))); k++ {
-				if j * k == i {
-					count++
-					leave = true
-					break
-				}
-			}
-			if leave {
-				break
-			}
-		}
+		count += hasFactors(i)
 	}
 
 	return count
+}
+
+func hasFactors(i int) int {
+	for j := 2; j < i; j++ {
+		for k := 2; k <= int(math.Sqrt(float64(i))); k++ {
+			if j * k == i {
+				return 1
+			}
+		}
+	}
+	return 0
 }
 
 func execute(instructions [][]string) int {
