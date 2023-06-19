@@ -5,22 +5,22 @@ import (
 )
 
 func main() {
-	const InitialState = "A"
+	const InitialState = 'A'
 	const Steps = 12667664
-	blueprint := map[string][2][3]int{
-		"A": {{1, 1, 66}, {0, -1, 67}},
-		"B": {{1, -1, 65}, {1, 1, 68}},
-		"C": {{0, -1, 66}, {0, -1, 69}},
-		"D": {{1, 1, 65}, {0, 1, 66}},
-		"E": {{1, -1, 70}, {1, -1, 67}},
-		"F": {{1, 1, 68}, {1, 1, 65}},
+	blueprint := map[rune][2][3]int{
+		'A': {{1, 1, 66}, {0, -1, 67}},
+		'B': {{1, -1, 65}, {1, 1, 68}},
+		'C': {{0, -1, 66}, {0, -1, 69}},
+		'D': {{1, 1, 65}, {0, 1, 66}},
+		'E': {{1, -1, 70}, {1, -1, 67}},
+		'F': {{1, 1, 68}, {1, 1, 65}},
 	}
 	tape := run(blueprint, InitialState, Steps)
 	set := countSet(tape)
 	fmt.Print(set)
 }
 
-func run(blueprint map[string][2][3]int, state string, steps int) map[int]int {
+func run(blueprint map[rune][2][3]int, state rune, steps int) map[int]int {
 	tape := make(map[int]int)
 	pos := 0
 
@@ -31,7 +31,7 @@ func run(blueprint map[string][2][3]int, state string, steps int) map[int]int {
 
 		tape[pos] = newVal
 		pos += dir
-		state = string(instructions[2])
+		state = rune(instructions[2])
 	}
 
 	return tape
