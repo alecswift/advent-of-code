@@ -1,9 +1,7 @@
 package main
 
 import (
-	"strings"
-
-	"github.com/alecswift/advent_of_code/util"
+	"fmt"
 )
 
 func main() {
@@ -17,12 +15,34 @@ func main() {
 		"E": {{1, -1, 70}, {1, -1, 67}},
 		"F": {{1, 1, 68}, {1, 1, 65}},
 	}
+	tape := run(blueprint, InitialState, Steps)
+	set := countSet(tape)
+	fmt.Print(set)
 }
 
-func parse(inputFile string) map[string][2][3]int {
-	data := util.FileToStr(inputFile)
-	
-	blueprint := make(map[string][2][3]int)
+func run(blueprint map[string][2][3]int, state string, steps int) map[int]int {
+	tape := make(map[int]int)
+	pos := 0
 
-	return blueprint
+	for i := 0; i < steps; i++ {
+		val, _ := tape[pos]
+		instructions := blueprint[state][val]
+		newVal, dir := instructions[0], instructions[1]
+
+		tape[pos] = newVal
+		pos += dir
+		state = string(instructions[2])
+	}
+
+	return tape
+}
+
+func countSet(tape map[int]int) int {
+	count := 0
+
+	for _, bit := range tape {
+		count += bit
+	}
+
+	return count
 }
