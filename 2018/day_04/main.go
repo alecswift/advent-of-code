@@ -18,16 +18,69 @@ type Event struct {
 func main() {
 	events := parse("/home/alec/Desktop/code/advent-of-code/2018/day_04/input.txt")
 	sortEvents(events)
-	fmt.Print(events)
-	// make hash map of gaurds
-	// total time
-	//array for each minute
+	guardMap := buildGuardMap(events)
+	part1Sol := part1(guardMap)
+	part2Sol := part2(guardMap)
+	fmt.Print(part1Sol, "\n", part2Sol)
 }
 
-func buildGuardMap(events []Event) map[int][60]int {
+func part1(guardMap map[int]*[60]int) int {
+	maxGuard := 0
+	maxSum := 0
+	for guardNum, minutes := range guardMap {
+		sum := sum(*minutes)
+		if maxGuard == 0 || maxSum < sum {
+			maxGuard = guardNum
+			maxSum = sum
+		}
+	}
+
+	maxMinute, _ := findMaxMinute(*guardMap[maxGuard])
+
+	return maxMinute * maxGuard
+}
+
+func part2(guardMap map[int]*[60]int) int {
+	var maxTime, maxMinute, maxGuard int
+
+	for guardNum, minutes := range guardMap {
+		minute, time := findMaxMinute(*minutes)
+		if maxGuard == 0 || maxTime < time {
+			maxTime = time
+			maxMinute = minute
+			maxGuard = guardNum
+		}
+	}
+
+	return maxGuard * maxMinute
+}
+
+func findMaxMinute(minutes [60]int) (int, int) {
+	maxTime := 0
+	maxMinute := 0
+
+	for idx, minute := range minutes {
+		if idx == 0 || maxTime < minute {
+			maxTime = minute
+			maxMinute = idx
+		}
+	}
+
+	return maxMinute, maxTime
+}
+
+func sum(arr [60]int) int {
+	total := 0
+	for _, num := range arr {
+		total += num
+	}
+
+	return total
+}
+func buildGuardMap(events []Event) map[int]*[60]int {
 	var currGuard int
 	var start, end int
-	guardMap := make(map[int][60]int)
+	guardMap := make(map[int]*[60]int)
 
 	for _, event := range events {
 		switch event.event[:5] {
@@ -46,17 +99,18 @@ func buildGuardMap(events []Event) map[int][60]int {
 	return guardMap
 }
 
-func addTimes(guardMap map[int][60]int, guard, start, end int) {
+func addTimes(guardMap map[int]*[60]int, guard, start, end int) {
 	for i := start; i < end; i++ {
-		arr := guardMap[guard]
-		arr[i]++
+		pArr := guardMap[guard]
+		pArr[i]++
 	}
 }
 
-func addToDict(num int, dict map[int][60]int) {
+func addToDict(num int, dict map[int]*[60]int) {
 	_, exists := dict[num]
+	arr := [60]int{}
 	if !exists {
-		dict[num] = [60]int{}
+		dict[num] = &arr
 	}
 }
 
@@ -72,7 +126,7 @@ func sortEvents(events []Event) {
 		time := event.eTime
 		j := i - 1
 
-		for ; j >= 0 && time.Before(events[j].eTime); j-- {
+		for ;j >= 0 && time.Before(events[j].eTime); j-- {
 			events[j + 1] = events[j]
 		}
 		events[j + 1] = event
