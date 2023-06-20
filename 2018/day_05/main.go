@@ -50,7 +50,7 @@ func react(seq []rune) int {
 	for idx < len(seq) {
 		lastIdx := len(seq) - 1
 		char1, char2 := seq[idx - 1], seq[idx]
-		if abs(int(char2) - int(char1)) == 32 {
+		if util.Abs(int(char2) - int(char1)) == 32 {
             seq = append(seq[:idx - 1], seq[idx + 1:]...)
 			
 			if idx != 1 && idx != lastIdx {idx--}
@@ -60,13 +60,6 @@ func react(seq []rune) int {
 	}
 
 	return len(seq)
-}
-
-func abs(num int) int {
-	if num >= 0 {
-		return num
-	}
-	return -num
 }
 
 func parse(inputFile string) []rune {
