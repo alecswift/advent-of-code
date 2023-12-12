@@ -75,14 +75,14 @@ func findDigits(line string) (string, string) {
 		exists, _ := digits[string(char)]
 		if exists {
 			outDigits = append(outDigits, string(char))
-		} else {
-			for num, dig := range digMap {
-				if idx + len(num) <= len(line) && num == line[idx: idx + len(num)] {
-					outDigits = append(outDigits, dig)
-				}
-			}
+			continue
+		} 
+		
+		for num, dig := range digMap {
+			foundMatch := idx + len(num) <= len(line) && num == line[idx: idx + len(num)]
+		
+			if  foundMatch {outDigits = append(outDigits, dig)}
 		}
 	}
-
 	return outDigits[0], outDigits[len(outDigits) - 1]
 }
