@@ -26,7 +26,8 @@ func main() {
 		blue: 14,
 	}
 	part1Sol := part1(games, maxes)
-	fmt.Print(part1Sol)
+	part2Sol := part2(games)
+	fmt.Print(part1Sol, " ", part2Sol)
 }
 
 func part1(games [][]Hand, maxes Hand) int {
@@ -49,6 +50,37 @@ func part1(games [][]Hand, maxes Hand) int {
 	}
 
 	return sum
+}
+
+func part2(games [][]Hand) int {
+	sum := 0
+
+	for _, game := range games {
+		mins := Hand{
+			red: 0,
+			green: 0,
+			blue: 0,
+		}
+
+		for _, hand := range game {
+			mins = newMins(mins, hand)
+		}
+		sum += mins.red * mins.green * mins.blue
+	}
+	return sum
+}
+
+func newMins(mins, hand Hand) Hand {
+	if mins.red == 0 || hand.red > mins.red {
+		mins.red = hand.red
+	}
+	if mins.blue == 0 || hand.blue > mins.blue {
+		mins.blue = hand.blue
+	}
+	if mins.green == 0 || hand.green > mins.green {
+		mins.green = hand.green
+	}
+	return mins
 }
 
 func parse(data string) [][]Hand {
